@@ -64,9 +64,9 @@
         \item \textbf{Multiplication:} $T(n) \cdot S(n) = O(f(n) \cdot g(n))$
         \item \textbf{Composition:} $T(n) \circ S(n) = O(f(n) \circ g(n))$
         \begin{itemize}
-            \item \itshape{Only if both functions are increasing}
+            \item \textit{Only if both functions are increasing}
         \end{itemize}
-        \item \textbf{Max:} $max(f(n), g(n)) \leq f(n) + g(n)$
+        \item \textbf{Max:} $\max(f(n), g(n)) \leq f(n) + g(n)$
     \end{itemize}
 
     \subsection*{Space Complexity}
@@ -86,7 +86,7 @@
     \end{lstlisting}
     
     \begin{itemize}
-        \item Takes up $\mathbf{O(log(n))}$ space instead of $\mathbf{O(n\cdot log(n))}$
+        \item Takes up $O(\log(n))$ space instead of $O(n\cdot \log(n))$
     \end{itemize}
     \end{itemize}
 
@@ -102,7 +102,7 @@ void insertionArray(int arr[], int n) {
 
 \begin{itemize}
     \item \textbf{Invariant:} At the start of the $i^{th}$ iteration, the sub-array $arr[0, (i - 1)]$ is in sorted order
-    \item \textbf{Time Complexity:} $O(n^2)$
+    \item \textbf{Time Complexity:} $O(n^{2})$
     \item \textbf{Space Complexity:} $O(1)$
 \end{itemize}
 
@@ -118,8 +118,8 @@ void insertionSort(int arr[], int n){
 \end{lstlisting}
 
 \begin{itemize}
-    \item At the begining of the $i^{th}$ iteration, the sub-array $arr[0..(i-1)]$ is the same as the sub-array $sorted[0...(i-1)]$
-    \item \textbf{Time Complexity:} $O(n^2)$
+    \item At the beginning of the $i^{th}$ iteration, the sub-array $arr[0 \dots (i-1)]$ is the same as the sub-array $sorted[0 \dots (i-1)]$
+    \item \textbf{Time Complexity:} $O(n^{2})$
     \item \textbf{Space Complexity:} $O(1)$
 \end{itemize}
 
@@ -139,8 +139,8 @@ void mergeSort(int arr[], int left, int right){
 \end{lstlisting}
 
 \begin{itemize}
-    \item At the begining of the $i^{th}$ iteration, the sub-array $arr[0..(i-1)]$ is the same as the sub-array $sorted[0...(i-1)]$
-    \item \textbf{Time Complexity:} $O(n\cdot log(n))$
+    \item At the beginning of the $i^{th}$ iteration, the sub-array $arr[0 \dots (i-1)]$ is the same as the sub-array $sorted[0 \dots (i-1)]$
+    \item \textbf{Time Complexity:} $O(n\cdot \log(n))$
     \item \textbf{Space Complexity:} $O(n)$
 \end{itemize}
 
@@ -163,8 +163,8 @@ void quickSort(int arr[], int left, int right){
         \item At the beginning of each iteration, the elements to the left of a certain index $i$ are all less than or equal to the pivot ($arr[i]$) and vice versa
         \item \textbf{Time Complexity:} Depends on choice of pivot
         \begin{itemize}
-            \item Worst case: $O(n^2)$ first/last pivot
-            \item Worst case: $O(n \cdot log(n))$ median element
+            \item Worst case: $O(n^{2})$ first/last pivot
+            \item Worst case: $O(n \cdot \log(n))$ median element
             \item Worst case: $\infty$ random element
         \end{itemize}
         \item \textbf{Space Complexity:} $O(n)$
@@ -174,15 +174,15 @@ void quickSort(int arr[], int left, int right){
     \subsection*{General}
         \begin{itemize}
             \item a BST is either empty, or a node pointing to 2 BSTs
-            \item Balanced tree: $h = log_2n$
-            \item For a full binary tree of size n, $\exists k \in \mathbb{Z}^+$ s.t. $n = 2^k -1$
+            \item Balanced tree: $h = \log_{2} n$
+            \item For a full binary tree of size $n$, $\exists k \in \mathbb{Z}^{+}$ s.t. $n = 2^{k} -1$
         \end{itemize}
     
     \subsection*{Runtime for Operations}
         \begin{itemize}
             \item \textit{Lookup:} $O(n)$ when every node has a single child
             \begin{itemize}
-                \item If not, can be $O(h)$, where h is the height
+                \item If not, can be $O(h)$, where $h$ is the height
             \end{itemize}
             \item \textit{Insert:} $O(h)$
             \item \textit{Delete:} $O(h)$
@@ -309,8 +309,8 @@ void quickSort(int arr[], int left, int right){
     \item \textbf{Load Factor ($\alpha$):} $n/m$, representing the expected length of a chain.
     \item \textbf{Criteria for a Good Hash Function:} Must evaluate deterministically, look random for new inputs, and execute efficiently.
     \item \textbf{Simple Uniform Hashing Assumption (SUHA):} Assumes each new key picks any table index uniformly at random, ensuring keys are distributed evenly. If $n/m = O(1)$, expected runtime of operations is $O(1)$.
-    \item \textbf{Division Method:} $h(k) = k \bmod m$ (choose prime $m$, avoid $m=2^x$)
-    \item \textbf{Multiplication Method:} $h(k) = (Ak) \bmod 2^w \gg (w-r)$
+    \item \textbf{Division Method:} $h(k) = k \bmod m$ (choose prime $m$, avoid $m=2^{x}$)
+    \item \textbf{Multiplication Method:} $h(k) = (Ak) \bmod 2^{w} \gg (w-r)$
 \end{itemize}
 
 \subsection*{Collision Resolution}
@@ -328,7 +328,7 @@ void quickSort(int arr[], int left, int right){
         \item \textbf{Mechanism:} If an index is occupied, sequentially try the next slot until an empty one is found.
         \item \textbf{Worst-Case Runtime:} $O(n)$ for insert, lookup, and delete.
         \item \textbf{Expected Runtime (SUHA):} $O(1)$ for insert, lookup, and delete.
-        \item \textbf{Deletion Constraints:} Simply removing an item breaks the search "run" for subsequent keys.
+        \item \textbf{Deletion Constraints:} Simply removing an item breaks the search ``run'' for subsequent keys.
         \item \textbf{Deletion Fix (Shifting):} When removing at index $i$, check subsequent items $e$. If $i$ is within $e$'s target interval, move $e$ to index $i$.
         \item \textbf{Interval Cases:}
         \begin{itemize}
@@ -341,8 +341,8 @@ void quickSort(int arr[], int left, int right){
     \begin{itemize}
         \item $(h(k, i) = f(k) + i \cdot g(k)) \bmod m$
         \begin{itemize}
-            \item k: The key that is being inserted or searched for
-            \item i: The probe attempt number (starts at 0, then 1,2,3,...)
+            \item $k$: The key that is being inserted or searched for
+            \item $i$: The probe attempt number (starts at $0$, then $1, 2, 3, \dots$)
             \item $f(k)$: The primary hash function to give your starting idx
             \item $g(k)$: The secondary hash function to give step size
             \item $m$: Total size of hash table
@@ -417,7 +417,7 @@ void quickSort(int arr[], int left, int right){
     \begin{itemize}
         \item Visualised in the form of a complete binary tree
         \begin{itemize}
-            \item Every node has either 0,1, or 2 children
+            \item Every node has either $0$, $1$, or $2$ children
             \item Every level \textbf{must be full} except the last level
             \item Last Level must be filled from left to right
         \end{itemize}
@@ -435,8 +435,8 @@ void quickSort(int arr[], int left, int right){
         \item Make sure array is 1-indexed
         \item Tree traversal in array
         \begin{itemize}
-            \item Go to left child: $idx * 2$
-            \item Go to right child: $idx * 2 + 1$
+            \item Go to left child: $idx \times 2$
+            \item Go to right child: $idx \times 2 + 1$
             \item Go to parent: $\lfloor idx \div 2 \rfloor$
         \end{itemize}
 
@@ -503,17 +503,11 @@ void quickSort(int arr[], int left, int right){
         $
         \begin{array}{| c | c | c | c | c | c |}
             \hline\textbf{sort} & \textbf{best} & \textbf{average} & \textbf{worst} & \textbf{stable?} & \textbf{memory}
-    
-            \\\hline\text{bubble} & \Omega(n) & O(n^2) & O(n^2) & \checkmark & O(1)
-            
-            \\\hline\text{selection} & \Omega(n^2) & O(n^2) & O(n^2) & \times & O(1)
-            
-            \\\hline\text{insertion} & \Omega(n) & O(n^2) & O(n^2) & \checkmark & O(1)
-            
+            \\\hline\text{bubble} & \Omega(n) & O(n^{2}) & O(n^{2}) & \checkmark & O(1)
+            \\\hline\text{selection} & \Omega(n^{2}) & O(n^{2}) & O(n^{2}) & \times & O(1)
+            \\\hline\text{insertion} & \Omega(n) & O(n^{2}) & O(n^{2}) & \checkmark & O(1)
             \\\hline\text{merge} & \Omega(n\log n) & O(n\log n) & O(n\log n) & \checkmark & O(n)
-            
-            \\\hline\text{quick} & \Omega(n\log n) & O(n\log n) & O(n^2) & \times & O(1)
-
+            \\\hline\text{quick} & \Omega(n\log n) & O(n\log n) & O(n^{2}) & \times & O(1)
             \\\hline\text{heap} & \Omega(n\log n) & O(n\log n) & O(n\log n) & \times & O(1)
             \\\hline
         \end{array} 
@@ -536,7 +530,7 @@ void quickSort(int arr[], int left, int right){
             interval & $O(\log n)$ \\\hline
             all-overlaps & $O(k\log n)$ \\\hline
             1D range & $O(k + \log n)$ \\\hline
-            2D range & $O(k + \log^2 n)$ \\\hline
+            2D range & $O(k + \log^{2} n)$ \\\hline
         \end{tabular}
         
         data structures assuming $O(1)$ comparison cost
@@ -551,27 +545,27 @@ void quickSort(int arr[], int left, int right){
             dictionary & $O(\log n)$ & $O(\log n)$ \\\hline
             symbol table & $O(1)$ & $O(1)$ \\\hline
             chaining & $O(n)$ & $O(1)$ \\\hline
-            open addressing & $\frac{1}{1-\alpha} = O(1)$ & $O(1)$ \\\hline
+            open addressing & \multicolumn{1}{c|}{$\frac{1}{1-\alpha} = O(1)$} & $O(1)$ \\\hline
             priority queue & (contains) $O(1)$ & $O(\log n)$ \\\hline
             skip list & $O(\log n)$ & $O(\log n)$ \\\hline
         \end{tabular}
         
         \vspace{1em} % Adds a little breathing room after the table
         Orders of Growth \\*
-        $1 < \log n < \sqrt{n} < n < n \log n < n^2 < n^3 < 2^n < 2^{2n}$ \\*
-        $\log_a n < n^a < a^n < n! < n^n$
+        $1 < \log n < \sqrt{n} < n < n \log n < n^{2} < n^{3} < 2^{n} < 2^{2n}$ \\*
+        $\log_a n < n^{a} < a^{n} < n! < n^{n}$
 
         \vspace{1em}
         Orders of Growth
         \begin{align*}
-            T(n) &= 2T(\frac{n}{2}) + O(n) &\Rightarrow O(n \log n)
-            \\ T(n) &= T(\frac{n}{2}) + O(n) &\Rightarrow O(n)
-            \\ T(n) &= 2T(\frac{n}{2}) + O(1) &\Rightarrow O(n)
-            \\ T(n) &= T(\frac{n}{2}) + O(1) &\Rightarrow O(\log n)
-            \\ T(n) &= 2T(n - 1) + O(1) &\Rightarrow O(2^n)
-            \\ T(n) &= 2T(\frac{n}{2}) + O(n \log n) &\Rightarrow O(n(\log n)^2)
-            \\ T(n) &= 2T(\frac{n}{4}) + O(1) &\Rightarrow O(\sqrt{n})
-            \\ T(n) &= T(n - c) + O(n) &\Rightarrow O(n^2)
+            T(n) &= 2T\left(\frac{n}{2}\right) + O(n) &\implies O(n \log n)
+            \\ T(n) &= T\left(\frac{n}{2}\right) + O(n) &\implies O(n)
+            \\ T(n) &= 2T\left(\frac{n}{2}\right) + O(1) &\implies O(n)
+            \\ T(n) &= T\left(\frac{n}{2}\right) + O(1) &\implies O(\log n)
+            \\ T(n) &= 2T(n - 1) + O(1) &\implies O(2^{n})
+            \\ T(n) &= 2T\left(\frac{n}{2}\right) + O(n \log n) &\implies O(n(\log n)^{2})
+            \\ T(n) &= 2T\left(\frac{n}{4}\right) + O(1) &\implies O(\sqrt{n})
+            \\ T(n) &= T(n - c) + O(n) &\implies O(n^{2})
         \end{align*}
     \end{tightcenter}
 \end{multicols*}

@@ -64,7 +64,7 @@
     \item \textbf{Small Angle Approximation:}
     \[ \lim_{x \to 0} \frac{\sin x}{x} = 1 \quad \text{and} \quad \lim_{x \to 0} \frac{1 - \cos x}{x} = 0 \]
     \item \textbf{Note:} $\lim_{n \to \infty} \frac{\sin n}{n} = 0$ (by Squeeze Thm).
-    \item \textit{Application:} $\lim_{n \to \infty} n \sin(\frac{k}{n}) = k$.
+    \item \textit{Application:} $\lim_{n \to \infty} n \sin\left(\frac{k}{n}\right) = k$.
 \end{itemize}
 
 \subsection*{Continuity}
@@ -98,7 +98,7 @@ $f$ is continuous at $c$ if:
 
 \subsection*{Parametric Differentiation}
 For $x=f(t), y=g(t)$:
-\[ \frac{dy}{dx} = \frac{g'(t)}{f'(t)} \quad \text{and} \quad \frac{d^2y}{dx^2} = \frac{\frac{d}{dt}(y')}{dx/dt} \]
+\[ \frac{dy}{dx} = \frac{g'(t)}{f'(t)} \quad \text{and} \quad \frac{d^2y}{dx^2} = \frac{\frac{d}{dt}(y')}{\frac{dx}{dt}} \]
 
 \section*{Ch 3: Applications of Differentiation}
 \subsection*{Lines \& Approximations}
@@ -117,7 +117,7 @@ For $x=f(t), y=g(t)$:
     \item \textbf{Mean Value Theorem (MVT):} Under the same conditions, there is a $c \in (a, b)$ where:
     \[ f'(c) = \frac{f(b) - f(a)}{b - a} \]
     \item \textbf{L'Hôpital's Rule:} For forms $\frac{0}{0}$ or $\frac{\infty}{\infty}$:
-    \[ \lim \frac{f(x)}{g(x)} = \lim \frac{f'(x)}{g'(x)} \]
+    \[ \lim_{x \to c} \frac{f(x)}{g(x)} = \lim_{x \to c} \frac{f'(x)}{g'(x)} \]
 \end{itemize}
 
 \subsection*{Extrema Tests}
@@ -161,11 +161,11 @@ The definite integral $\int_{a}^{b} f(x) \, dx$ is defined as:
     \[ \int f(g(x))g'(x) \, dx = \int f(u) \, du \]
 \end{itemize}
 
-\subsection*{Tangent Half-Angle ($z=\tan \frac{\theta}{2}$)}
+\subsection*{Tangent Half-Angle ($z=\tan\left(\frac{\theta}{2}\right)$)}
 Used for rational functions of $\sin\theta, \cos\theta$:
 \begin{itemize}
     \item $\sin\theta = \frac{2z}{1+z^2}, \quad \cos\theta = \frac{1-z^2}{1+z^2}$
-    \item $d\theta = \frac{2}{1+z^2} dz$
+    \item $d\theta = \frac{2}{1+z^2} \,dz$
     \item \textbf{Limits:} $0 \to 0, \quad \frac{\pi}{2} \to 1, \quad \pi \to \infty$
 \end{itemize}
 
@@ -179,9 +179,9 @@ Used for rational functions of $\sin\theta, \cos\theta$:
 \subsection*{Volume of Revolution}
 \begin{itemize}
     \item \textbf{Disk Method (about x-axis):}
-    \[ V = \pi \int_{a}^{b} [f(x)]^2 \, dx \]
+    \[ V = \pi \int_{a}^{b} {[f(x)]}^2 \, dx \]
     \item \textbf{Washer Method (about x-axis):}
-    \[ V = \pi \int_{a}^{b} ([f(x)]^2 - [g(x)]^2) \, dx \]
+    \[ V = \pi \int_{a}^{b} \left({[f(x)]}^2 - {[g(x)]}^2\right) \, dx \]
     \item \textbf{Shell Method (about y-axis):}
     \[ V = 2\pi \int_{a}^{b} x|f(x)| \, dx \]
 \end{itemize}
@@ -189,11 +189,11 @@ Used for rational functions of $\sin\theta, \cos\theta$:
 \subsection*{Arc Length}
 \begin{itemize}
     \item For $y = f(x)$ from $a$ to $b$:
-    \[ L = \int_{a}^{b} \sqrt{1 + [f'(x)]^2} \, dx \]
+    \[ L = \int_{a}^{b} \sqrt{1 + {[f'(x)]}^2} \, dx \]
     \item For $x = g(y)$ from $c$ to $d$:
-    \[ L = \int_{c}^{d} \sqrt{1 + [g'(y)]^2} \, dy \]
+    \[ L = \int_{c}^{d} \sqrt{1 + {[g'(y)]}^2} \, dy \]
     \item For parametric equations:
-    \[L = \int_c^d \sqrt{(\frac{dx}{dt})^2 + (\frac{dy}{dt})^2} dt\]
+    \[L = \int_c^d \sqrt{{\left(\frac{dx}{dt}\right)}^2 + {\left(\frac{dy}{dt}\right)}^2} \,dt\]
 \end{itemize}
 
 \section*{Ch 6: Infinite/Convergent Series}
@@ -206,7 +206,7 @@ Used for rational functions of $\sin\theta, \cos\theta$:
 
 \subsection*{Sum of Geometric Series}
 \[
-    S_n = \sum_{i=1}^{n} a_i \cdot r^{i-1} = a_1(\frac{1-r^n}{1-r})
+    S_n = \sum_{i=1}^{n} a_i \cdot r^{i-1} = a_1\left(\frac{1-r^n}{1-r}\right)
 \]
 \begin{itemize}
     \item Diverges if $|r| \geq 1$
@@ -233,9 +233,9 @@ Used for rational functions of $\sin\theta, \cos\theta$:
         \item For a series $\sum a_n$ where $a_n = f(n)$ and $f(x)$ are continuous, positive, and decreasing for $x \geq 1$:
         \item Converges \textbf{if and only if:}
     \end{itemize}
-    $$
-        \int_{1}^{\infty}f(x)dx \textbf{ converges}
-    $$
+    \[
+        \int_{1}^{\infty}f(x)\,dx \text{ \textbf{converges}}
+    \]
 
     \subsubsection*{Comparison Test}
     \begin{itemize}
@@ -247,9 +247,9 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     \end{itemize}
 
     \subsection*{Ratio Test}
-    $$
-        L = \lim_{n\xrightarrow{}\infty} |\frac{a_{n+1}}{a_n}|
-    $$
+    \[
+        L = \lim_{n\to\infty} \left|\frac{a_{n+1}}{a_n}\right|
+    \]
     \begin{itemize}
         \item If $L < 1$: \textbf{Absolutely Convergent}
         \item If $L > 1$: \textbf{Divergent}
@@ -257,39 +257,39 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     \end{itemize}
 
     \subsection*{Root Test}
-    $$
-        L = \lim_{n \xrightarrow{} \infty} \sqrt[n]{|a_n|}
-    $$
+    \[
+        L = \lim_{n \to \infty} \sqrt[n]{|a_n|}
+    \]
     \begin{itemize}
         \item Conclusions are identical to Ratio Test
     \end{itemize}
 
     \subsection*{Alternating Series Test}
-    $$
-        \sum (-1)^{n-1}b_n \text{ with }b_n > 0
-    $$
+    \[
+        \sum {(-1)}^{n-1}b_n \text{ with } b_n > 0
+    \]
     \begin{itemize}
-        \item If $b_n$ is decreasing $(b_{n+1} \leq b_n)$ and $\lim_{n\xrightarrow{}\infty}b_n = 0$, then the series converges.
+        \item If $b_n$ is decreasing $(b_{n+1} \leq b_n)$ and $\lim_{n\to\infty}b_n = 0$, then the series converges.
     \end{itemize}
 
     \subsection*{Power Series}
-    $$
-        \sum_{n = 0}^{\infty} c_n \cdot (x-a)^n \text{, centered at a}
-    $$
+    \[
+        \sum_{n = 0}^{\infty} c_n \cdot {(x-a)}^n \text{, centered at } a
+    \]
     \begin{itemize}
         \item Radius of Convergence
         \begin{itemize} 
             \item The series converges abs for $|x-a| < R$ and diverges for $|x-a| > R$
-            \item $R = \frac{1}{L} \xrightarrow{}$ L is the limit from Ratio or Root test applied to coeffs
+            \item $R = \frac{1}{L} \implies L$ is the limit from Ratio or Root test applied to coeffs
         \end{itemize}
         \item \textbf{Take note:} Within radius of convergence, can be differentiated and integrated term-by-term
     \end{itemize}
 
 \subsection*{Taylor and Maclaurin Series}
 \subsubsection*{Taylor Series}
-$$
-    f(x)=\sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!}(x-a)^n
-$$
+\[
+    f(x)=\sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!}{(x-a)}^n
+\]
 \begin{itemize}
     \item Representation of a function $f(x)$ as a power series centred at $x=a$
 \end{itemize}
@@ -302,23 +302,23 @@ $$
 \section*{Ch 7: Vectors and Geometry of Space}
 \subsection*{3D Coordinates \& Vectors}
 \begin{itemize}
-    \item \textbf{Distance:} $$|P_1 P_2| = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2}$$
-    \item \textbf{Equation of Sphere:} $$(x-h)^2 + (y-k)^2 + (z-l)^2 = r^2$$
-    \item \textbf{Length:} $||\mathbf{a}|| = \sqrt{a_1^2 + a_2^2 + a_3^2}$
-    \item \textbf{Unit Vector:} $\mathbf{u} = \frac{\mathbf{a}}{||\mathbf{a}||}$
+    \item \textbf{Distance:} \[|P_1 P_2| = \sqrt{{(x_2-x_1)}^2 + {(y_2-y_1)}^2 + {(z_2-z_1)}^2}\]
+    \item \textbf{Equation of Sphere:} \[{(x-h)}^2 + {(y-k)}^2 + {(z-l)}^2 = r^2\]
+    \item \textbf{Length:} $\lVert\mathbf{a}\rVert = \sqrt{{a_1}^2 + {a_2}^2 + {a_3}^2}$
+    \item \textbf{Unit Vector:} $\mathbf{u} = \frac{\mathbf{a}}{\lVert\mathbf{a}\rVert}$
 \end{itemize}
 
 \subsection*{The Dot Product}
 \begin{itemize}
-    \item $\mathbf{a} \cdot \mathbf{b} = a_1 b_1 + a_2 b_2 + a_3 b_3 = ||\mathbf{a}|| ||\mathbf{b}|| \cos \theta$
+    \item $\mathbf{a} \cdot \mathbf{b} = a_1 b_1 + a_2 b_2 + a_3 b_3 = \lVert\mathbf{a}\rVert \lVert\mathbf{b}\rVert \cos \theta$
     \item $\mathbf{a} \perp \mathbf{b} \iff \mathbf{a} \cdot \mathbf{b} = 0$
 \end{itemize}
 
 \subsection*{Projections}
 \begin{itemize}
-    \item \textbf{Scalar Projection (comp):} $$\text{comp}_\mathbf{a} \mathbf{b} = \frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{a}||}$$
-    \item \textbf{Vector Projection (proj):} $$\text{proj}_\mathbf{a} \mathbf{b} = \left(\frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{a}||^2}\right) \mathbf{a}$$
-    \item \textbf{Point to Plane Distance:} $$D = \frac{|ax_0+by_0+cz_0-d|}{\sqrt{a^2+b^2+c^2}}$$
+    \item \textbf{Scalar Projection (comp):} \[\text{comp}_\mathbf{a} \mathbf{b} = \frac{\mathbf{a} \cdot \mathbf{b}}{\lVert\mathbf{a}\rVert}\]
+    \item \textbf{Vector Projection (proj):} \[\text{proj}_\mathbf{a} \mathbf{b} = \left(\frac{\mathbf{a} \cdot \mathbf{b}}{\lVert\mathbf{a}\rVert^2}\right) \mathbf{a}\]
+    \item \textbf{Point to Plane Distance:} \[D = \frac{|ax_0+by_0+cz_0-d|}{\sqrt{a^2+b^2+c^2}}\]
 \end{itemize}
 
 \subsection*{The Cross Product}
@@ -332,9 +332,9 @@ $$
             b_1 & b_2 & b_3 
             \end{vmatrix}
             \]
-    \item \textbf{Magnitude:} $||\mathbf{a} \times \mathbf{b}|| = ||\mathbf{a}|| ||\mathbf{b}|| \sin \theta$
+    \item \textbf{Magnitude:} $\lVert\mathbf{a} \times \mathbf{b}\rVert = \lVert\mathbf{a}\rVert \lVert\mathbf{b}\rVert \sin \theta$
     \item $\mathbf{a} \times \mathbf{b}$ is orthogonal to both $\mathbf{a}$ and $\mathbf{b}$.
-    \item \textbf{Point Q to Line PR Dist:} $d = \frac{||\vec{PQ} \times \vec{PR}||}{||\vec{PR}||}$
+    \item \textbf{Point Q to Line PR Dist:} $d = \frac{\lVert\vec{PQ} \times \vec{PR}\rVert}{\lVert\vec{PR}\rVert}$
 \end{itemize}
 
 \subsection*{Lines \& Planes}
@@ -342,40 +342,40 @@ $$
     \item \textbf{Line (Vector):} $\mathbf{r} = \mathbf{r}_0 + t\mathbf{v}$
     \item \textbf{Line (Parametric):} $x = x_0+at$, $y = y_0+bt$, $z = z_0+ct$
     \item \textbf{Plane (Vector):} $\mathbf{n} \cdot (\mathbf{r} - \mathbf{r}_0) = 0$
-    \item \textbf{Plane (Scalar):} $ax + by + cz + d = 0$ (with $\mathbf{n} = \langle a,b,c \rangle$)
+    \item \textbf{Plane (Scalar):} $ax + by + cz + d = 0$ (with $\mathbf{n} = \langle a, b, c \rangle$)
 \end{itemize}
 
 \section*{Ch 8: Functions of Several Variables}
     \subsection*{Arc Length Formula}
     \begin{itemize}
-        \item Let C be: $r(t) = \langle f(t), g(t), h(t) \rangle, a\leq t \leq b$
-        \item f', g' and h' are continuous
+        \item Let C be: $r(t) = \langle f(t), g(t), h(t) \rangle$, $a\leq t \leq b$
+        \item $f'$, $g'$ and $h'$ are continuous
     \end{itemize}
-    $$s = \int_a^b \sqrt{f'(t)^2 + g'(t)^2 + h'(t)^2}dt$$
+    \[s = \int_a^b \sqrt{{f'(t)}^2 + {g'(t)}^2 + {h'(t)}^2} \,dt\]
 
     \subsection*{Partial Derivatives}
-    $$f_x(x,y) = \lim_{h \rightarrow 0} \frac{f(x+ h, y) - f(x, y)}{h}$$
-    $$f_y(x,y) = \lim_{h \rightarrow 0} \frac{f(x, y +h) - f(x,y)}{h}$$
+    \[f_x(x,y) = \lim_{h \to 0} \frac{f(x+ h, y) - f(x, y)}{h}\]
+    \[f_y(x,y) = \lim_{h \to 0} \frac{f(x, y +h) - f(x,y)}{h}\]
 
-    \subsection*{Clairut's Theorem}
+    \subsection*{Clairaut's Theorem}
     If f is defined on a disk D that contains (a,b), and $f_{xy}$ and $f_{yx}$ are both continuous on D, then
-    $$f_{xy}(a,b) = f_{yx}(a,b)$$
+    \[f_{xy}(a,b) = f_{yx}(a,b)\]
 
     \subsection*{Tangent Plane}
     Equation of tangent plane is:
-    $$z = f(a,b) + f_x (a,b)(x-a) + f_y(a,b)(y - b)$$
+    \[z = f(a,b) + f_x (a,b)(x-a) + f_y(a,b)(y - b)\]
 
     \subsection*{Chain Rule}
     \begin{itemize}
         \item Case 1: $z = f(x,y)$, where $x = g(t)$ and $y = h(t)$ (all are differentiable by t)
-        $$\frac{dz}{dt} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}$$
+        \[\frac{dz}{dt} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}\]
         \item Case 2: $z = f(x,y)$, where $x = g(s,t)$ and $y = h(s, t)$ (all are differentiable by s and t)
-        $$\frac{\partial z}{\partial s} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial s} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial s}$$
-        $$\frac{\partial z}{\partial t} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}$$
-        \item General Case, where u is a differentiable function of n variables $x_1$,...,$x_n$ and each $x_j$ is a differentiable function of m variables $t_1, ...,t_m$. Then u is a function of $t_1,...,t_m$:
-        $$\frac{\partial u}{\partial t_i} = \frac{\partial u}{\partial x_1} \frac{\partial x_1}{\partial t_i} + \frac{\partial u}{\partial x_2}\frac{\partial x_2}{\partial t_i}+...+\frac{\partial u}{\partial x_n} \frac{\partial x_n}{\partial t_i}$$
+        \[\frac{\partial z}{\partial s} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial s} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial s}\]
+        \[\frac{\partial z}{\partial t} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}\]
+        \item General Case, where u is a differentiable function of n variables $x_1, \dots, x_n$ and each $x_j$ is a differentiable function of m variables $t_1, \dots, t_m$. Then u is a function of $t_1, \dots, t_m$:
+        \[\frac{\partial u}{\partial t_i} = \frac{\partial u}{\partial x_1} \frac{\partial x_1}{\partial t_i} + \frac{\partial u}{\partial x_2}\frac{\partial x_2}{\partial t_i}+\cdots+\frac{\partial u}{\partial x_n} \frac{\partial x_n}{\partial t_i}\]
 
-        \textbf{for each $i = 1,...,m$}
+        \textbf{for each $i = 1, \dots, m$}
     \end{itemize}
 \section*{Trigonometric Identities}
 \subsection*{Pythagorean}
@@ -400,10 +400,10 @@ $$
 
 \subsection*{Product-to-Sum}
 \[
-    \sin A \cos B = \frac{1}{2}[\sin(A+B) + \sin(A-B)]
+    \sin A \cos B = \frac{1}{2}\left[\sin(A+B) + \sin(A-B)\right]
 \]
 \[
-    \cos A \cos B = \frac{1}{2}[\cos(A+B) + \cos(A-B)]
+    \cos A \cos B = \frac{1}{2}\left[\cos(A+B) + \cos(A-B)\right]
 \]
 
 \subsection*{Special Inverse \& Hyperbolic Integrals}
