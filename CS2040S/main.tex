@@ -61,7 +61,7 @@
 
 \begin{multicols*}{4}
     \raggedcolumns
-    \section*{Ch1: Order of Growth}
+    \section*{Order of Growth}
     \subsection*{Properties}
     Let $T(n) = O(f(n))$ and $S(n) = O(g(n))$
     \begin{itemize}
@@ -95,7 +95,7 @@
               \end{itemize}
     \end{itemize}
 
-    \section*{Ch2: Sorting Algorithms}
+    \section*{Sorting Algorithms}
     \subsection*{Insertion Sort}
     \begin{lstlisting}
 void insertionArray(int arr[], int n) {
@@ -513,67 +513,128 @@ void quickSort(int arr[], int left, int right){
     \end{enumerate}
 
     \section*{Graphs}
-        \subsection*{Adjacency Matrix}
-        \begin{minipage}[t]{0.48\linewidth}
-            \begin{center}
-                \includegraphics[width=0.8\linewidth]{images/adjacency_matrix.png}
-            \end{center}
-        \end{minipage}
+    \subsection*{Adjacency Matrix}
+    \begin{minipage}[t]{0.48\linewidth}
+        \begin{center}
+            \includegraphics[width=0.8\linewidth]{images/adjacency_matrix.png}
+        \end{center}
+    \end{minipage}
 
-        \begin{itemize}
-            \item arr[i][j] gives the weight (1 if unweighted) of the edge from $i$ to $j$ (or 0 if no edge)
-        \end{itemize}
+    \begin{itemize}
+        \item arr[i][j] gives the weight (1 if unweighted) of the edge from $i$ to $j$ (or 0
+              if no edge)
+    \end{itemize}
 
-        \subsection*{Adjacency List}
-        \begin{minipage}[t]{0.48\linewidth}
-            \begin{center}
-                \includegraphics[width=0.8\linewidth]{images/adjacency_list.png}
-            \end{center}
-        \end{minipage}
+    \subsection*{Adjacency List}
+    \begin{minipage}[t]{0.48\linewidth}
+        \begin{center}
+            \includegraphics[width=0.8\linewidth]{images/adjacency_list.png}
+        \end{center}
+    \end{minipage}
 
-        \subsection*{Edge List}
-        \begin{minipage}{0.48\linewidth}
-            \begin{center}
-                \includegraphics[width=0.8\linewidth]{images/edge_list.png}
-            \end{center}
-        \end{minipage}
+    \subsection*{Edge List}
+    \begin{minipage}{0.48\linewidth}
+        \begin{center}
+            \includegraphics[width=0.8\linewidth]{images/edge_list.png}
+        \end{center}
+    \end{minipage}
 
-        \begin{itemize}
-            \item If edges are weighted, store as triplets $(u, v, weight)$
-        \end{itemize}
+    \begin{itemize}
+        \item If edges are weighted, store as triplets $(u, v, weight)$
+    \end{itemize}
 
-        \begin{tightcenter}
-            \begin{tabular}{|c|c|c|c|}
-                \hline
-                & \textbf{AM} & \textbf{AL} & \textbf{EL} \\
-                \hline
-                \textbf{is\_adj} & $O(1)$ & $O(\deg i)$ & $O(m)$ \\
-                \hline
-                \textbf{get\_neigh} & $O(n)$ & $O(1)$ & $O(m)$ \\
-                \hline
-                \textbf{in\_deg} & $O(n)$ & $O(n+m)$ & $O(m)$ \\
-                \hline
-                \textbf{out\_deg} & $O(n)$ & $O(1)$ & $O(m)$ \\
-                \hline
-                \textbf{space} & $O(n^{2})$ & $O(n+m)$ & $O(m)$ \\
-                 \hline
-            \end{tabular}
-        \end{tightcenter}
+    \begin{tightcenter}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+                                & \textbf{AM} & \textbf{AL} & \textbf{EL} \\
+            \hline
+            \textbf{is\_adj}    & $O(1)$      & $O(\deg i)$ & $O(m)$      \\
+            \hline
+            \textbf{get\_neigh} & $O(n)$      & $O(1)$      & $O(m)$      \\
+            \hline
+            \textbf{in\_deg}    & $O(n)$      & $O(n+m)$    & $O(m)$      \\
+            \hline
+            \textbf{out\_deg}   & $O(n)$      & $O(1)$      & $O(m)$      \\
+            \hline
+            \textbf{space}      & $O(n^{2})$  & $O(n+m)$    & $O(m)$      \\
+            \hline
+        \end{tabular}
+    \end{tightcenter}
 
-        \subsection*{Searching}
-            \subsubsection*{Breadth-First Search (BFS)}   
-            \begin{itemize}
-                \item Uses a queue to explore the graph level by level
-                \item Time Complexity: $O(n + m)$
-                \item Space Complexity: $O(n)$
-            \end{itemize}
+    \subsection*{Searching}
+    \subsubsection*{Breadth-First Search (BFS)}
+    \begin{itemize}
+        \item Uses a queue to explore the graph level by level
+        \item Time Complexity: $O(n + m)$
+        \item Space Complexity: $O(n)$
+    \end{itemize}
 
-            \subsubsection*{Depth-First Search (DFS)}   
-            \begin{itemize}
-                \item Uses a stack to explore the graph as far as possible along each branch before backtracking
-                \item Time Complexity: $O(n + m)$
-                \item Space Complexity: $O(n)$
-            \end{itemize}
+    \subsubsection*{Depth-First Search (DFS)}
+    \begin{itemize}
+        \item Uses a stack to explore the graph as far as possible along each branch before
+              backtracking
+        \item Time Complexity: $O(n + m)$
+        \item Space Complexity: $O(n)$
+    \end{itemize}
+
+    \subsection*{Topological Sort}
+    \begin{itemize}
+        \item Linear ordering of vertices such that for every directed edge $uv$, vertex $u$
+              comes before $v$ in the ordering
+        \item Can be performed using DFS
+        \item Use linked list to store the topological order (add vertex to front of list
+              after visiting all its neighbors)
+        \item Time Complexity: $O(n + m)$
+        \item Space Complexity: $O(n)$
+    \end{itemize}
+
+    \subsection*{SSSP - Relaxation of Nodes}
+    \begin{itemize}
+        \item Set the source node's distance to $0$, and all other nodes' distances to
+              $\infty$.
+        \item For each directed edge $u \to v$, if $dist[u] + weight(u, v) < dist[v]$, update
+              $dist[v]$ to $dist[u] + weight(u, v)$.
+        \item \textbf{Execution Strategy:}
+              \begin{itemize}
+                  \item \textbf{Bellman-Ford:} Repeat this relaxation for all edges until no updates can be made (maximum $n-1$ iterations).
+                  \item \textbf{Dijkstra \& DAG:} Process nodes systematically (greedy or topological order) so edges only need to be relaxed once per visited node.
+              \end{itemize}
+        \item \textbf{Runtimes} (where $n=|V|$ and $m=|E|$):
+              \begin{itemize}
+                  \item \textbf{Bellman-Ford:} $O(nm)$
+                  \item \textbf{DAG Shortest Path:} $O(n + m)$
+                  \item \textbf{Dijkstra's Algorithm:} $O(m \log m)$ using lazy deletion, or $O((n+m)\log n)$ using a standard binary min-heap.
+              \end{itemize}
+    \end{itemize}
+
+    \begin{minipage}[t]{0.84\linewidth}
+        \begin{center}
+            \includegraphics[width=0.8\linewidth]{images/djikstra_lazy.png}
+        \end{center}
+    \end{minipage}
+
+    \subsection*{Union-Find Disjoint Sets (UFDS)}
+    Maintains a collection of disjoint sets, allowing for highly efficient union
+    and connectivity checks.
+
+    \textbf{Core Arrays:}
+    \begin{itemize}
+        \item \texttt{parent\_array[x]}: Initially, every element is its own root (\texttt{parent\_array[x] = x}).
+        \item \texttt{rank[x]}: Initially, every element's rank is 0.
+    \end{itemize}
+
+    \begin{minipage}[t]{0.84\linewidth}
+        \begin{center}
+            \includegraphics[width=0.8\linewidth]{images/union_by_rank.png}
+        \end{center}
+    \end{minipage}
+
+    \textbf{Time Complexity}
+    \begin{itemize}
+        \item \textbf{Worst-Case Runtime:} $O(\log n)$ per operation.
+        \item \textbf{Amortized Runtime:} $O(\alpha(n))$ per operation, where $\alpha(n)$ is the Inverse Ackermann function.
+        \item \textbf{Practical Implication:} $\alpha(n) \le 4$ for any realistically imaginable input size ($A(4,4) = 2^{2^{65536}} - 3$), meaning operations are effectively $O(1)$. A sequence of $m$ operations takes practically $O(m)$ time.
+    \end{itemize}
 
     \section*{Appendix}
     \begin{tightcenter}
@@ -610,12 +671,13 @@ void quickSort(int arr[], int left, int right){
             2D range        & $O(k + \log^{2} n)$ \\\hline
         \end{tabular}
 
-        data structures assuming $O(1)$ comparison cost \\* \begin{tabular}{| c | c | c |}\hline
+        data structures assuming $O(1)$ comparison cost \\* 
+        \begin{tabular}{| c | c | c |}\hline
             \textbf{data structure} & \textbf{search}                                  & \textbf{insert}       \\\hline
             sorted array            & $O(\log n)$                                      & $O(n)$                \\\hline
             unsorted array          & $O(n)$                                           & $O(1)$                \\\hline
             linked list             & $O(n)$                                           & $O(1)$                \\\hline
-            tree (kd/(a, b)/binary) & $O(\log n)$ or $O(h)$                            & $O(\log n)$ or $O(h)$ \\\hline
+            tree & $O(\log n)$ or $O(h)$                            & $O(\log n)$ or $O(h)$ \\\hline
             trie                    & $O(L)$                                           & $O(L)$                \\\hline
             heap                    & $O(\log n)$ or $O(h)$                            & $O(\log n)$ or $O(h)$ \\\hline
             dictionary              & $O(\log n)$                                      & $O(\log n)$           \\\hline
