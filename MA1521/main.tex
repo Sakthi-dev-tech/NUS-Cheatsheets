@@ -145,8 +145,9 @@ The definite integral $\int_{a}^{b} f(x) \, dx$ is defined as:
     \item \textbf{Part 2:} $\frac{d}{dx} \int_{a}^{x} f(t) \, dt = f(x)$.
 \end{itemize}
 
-\subsection*{Trig Integrals}
+\subsection*{Common \& Trig Integrals}
 \begin{itemize}
+    \item $\int \ln x \, dx = x \ln x - x + C$
     \item $\int \tan x \, dx = \ln |\sec x| + C$
     \item $\int \cot x \, dx = \ln |\sin x| + C$
     \item $\int \sec x \, dx = \ln |\sec x + \tan x| + C$
@@ -210,7 +211,7 @@ Used for rational functions of $\sin\theta, \cos\theta$:
 \]
 \begin{itemize}
     \item Diverges if $|r| \geq 1$
-    \item Converges to $\frac{a}{1-r}$ if $|r| \le 1$
+    \item Converges to $\frac{a}{1-r}$ if $|r| < 1$
 \end{itemize}
 
 \subsection*{Series}
@@ -306,6 +307,12 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     \item Taylor Series centred at $a=0$
 \end{itemize}
 
+\subsubsection*{Important Maclaurin Series}
+\begin{itemize}
+    \item $e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots$
+    \item $(1+x)^k = 1 + kx + \frac{k(k-1)}{2!}x^2 + \frac{k(k-1)(k-2)}{3!}x^3 + \dots$
+\end{itemize}
+
 \section*{Ch 7: Vectors and Geometry of Space}
 \subsection*{3D Coordinates \& Vectors}
 \begin{itemize}
@@ -349,7 +356,7 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     \item \textbf{Line (Vector):} $\mathbf{r} = \mathbf{r}_0 + t\mathbf{v}$
     \item \textbf{Line (Parametric):} $x = x_0+at$, $y = y_0+bt$, $z = z_0+ct$
     \item \textbf{Plane (Vector):} $\mathbf{n} \cdot (\mathbf{r} - \mathbf{r}_0) = 0$
-    \item \textbf{Plane (Scalar):} $ax + by + cz + d = 0$ (with $\mathbf{n} = \langle a, b, c \rangle$)
+    \item \textbf{Plane (Scalar):} $A(x-x_0) + B(y-y_0) + C(z-z_0) = 0$
 \end{itemize}
 
 \section*{Ch 8: Functions of Several Variables}
@@ -368,9 +375,20 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     If f is defined on a disk D that contains (a,b), and $f_{xy}$ and $f_{yx}$ are both continuous on D, then
     \[f_{xy}(a,b) = f_{yx}(a,b)\]
 
-    \subsection*{Tangent Plane}
-    Equation of tangent plane is:
-    \[z = f(a,b) + f_x (a,b)(x-a) + f_y(a,b)(y - b)\]
+    \subsection*{Tangent Plane \& Linear Approx}
+    \begin{itemize}
+        \item \textbf{Tangent Plane:} $z = f(a,b) + f_x (a,b)(x-a) + f_y(a,b)(y - b)$
+        \item \textbf{Linear Approximation:} $f(x,y) \approx f(a,b) + f_x(a,b)dx + f_y(a,b)dy$
+    \end{itemize}
+    
+    \subsection*{Second Partials Test}
+    Let $D = f_{xx}(a,b)f_{yy}(a,b) - [f_{xy}(a,b)]^2$:
+    \begin{itemize}
+        \item $D > 0, f_{xx}(a,b) > 0 \implies$ Local Minimum
+        \item $D > 0, f_{xx}(a,b) < 0 \implies$ Local Maximum
+        \item $D < 0 \implies$ Saddle Point
+        \item $D = 0 \implies$ Test is Inconclusive
+    \end{itemize}
 
     \subsection*{Chain Rule}
     \begin{itemize}
