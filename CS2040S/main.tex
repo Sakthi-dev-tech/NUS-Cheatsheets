@@ -629,15 +629,51 @@ void quickSort(int arr[], int left, int right){
         \end{center}
     \end{minipage}
 
-    \textbf{Time Complexity}
+    \subsubsection*{Time Complexity}
     \begin{itemize}
         \item \textbf{Worst-Case Runtime:} $O(\log n)$ per operation.
         \item \textbf{Amortized Runtime:} $O(\alpha(n))$ per operation, where $\alpha(n)$ is the Inverse Ackermann function.
         \item \textbf{Practical Implication:} $\alpha(n) \le 4$ for any realistically imaginable input size ($A(4,4) = 2^{2^{65536}} - 3$), meaning operations are effectively $O(1)$. A sequence of $m$ operations takes practically $O(m)$ time.
     \end{itemize}
 
-    \section*{Appendix}
-    \begin{tightcenter}
+    \subsection*{Minimum Spanning Trees (MST)}
+        \begin{itemize}
+            \item \textbf{Assumption:} Edge weights are bounded non-negative integers $w \in [0, c)$ for a constant $c$.
+        \end{itemize}
+
+        \subsubsection*{Faster Kruskal's Algorithm}
+        \begin{itemize}
+            \item \textbf{Idea:} Replace the $O(m \log m)$ comparison-based sort with \textbf{Counting Sort}.
+            \item \textbf{Time Complexity:} $O(c + m \alpha(n))$, where $\alpha$ is the inverse Ackermann function.
+        \end{itemize}
+
+        \subsubsection*{Faster Prim's Algorithm}
+        \begin{itemize}
+            \item \textbf{Idea:} Replace the $O(\log n)$ Priority Queue with an array of $c$ queues. To find the minimum edge, scan the array from index $0$ to $c-1$ to find the first non-empty queue.
+            \item \textbf{Time Complexity:} $O(c(n + m))$
+        \end{itemize}
+
+        \textbf{Pseudocode:}
+        \begin{verbatim}
+            in_tree = array of size n, initialized to false
+            fake_pq = array of c empty queues
+
+            in_tree[s] = true
+            for (n, weight) in get_neighbours(s): 
+                fake_pq[weight].push(n)
+
+            while fake_pq has a non-empty queue:
+                curr_node = pop from the first non-empty queue in fake_pq
+                if in_tree[curr_node]: 
+                    continue
+                    
+                in_tree[curr_node] = true
+                for (n, weight) in get_neighbours(curr_node): 
+                    fake_pq[weight].push(n)
+        \end{verbatim}
+
+        \section*{Appendix}
+        \begin{tightcenter}
         $
             \begin{array}{| c | c | c | c | c | c |}
                 \hline\textbf{sort} & \textbf{best} & \textbf{average} & \textbf{worst} & \textbf{stable?} & \textbf{memory}
@@ -671,13 +707,13 @@ void quickSort(int arr[], int left, int right){
             2D range        & $O(k + \log^{2} n)$ \\\hline
         \end{tabular}
 
-        data structures assuming $O(1)$ comparison cost \\* 
+        data structures assuming $O(1)$ comparison cost \\*
         \begin{tabular}{| c | c | c |}\hline
             \textbf{data structure} & \textbf{search}                                  & \textbf{insert}       \\\hline
             sorted array            & $O(\log n)$                                      & $O(n)$                \\\hline
             unsorted array          & $O(n)$                                           & $O(1)$                \\\hline
             linked list             & $O(n)$                                           & $O(1)$                \\\hline
-            tree & $O(\log n)$ or $O(h)$                            & $O(\log n)$ or $O(h)$ \\\hline
+            tree                    & $O(\log n)$ or $O(h)$                            & $O(\log n)$ or $O(h)$ \\\hline
             trie                    & $O(L)$                                           & $O(L)$                \\\hline
             heap                    & $O(\log n)$ or $O(h)$                            & $O(\log n)$ or $O(h)$ \\\hline
             dictionary              & $O(\log n)$                                      & $O(\log n)$           \\\hline
