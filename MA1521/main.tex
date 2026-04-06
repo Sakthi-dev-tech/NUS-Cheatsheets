@@ -86,16 +86,6 @@ $f$ is continuous at $c$ if:
     $(\tan x)' = \sec^2 x$& $(\sec^{-1} x)' = \frac{1}{|x|\sqrt{x^2-1}}$ \\
 \end{tabular}
 
-\subsection*{Differentiation Rules}
-\begin{itemize}
-    \item \textbf{Product Rule:}
-    \[ \frac{d}{dx}(uv) = u\frac{dv}{dx} + v\frac{du}{dx} \]
-    \item \textbf{Quotient Rule:}
-    \[ \frac{d}{dx}\left(\frac{u}{v}\right) = \frac{v\frac{du}{dx} - u\frac{dv}{dx}}{v^2} \]
-    \item \textbf{Chain Rule:} If $y = f(u)$ and $u = g(x)$:
-    \[ \frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx} \]
-\end{itemize}
-
 \subsection*{Parametric Differentiation}
 For $x=f(t), y=g(t)$:
 \[ \frac{dy}{dx} = \frac{g'(t)}{f'(t)} \quad \text{and} \quad \frac{d^2y}{dx^2} = \frac{\frac{d}{dt}(y')}{\frac{dx}{dt}} \]
@@ -118,20 +108,6 @@ For $x=f(t), y=g(t)$:
     \[ f'(c) = \frac{f(b) - f(a)}{b - a} \]
     \item \textbf{L'Hôpital's Rule:} For forms $\frac{0}{0}$ or $\frac{\infty}{\infty}$:
     \[ \lim_{x \to c} \frac{f(x)}{g(x)} = \lim_{x \to c} \frac{f'(x)}{g'(x)} \]
-\end{itemize}
-
-\subsection*{Extrema Tests}
-\begin{itemize}
-    \item \textbf{First Derivative Test:}
-    \begin{itemize}
-        \item Change $+$ to $-$ $\implies$ Local Max
-        \item Change $-$ to $+$ $\implies$ Local Min
-    \end{itemize}
-    \item \textbf{Second Derivative Test:}
-    \begin{itemize}
-        \item $f'(c)=0, f''(c) < 0 \implies$ Local Max
-        \item $f'(c)=0, f''(c) > 0 \implies$ Local Min
-    \end{itemize}
 \end{itemize}
 
 \section*{Ch 4: Integrals}
@@ -201,21 +177,13 @@ Used for rational functions of $\sin\theta, \cos\theta$:
 
 \subsection*{Arc Length}
 \begin{itemize}
-    \item For $y = f(x)$ from $a$ to $b$:
+    \item For $y = f(x)$ from $a$ to $b$ (and vice versa for $x = g(y)$):
     \[ L = \int_{a}^{b} \sqrt{1 + {[f'(x)]}^2} \, dx \]
-    \item For $x = g(y)$ from $c$ to $d$:
-    \[ L = \int_{c}^{d} \sqrt{1 + {[g'(y)]}^2} \, dy \]
     \item For parametric equations:
     \[L = \int_c^d \sqrt{{\left(\frac{dx}{dt}\right)}^2 + {\left(\frac{dy}{dt}\right)}^2} \,dt\]
 \end{itemize}
 
 \section*{Ch 6: Infinite/Convergent Series}
-
-\subsection*{Absolute vs Conditional Convergence}
-\begin{itemize}
-    \item \textbf{Absolute Convergence:} $\sum|a_n|$ converges
-    \item \textbf{Conditional Convergence:} $\sum a_n$ converges, but $\sum |a_n|$ diverges
-\end{itemize}
 
 \subsection*{Sum of Geometric Series}
 \[
@@ -387,10 +355,6 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     \[f_x(x,y) = \lim_{h \to 0} \frac{f(x+ h, y) - f(x, y)}{h}\]
     \[f_y(x,y) = \lim_{h \to 0} \frac{f(x, y +h) - f(x,y)}{h}\]
 
-    \subsection*{Clairaut's Theorem}
-    If f is defined on a disk D that contains (a,b), and $f_{xy}$ and $f_{yx}$ are both continuous on D, then
-    \[f_{xy}(a,b) = f_{yx}(a,b)\]
-
     \subsection*{Tangent Plane \& Linear Approx}
     \begin{itemize}
         \item \textbf{Tangent Plane:} $z = f(a,b) + f_x (a,b)(x-a) + f_y(a,b)(y - b)$
@@ -408,9 +372,7 @@ Used for rational functions of $\sin\theta, \cos\theta$:
 
     \subsection*{Chain Rule}
     \begin{itemize}
-        \item Case 1: $z = f(x,y)$, where $x = g(t)$ and $y = h(t)$ (all are differentiable by t)
-        \[\frac{dz}{dt} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}\]
-        \item Case 2: $z = f(x,y)$, where $x = g(s,t)$ and $y = h(s, t)$ (all are differentiable by s and t)
+        \item Given: $z = f(x,y)$, where $x = g(s,t)$ and $y = h(s, t)$ (all are differentiable by s and t)
         \[\frac{\partial z}{\partial s} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial s} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial s}\]
         \[\frac{\partial z}{\partial t} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}\]
         \item General Case, where u is a differentiable function of n variables $x_1, \dots, x_n$ and each $x_j$ is a differentiable function of m variables $t_1, \dots, t_m$. Then u is a function of $t_1, \dots, t_m$:
@@ -418,6 +380,44 @@ Used for rational functions of $\sin\theta, \cos\theta$:
 
         \textbf{for each $i = 1, \dots, m$}
     \end{itemize}
+
+   \subsection*{Change of Variables (Jacobian)}
+
+For a one-to-one transformation $x = x(u,v)$ and $y = y(u,v)$:
+\[
+    \iint_R f(x,y) \, dA
+    =
+    \iint_S f(x(u,v), y(u,v)) \left| \frac{\partial(x,y)}{\partial(u,v)} \right| \, du \, dv
+\]
+where the Jacobian $J$ is given by:
+\[
+    J = \frac{\partial(x,y)}{\partial(u,v)}
+    =
+    \begin{vmatrix}
+        f_{xu} & f_{xv} \\[1ex]
+        f_{yu} & f_{yv}
+    \end{vmatrix}
+\]
+and the area elements are related by:
+\[
+    dA = |J| \, du \, dv,
+    \qquad
+    \frac{\partial(u,v)}{\partial(x,y)} = \frac{1}{J}
+\]
+
+For 3 variables $x = x(u,v,w)$, $y = y(u,v,w)$, and $z = z(u,v,w)$:
+\begin{align*}
+    \iiint_R f(x,y,z) \, dV
+    &= \iiint_S f(x(u,v,w), y(u,v,w), z(u,v,w)) \\
+    &\quad \times \left| \frac{\partial(x,y,z)}{\partial(u,v,w)} \right| \, du \, dv \, dw
+\end{align*}
+
+\subsubsection*{Common Case: Polar Coordinates}
+
+Using the transformation $x = r\cos\theta$ and $y = r\sin\theta$, the Jacobian is $|J| = r$. Therefore:
+\[
+    dA = r \, dr \, d\theta
+\]
 \section*{Trigonometric Identities}
 \subsection*{Pythagorean}
 \begin{itemize}
