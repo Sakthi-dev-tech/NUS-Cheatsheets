@@ -418,6 +418,39 @@ Using the transformation $x = r\cos\theta$ and $y = r\sin\theta$, the Jacobian i
 \[
     dA = r \, dr \, d\theta
 \]
+
+\subsubsection*{Cylindrical Coordinates}
+Using
+\[
+    x = r\cos\theta,\quad y = r\sin\theta,\quad z = z,
+\]
+the Jacobian is
+\[
+    \left|\frac{\partial(x,y,z)}{\partial(r,\theta,z)}\right| = r.
+\]
+Hence,
+\[
+    dV = r\,dr\,d\theta\,dz
+\]
+
+\subsubsection*{Spherical Coordinates}
+Using
+\[
+    x = \rho\sin\phi\cos\theta,\quad
+    y = \rho\sin\phi\sin\theta,\quad
+    z = \rho\cos\phi,
+\]
+
+where $\rho$ is length from origin, $\phi$ is angle from positive z-axis, and $\theta$ is angle from positive x-axis in xy-plane.
+\\
+with $\rho\ge 0$, $0\le \phi\le \pi$, $0\le \theta < 2\pi$, the Jacobian is
+\[
+    \left|\frac{\partial(x,y,z)}{\partial(\rho,\phi,\theta)}\right| = \rho^2\sin\phi.
+\]
+Hence,
+\[
+    dV = \rho^2\sin\phi\,d\rho\,d\phi\,d\theta
+\]
 \section*{Trigonometric Identities}
 \subsection*{Pythagorean}
 \begin{itemize}
