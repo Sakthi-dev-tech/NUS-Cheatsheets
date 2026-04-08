@@ -351,9 +351,11 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     \end{itemize}
     \[s = \int_a^b \sqrt{{f'(t)}^2 + {g'(t)}^2 + {h'(t)}^2} \,dt\]
 
-    \subsection*{Partial Derivatives}
-    \[f_x(x,y) = \lim_{h \to 0} \frac{f(x+ h, y) - f(x, y)}{h}\]
-    \[f_y(x,y) = \lim_{h \to 0} \frac{f(x, y +h) - f(x,y)}{h}\]
+    \subsection*{Surface Area of a 2D Surface in 3D}
+    \begin{itemize}
+        \item For $z=f(x,y)$ over region $D$:
+        \[S = \iint_D \sqrt{1 + \left(f_x\right)^2 + \left(f_y\right)^2}\,dA\]
+    \end{itemize}
 
     \subsection*{Tangent Plane \& Linear Approx}
     \begin{itemize}
@@ -374,7 +376,6 @@ Used for rational functions of $\sin\theta, \cos\theta$:
     \begin{itemize}
         \item Given: $z = f(x,y)$, where $x = g(s,t)$ and $y = h(s, t)$ (all are differentiable by s and t)
         \[\frac{\partial z}{\partial s} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial s} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial s}\]
-        \[\frac{\partial z}{\partial t} = \frac{\partial f}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}\]
         \item General Case, where u is a differentiable function of n variables $x_1, \dots, x_n$ and each $x_j$ is a differentiable function of m variables $t_1, \dots, t_m$. Then u is a function of $t_1, \dots, t_m$:
         \[\frac{\partial u}{\partial t_i} = \frac{\partial u}{\partial x_1} \frac{\partial x_1}{\partial t_i} + \frac{\partial u}{\partial x_2}\frac{\partial x_2}{\partial t_i}+\cdots+\frac{\partial u}{\partial x_n} \frac{\partial x_n}{\partial t_i}\]
 
@@ -412,7 +413,8 @@ For 3 variables $x = x(u,v,w)$, $y = y(u,v,w)$, and $z = z(u,v,w)$:
     &\quad \times \left| \frac{\partial(x,y,z)}{\partial(u,v,w)} \right| \, du \, dv \, dw
 \end{align*}
 
-\subsubsection*{Common Case: Polar Coordinates}
+\subsection*{Common Case}
+\subsubsection*{Polar Coordinates}
 
 Using the transformation $x = r\cos\theta$ and $y = r\sin\theta$, the Jacobian is $|J| = r$. Therefore:
 \[
@@ -421,9 +423,9 @@ Using the transformation $x = r\cos\theta$ and $y = r\sin\theta$, the Jacobian i
 
 \subsubsection*{Cylindrical Coordinates}
 Using
-\[
+$
     x = r\cos\theta,\quad y = r\sin\theta,\quad z = z,
-\]
+$
 the Jacobian is
 \[
     \left|\frac{\partial(x,y,z)}{\partial(r,\theta,z)}\right| = r.
