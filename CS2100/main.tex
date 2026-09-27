@@ -1,0 +1,588 @@
+\documentclass[a4paper,landscape]{article}
+
+% Print at actual size. Content flows across pages automatically.
+% No images, TikZ diagrams, or forced page breaks.
+\usepackage[margin=9mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,multicol,enumitem,xcolor}
+\usepackage{fancyhdr}
+
+\definecolor{navy}{HTML}{183A59}
+\definecolor{gray}{HTML}{526477}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\bfseries CS2100 Midterm Cheat Sheet}
+\fancyhead[R]{\sffamily\small C $\rightarrow$ bits $\rightarrow$ MIPS $\rightarrow$ processor}
+\fancyfoot[R]{\sffamily\small\thepage}
+\setlength{\headheight}{12pt}
+\setlength{\headsep}{3mm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlength{\columnsep}{7mm}
+\setlength{\columnseprule}{0.2pt}
+\setlength{\emergencystretch}{2em}
+\setlist[itemize]{leftmargin=*,nosep,topsep=1pt}
+\setlist[enumerate]{leftmargin=*,nosep,topsep=1pt}
+
+\newcommand{\topic}[1]{%
+  \par%
+  \addvspace{0.7\baselineskip}%
+  \noindent{\sffamily\bfseries\color{navy}#1}\par\nobreak
+  \vspace{0.12\baselineskip}%
+  \noindent{\color{navy}\rule{\linewidth}{0.35pt}}\par\nobreak
+  \vspace{0.3\baselineskip}%
+}
+\newcommand{\key}[1]{\textbf{#1}}
+\newcommand{\flow}{\ensuremath{\rightarrow}}
+
+\begin{document}
+\fontsize{9.5}{11}\selectfont
+\raggedright
+
+\begin{multicols}{2}
+
+\topic{The overall connection}
+
+C source \flow\ preprocessor \flow\ compiler \flow\ assembly
+\flow\ assembler \flow\ object files \flow\ linker \flow\
+executable machine instructions. Types determine how bit patterns
+are interpreted. The ISA defines what instructions mean. Processor
+control and datapath circuits execute them, changing registers,
+memory, and the program counter (PC).
+
+\topic{C: compilation, types, and functions}
+
+\begin{itemize}
+\item \key{Declaration:} gives a name and type. \key{Definition:}
+also creates storage or a function body. Multiple compatible
+declarations may refer to one definition.
+\item \key{Header (.h):} publishes declarations, prototypes, types,
+and macros. \texttt{\#include} is processed before compilation.
+Use include guards. Compile separate \texttt{.c} files to
+\texttt{.o} files with \texttt{gcc -c}; the linker combines them.
+\item \texttt{gcc -Wall} enables warnings; \texttt{-o name} sets the
+executable name. \texttt{main} returns an integer; returning 0
+conventionally signals success.
+\item C uses declared types but permits conversions. A conversion
+may discard information (for example, floating value to integer).
+Uninitialized automatic variables have indeterminate values.
+\item In the course's common model, \texttt{short/int/long} occupy
+2/4/8 bytes and \texttt{float/double} 4/8 bytes. Actual C type
+widths depend on the implementation.
+\item Function arguments are passed by \key{value}: parameters
+receive copies. Passing a pointer copies the address, allowing a
+function to modify the pointed-to object.
+\item A function prototype declares parameter and return types.
+A local \texttt{static} retains its value between calls; file-scope
+\texttt{static} restricts linkage to that source file.
+\item \texttt{\&\&} has higher precedence than \texttt{||}.
+Parentheses make intended evaluation clear. A \texttt{do-while}
+loop executes its body before testing the condition.
+\item For \texttt{scanf}, use \texttt{\%d} for \texttt{int},
+\texttt{\%f} for \texttt{float}, and \texttt{\%lf} for
+\texttt{double}; pass addresses. \texttt{\%p} prints a pointer.
+\end{itemize}
+
+\topic{Pointers, arrays, strings, structs}
+
+\begin{itemize}
+\item \texttt{\&x} obtains the address of \texttt{x}.
+\texttt{T *p} declares a pointer to \texttt{T};
+\texttt{*p} accesses the pointed-to object.
+\texttt{p+1} advances by \texttt{sizeof(T)} bytes.
+\item Never dereference an uninitialized, invalid, null, or dangling
+pointer. \key{Aliasing} means two pointers can refer to one object.
+A dangling pointer refers to an object whose lifetime has ended.
+\item Array elements have the same type and occupy contiguous
+storage. In a function parameter, \texttt{int a[8]} is adjusted
+to \texttt{int *a}; the 8 does not enforce the caller's array size.
+\item \texttt{int a[5]=\{1,2,3\}} sets remaining elements to zero.
+An uninitialized local array does not have guaranteed zero values.
+\item A C string is a character array terminated by
+\texttt{'$\backslash$0'}. Reserve a byte for the terminator.
+\texttt{fgets} can retain a newline. \texttt{scanf("\%s",...)}
+stops at whitespace and should use a width limit.
+\item A struct groups fields of potentially different types.
+Struct assignment copies its value. \texttt{p->field} means
+\texttt{(*p).field}. Passing a struct by value copies it; passing
+an array argument permits modification of its elements.
+\end{itemize}
+
+\topic{Stored-program architecture and memory}
+
+CPU = registers + ALU + control. Memory holds both instructions
+and data; I/O communicates with the outside. A bus connects CPU
+and memory. Registers are small, fast storage inside the CPU.
+\key{Load:} memory \flow\ register. \key{Store:} register
+\flow\ memory. If too many values are live, the compiler
+\key{spills} some to memory and reloads them later.
+
+In the lecture's 32-bit MIPS model, a word is 32 bits = 4 bytes.
+Memory is \key{byte-addressed}; aligned word addresses satisfy
+\(a\bmod4=0\). The next aligned word begins at \(a+4\), not \(a+1\).
+A \(k\)-bit byte address identifies \(2^k\) byte locations.
+
+\topic{Bits and positional number systems}
+
+One bit has two states; \(n\) bits have \(2^n\) patterns. Encoding
+\(M\) distinct values requires at least \(\lceil\log_2 M\rceil\)
+bits. Positional value is
+\[
+ (d_k\cdots d_0.d_{-1}\cdots)_r=\sum_i d_i r^i.
+\]
+For an integer, repeatedly divide by the target radix and read
+remainders backward. For a fraction, repeatedly multiply by the
+radix and read integer parts forward. Group binary digits in threes
+for octal and fours for hexadecimal. The same bits can represent
+different things: \texttt{01000110} is integer 70 or ASCII
+character \texttt{F}.
+
+\topic{Signed integer representations}
+
+First decide whether the same \(n\)-bit pattern is \emph{unsigned},
+sign magnitude, one's complement, two's complement, or excess-\(K\).
+The arithmetic and interpretation depend on that choice. MSB means
+most significant (leftmost) bit. An out-of-range mathematical answer
+is overflow even if an \(n\)-bit result pattern can still be written.
+
+\key{Unsigned binary.} Range: \(0\) to \(2^n-1\). Add normally;
+an outgoing carry from bit \(n-1\) means unsigned overflow. Retaining
+only \(n\) bits computes the sum modulo \(2^n\). Subtraction with
+\(A<B\) wraps modulo \(2^n\) if kept in \(n\) bits. There is no
+representation of a negative value.
+
+\topic{Sign magnitude: range, negation, addition}
+
+\key{Interpretation and range:} MSB is sign (0 positive, 1 negative);
+the remaining \(n-1\) bits give magnitude. Range is
+\(-(2^{n-1}-1)\) to \(2^{n-1}-1\). Both \(+0\) and \(-0\) exist.
+
+\key{Negate:} flip only the sign bit. This also switches the two
+zero encodings. \key{Add:} if signs match, add magnitudes and keep
+the common sign. If signs differ, subtract the smaller magnitude
+from the larger and use the sign of the larger-magnitude operand.
+Equal opposite magnitudes give zero. \key{Subtract:} negate the
+second operand, then add using these rules.
+
+\key{Overflow:} for same-sign addition, the magnitude sum exceeds
+\(2^{n-1}-1\). Opposite-sign addition cannot overflow, because its
+magnitude is no larger than the larger input magnitude. A carry
+from a raw addition of complete sign-magnitude bit strings is
+\emph{not} the arithmetic rule.
+
+\topic{One's complement: range, negation, addition}
+
+\key{Interpretation and range:} nonnegative values use ordinary
+binary; a negative value is the bitwise complement of its positive
+magnitude. Range is \(-(2^{n-1}-1)\) to \(2^{n-1}-1\). There are
+two zeros: all 0s is \(+0\), all 1s is \(-0\).
+
+\key{Negate:} invert every bit, \(x\mapsto\overline{x}\). For a
+positive integer \(x\), its negative pattern has unsigned value
+\(2^n-1-x\). For example, in 8 bits, \(+12=00001100\) and
+\(-12=11110011\).
+
+\key{Add two numbers:} (1) add the \(n\)-bit patterns as ordinary
+binary; (2) if a carry leaves the MSB, add that carry back into
+the low bit (\emph{end-around carry}); (3) interpret the \(n\)-bit
+result and check overflow. Example in 4 bits:
+\(5+(-3):\;0101+1100=1\,0001\rightarrow0010=2\).
+\key{Subtract:} complement the second operand, then use one's-
+complement addition with end-around carry.
+
+\key{Overflow:} after end-around carry, adding two positive values
+must not produce a negative result, and adding two negative values
+must not produce a positive result. Equivalently, the true sum must
+remain in \([-(2^{n-1}-1),\;2^{n-1}-1]\). Opposite-sign addition
+cannot overflow. Handle the two zero patterns as zero when reasoning
+about signs.
+
+\topic{Two's complement: range, negation, addition}
+
+\key{Interpretation and range:} nonnegative values use ordinary
+binary; a pattern with MSB 1 represents its unsigned value minus
+\(2^n\). Range is \(-2^{n-1}\) to \(2^{n-1}-1\). There is one zero
+and one extra negative number.
+
+\key{Negate:} invert all bits and add 1:
+\(-x=\overline{x}+1\pmod{2^n}\). For a positive integer \(x\),
+the negative pattern has unsigned value \(2^n-x\). In 8 bits,
+\(+12=00001100\) and \(-12=11110100\). The minimum value
+\(-2^{n-1}\) cannot be negated within \(n\) signed bits:
+\(+2^{n-1}\) is out of range.
+
+\key{Add two numbers:} add the \(n\)-bit patterns, retain the low
+\(n\) bits, and discard the carry out of the MSB. Then check
+\emph{signed} overflow. In 4 bits,
+\(5+(-3):\;0101+1101=1\,0010\rightarrow0010=2\).
+\key{Subtract:} \(A-B=A+\overline B+1\), using the same \(n\)-bit
+adder and overflow test.
+
+\key{Overflow:} same-sign addition produces an opposite-sign
+result, or equivalently the carry into the sign bit differs from
+the carry out. Two opposite-sign operands cannot overflow on
+addition. A final carry out alone is \emph{not} signed overflow:
+\(1111+0001=1\,0000\) is \(-1+1=0\), without overflow.
+For \(A-B\), overflow occurs if \(A\) and \(B\) have different
+signs and the result sign differs from \(A\)'s sign.
+
+\topic{Excess or biased representation}
+
+\key{Encode:} store \(x+K\) as an unsigned \(n\)-bit pattern.
+\key{Decode:} \(x=\text{stored}-K\). Range is \(-K\) to
+\(2^n-1-K\). There is no dedicated sign bit. Ordinary binary
+addition of two stored patterns does \emph{not} directly give the
+biased encoding of their sum: decode, operate, then re-encode
+(or correct the bias). IEEE 754 uses a biased exponent field.
+
+\topic{Fixed point, floating point, rounding}
+
+With \(f\) fractional bits, a signed fixed-point value is its
+stored integer multiplied by \(2^{-f}\). Spacing is \(2^{-f}\).
+For an \(n\)-bit two's-complement pattern:
+\[
+ \text{range}=
+ \left[-2^{n-1-f},\;(2^{n-1}-1)2^{-f}\right].
+\]
+Example: \(n=8,f=2\) gives range \([-32,31.75]\) in steps of
+\(0.25\). More fractional bits improve resolution but reduce range
+at fixed total width. \key{Note:} the spacing is \(2^{-f}\), not
+\(2^f\).
+
+IEEE 754 normal binary values have the form
+\[
+ (-1)^s(1.F)_2\,2^{E-\mathrm{bias}}.
+\]
+The leading 1 is implicit for normal values. Single precision:
+1 sign bit, 8 exponent bits (bias 127), 23 fraction bits.
+Double precision: 1 sign, 11 exponent (bias 1023), 52 fraction.
+
+Exponent all zeros: zero if fraction is zero; otherwise subnormal.
+Exponent all ones: infinity if fraction is zero; otherwise NaN.
+The sign bit distinguishes positive and negative zero/infinity.
+A wider exponent increases range; more fraction bits improve
+precision.
+
+\key{Guard bit} = first discarded bit; \key{round bit} = second;
+\key{sticky bit} = OR of all remaining bits. Rounding modes:
+nearest with ties to even (default), toward zero, toward
+\(+\infty\), and toward \(-\infty\). Every operation may round,
+so floating-point addition need not be associative.
+
+\topic{ISA and MIPS design}
+
+The instruction set architecture (ISA) is the visible contract
+between software and hardware: operations, registers, data,
+addressing, and encoding. CISC favors richer instructions; RISC
+uses simpler, regular instructions composed by software.
+
+Operand organization may be stack, accumulator, general-purpose
+register, or memory-memory. MIPS uses a \key{register-register /
+load-store} design: ALU operations use registers, while
+\texttt{lw/sw} access memory. Addressing modes in these notes:
+register, immediate constant, and displacement (base + offset).
+ISA design chooses storage, addressing, operation set, instruction
+fields/length, and binary encoding.
+
+\topic{MIPS registers and common operations}
+
+MIPS has 32 general-purpose registers of 32 bits each. A register
+index needs 5 bits. \texttt{\$zero} always reads 0; the PC is
+separate. Most ALU instructions have destination first:
+\texttt{add rd,rs,rt}, \texttt{sub}, \texttt{and}, \texttt{or},
+\texttt{xor}, \texttt{nor}, \texttt{slt}. \texttt{slt} writes 1 if
+the first source is less than the second, else 0.
+
+\texttt{sll/srl} shift logically; a 5-bit shift field represents
+0--31 positions. \texttt{nor rd,rs,\$zero} implements bitwise NOT.
+\texttt{move} is a pseudoinstruction.
+
+\texttt{addi rt,rs,imm} uses a signed 16-bit immediate:
+\(-32768\) to \(32767\), sign-extended to 32 bits.
+\texttt{andi/ori/xori} zero-extend their 16-bit masks.
+\texttt{lui} puts an immediate in the upper 16 bits and sets the
+lower 16 to zero. Thus an arithmetic immediate and a logical mask
+with the same bits can be extended differently.
+
+\topic{MIPS memory and control flow}
+
+\texttt{lw rt,offset(rs)} computes effective byte address
+\(R[rs]+\operatorname{signext}(offset)\), then loads one word into
+\texttt{rt}. \texttt{sw rt,offset(rs)} stores \texttt{rt} at that
+address. The offset counts \key{bytes}, and word accesses require
+4-byte alignment in this model.
+
+\texttt{beq rs,rt,label} branches if equal; \texttt{bne} if not
+equal. \texttt{slt} followed by a branch expresses an inequality.
+\texttt{j label} jumps unconditionally. A label names an address;
+it is not an instruction.
+
+\topic{MIPS instruction formats: every instruction is 32 bits}
+
+\key{R format:}
+\[
+ opcode_6\;|\;rs_5\;|\;rt_5\;|\;rd_5\;|\;shamt_5\;|\;funct_6.
+\]
+Typical arithmetic uses two register sources and \texttt{rd}
+destination; \texttt{funct} chooses the operation. Shifts use
+\texttt{shamt} and usually \texttt{rt} as data source.
+
+\key{I format:}
+\[
+ opcode_6\;|\;rs_5\;|\;rt_5\;|\;immediate_{16}.
+\]
+\texttt{rt} is a destination for \texttt{addi/lw}, but source
+data for \texttt{sw} and a comparison operand for branches.
+The immediate's meaning depends on the opcode.
+
+\key{J format:}
+\[
+ opcode_6\;|\;target_{26}.
+\]
+Instructions are four aligned bytes, so sequential next PC is
+\(PC+4\). A branch immediate counts \key{words}:
+\[
+ \text{branch target}
+ =PC+4+\bigl(\operatorname{signext}(imm_{16})\ll2\bigr).
+\]
+A jump uses pseudo-direct addressing:
+\[
+ \text{jump target}
+ =\{(PC+4)_{31:28},\;target_{25:0},\;00\}.
+\]
+Its upper four bits come from \(PC+4\), limiting the jump to the
+corresponding 256 MiB region.
+
+\topic{Datapath components and five stages}
+
+The datapath contains the PC, instruction memory, register file
+(32 registers of 32 bits; two read ports and one write port), ALU,
+dedicated adders, data memory, and multiplexers. The control path
+selects routes, operations, and enabled writes.
+
+\begin{enumerate}
+\item \key{Fetch:} read instruction memory at PC; compute \(PC+4\).
+\item \key{Decode/register read:} interpret opcode/fields, read
+\texttt{rs} and \texttt{rt}, extend immediate, generate controls.
+\item \key{Execute:} ALU performs arithmetic/logic, calculates
+load/store address, or compares branch operands. A separate adder
+calculates the branch target.
+\item \key{Memory:} \texttt{lw} reads data memory; \texttt{sw}
+writes it; other supported instructions do neither.
+\item \key{Writeback:} write an ALU result or memory value when
+\texttt{RegWrite=1}.
+\end{enumerate}
+These are conceptual stages, not necessarily five clock cycles.
+
+\topic{ALU and two-level control}
+
+The ALU performs arithmetic and logical work; each bit's carry-out
+feeds the next bit's carry-in. Its control bits are \texttt{Ainvert},
+\texttt{Binvert}, and a 2-bit \texttt{Operation} selector. For
+subtraction, invert B and set the least-significant carry-in to 1:
+\(A-B=A+\overline B+1\). The 4-bit \texttt{ALUcontrol} value
+selects the ALU's operation. The ALU also produces \texttt{isZero},
+which is 1 if its result is zero; this is a \emph{status output}, not
+an instruction-decoder output.
+
+\key{Two-level decoding:} instruction opcode \(\rightarrow\)
+main control signals and 2-bit \texttt{ALUop}; then
+\(\texttt{ALUop}+\texttt{funct}\) (for R type) \(\rightarrow\)
+4-bit \texttt{ALUcontrol} \(\rightarrow\) actual ALU action.
+\texttt{ALUop} classifies how to determine the operation;
+\texttt{ALUcontrol} directly drives the ALU. The \texttt{funct}
+field is ignored for \texttt{lw}, \texttt{sw}, and \texttt{beq}.
+
+\topic{What each control signal means}
+
+\key{Mux selectors (choose a data path):}
+\begin{itemize}
+\item \key{RegDst:} 0 chooses instruction bits [20:16], \texttt{rt},
+as the register-file destination; 1 chooses bits [15:11],
+\texttt{rd}. Its value is irrelevant when \texttt{RegWrite=0}.
+\item \key{ALUSrc:} 0 supplies the ALU's second input from register
+Read Data 2; 1 supplies the sign-extended 16-bit immediate in this
+simplified datapath. \texttt{beq} needs 0 to compare two registers.
+\item \key{MemToReg:} 0 writes the ALU result to a register; 1
+writes data read from memory. It matters only if
+\texttt{RegWrite=1}. The mux selects \emph{what} to write;
+\texttt{RegWrite} decides \emph{whether} a write occurs.
+\item \key{PCSrc:} 0 chooses the sequential next PC, \(PC+4\);
+1 chooses the branch target \(PC+4+(\operatorname{signext}(imm)\ll2)\).
+\end{itemize}
+
+\key{Write and memory enables:}
+\begin{itemize}
+\item \key{RegWrite:} 1 enables a write to the register file at
+the active clock edge; 0 suppresses it. \texttt{lw} and supported
+R-type ALU instructions write a register; \texttt{sw/beq} do not.
+Writes to MIPS \texttt{\$zero} are ignored. PC updating is separate.
+\item \key{MemRead:} 1 reads data memory at the ALU-computed address
+(used by \texttt{lw}). \key{MemWrite:} 1 writes register Read Data 2
+to data memory at that address (used by \texttt{sw}). Both are 0
+for R type and \texttt{beq}; both 1 is unused in this datapath.
+\end{itemize}
+
+\key{Operation and branch signals:}
+\begin{itemize}
+\item \key{Branch:} main control sets this to 1 for \texttt{beq}
+in the lecture's branch circuit. It identifies a conditional
+branch; it does not by itself say whether the branch is taken.
+\item \key{ALUop (2 bits):} 00 means add for \texttt{lw/sw} address
+calculation; 01 means subtract for \texttt{beq} comparison;
+10 means use R-type \texttt{funct}; 11 is unused here.
+\item \key{ALUcontrol (4 bits):} final ALU selector generated
+from \texttt{ALUop} and, when needed, the 6-bit \texttt{funct}.
+The course table uses 0010 = add, 0110 = subtract,
+0000 = AND, 0001 = OR, 0111 = set-on-less-than.
+\item \key{isZero:} ALU output, 1 iff ALU result is zero.
+For \texttt{beq}, subtracting \(R[rs]-R[rt]\) makes it 1 when
+the operands are equal.
+\end{itemize}
+
+\topic{ALUop and ALUcontrol lookup}
+
+{\small
+\begin{tabular}{@{}llll@{}}
+\textbf{Instruction} & \textbf{ALUop} & \textbf{funct} &
+\textbf{ALUcontrol / action}\\
+\hline
+\texttt{lw}, \texttt{sw} & 00 & ignored & 0010 / add base + offset\\
+\texttt{beq} & 01 & ignored & 0110 / subtract, test zero\\
+\texttt{add} & 10 & 100000 & 0010 / add\\
+\texttt{sub} & 10 & 100010 & 0110 / subtract\\
+\texttt{and} & 10 & 100100 & 0000 / bitwise AND\\
+\texttt{or} & 10 & 100101 & 0001 / bitwise OR\\
+\texttt{slt} & 10 & 101010 & 0111 / set less than\\
+\end{tabular}
+}
+
+\key{Branch decision:} the opcode decoder supplies
+\texttt{Branch}; the ALU supplies \texttt{isZero}; a separate
+adder supplies the branch address. For the \texttt{beq}-only
+design, \(\boxed{PCSrc=Branch\land isZero}\). For \texttt{bne},
+the comparison condition must instead detect \emph{not equal}.
+
+\topic{Main-control settings by instruction}
+
+{\small
+\begin{tabular}{@{}lcccccccl@{}}
+\textbf{Type} & \textbf{Dst} & \textbf{Src} & \textbf{M2R} &
+\textbf{RW} & \textbf{MR} & \textbf{MW} & \textbf{Br} &
+\textbf{ALUop}\\
+\hline
+R type & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 10\\
+\texttt{lw} & 0 & 1 & 1 & 1 & 1 & 0 & 0 & 00\\
+\texttt{sw} & X & 1 & X & 0 & 0 & 1 & 0 & 00\\
+\texttt{beq} & X & 0 & X & 0 & 0 & 0 & 1 & 01\\
+\end{tabular}
+}
+
+\emph{Dst = RegDst; Src = ALUSrc; M2R = MemToReg; RW = RegWrite;
+MR = MemRead; MW = MemWrite; Br = Branch. X = don't care
+because the corresponding output is not used for that instruction.}
+
+\topic{Trace each instruction through the datapath}
+
+\key{R-type ALU operation (for example, \texttt{add rd,rs,rt}):}
+Fetch the instruction, read \(R[rs]\) and \(R[rt]\), then set
+\texttt{ALUSrc=0}. \texttt{ALUop=10} tells the ALU-control unit to
+inspect \texttt{funct}; the final \texttt{ALUcontrol} selects the
+operation. Select \texttt{rd} with \texttt{RegDst=1} and the ALU result
+with \texttt{MemToReg=0}; \texttt{RegWrite=1} writes the result.
+Data memory is inactive. Sequential execution selects \(PC+4\).
+
+\key{\texttt{lw rt,offset(rs)}:} Read base \(R[rs]\), sign-extend
+the 16-bit byte offset, and set \texttt{ALUSrc=1}. With
+\texttt{ALUop=00}, the ALU adds base and offset to form the effective
+address. \texttt{MemRead=1} obtains the word. Select \texttt{rt}
+(\texttt{RegDst=0}) and memory data (\texttt{MemToReg=1});
+\texttt{RegWrite=1} saves it in the register file.
+
+\key{\texttt{sw rt,offset(rs)}:} The ALU forms the same base-plus-offset
+address as for \texttt{lw}. The register file also reads \(R[rt]\),
+which supplies data memory's Write Data input. Set
+\texttt{MemWrite=1}, \texttt{MemRead=0}, and \texttt{RegWrite=0}.
+\texttt{RegDst} and \texttt{MemToReg} are don't-cares because there
+is no register writeback.
+
+\key{\texttt{beq rs,rt,label}:} Read two registers and set
+\texttt{ALUSrc=0}. \texttt{ALUop=01} selects subtraction;
+\texttt{isZero=1} means the values were equal. In parallel, a
+dedicated adder forms \(PC+4+(\operatorname{signext}(imm)\ll2)\).
+The opcode sets \texttt{Branch=1}; thus \texttt{PCSrc=isZero}
+for this instruction. No data-memory access or general-purpose
+register write occurs.
+
+\topic{A quick way to derive control values}
+
+First ask \emph{where the second ALU operand comes from}
+(\texttt{ALUSrc}). Next ask \emph{which ALU operation is needed}
+(\texttt{ALUop} then \texttt{ALUcontrol}). Ask whether data memory
+is read or written (\texttt{MemRead}, \texttt{MemWrite}). If a register
+is written, choose its number (\texttt{RegDst}) and writeback value
+(\texttt{MemToReg}), then enable \texttt{RegWrite}. Finally decide
+whether the next PC is sequential or a taken branch
+(\texttt{Branch}, \texttt{isZero}, \texttt{PCSrc}). A mux select is
+a don't-care whenever its output is not used.
+
+\topic{Clocking and implementation choices}
+
+During a clock period, current state feeds combinational logic;
+enabled state elements capture results at the active edge.
+The PC supplies the current instruction address while next-PC
+logic computes its replacement.
+
+\key{Single cycle:} each instruction completes in one clock
+period; the period must fit the longest path, typically
+\texttt{lw} (instruction memory \flow\ register read
+\flow\ ALU \flow\ data memory \flow\ register writeback).
+
+\key{Multicycle:} execution steps occupy separate cycles.
+Intermediate results need storage; a controller tracks the step.
+The period can be shorter, but instructions need variable numbers
+of cycles.
+
+\key{Pipelining:} different instructions occupy different stages
+at once, separated by pipeline registers. Once filled, ideal
+throughput approaches one completed instruction per cycle;
+dependencies and hazards can cause stalls or flushes. A faster
+clock alone does not guarantee a faster program.
+
+\topic{Concept links and exam pitfalls}
+
+\begin{itemize}
+\item C array indexing \(\rightarrow\) element size
+\(\rightarrow\) byte offset \(\rightarrow\) base+offset effective
+address \(\rightarrow\) \texttt{lw/sw}. For a 4-byte \texttt{int}
+array, element \(i\) begins \(4i\) bytes after the base.
+\item Signed integer \(\rightarrow\) two's-complement bit pattern
+\(\rightarrow\) sign extension of an arithmetic immediate
+\(\rightarrow\) ALU addition/subtraction and overflow check.
+\item Floating-point value \(\rightarrow\) sign, biased exponent,
+fraction \(\rightarrow\) finite range and relative precision
+\(\rightarrow\) rounding after an operation.
+\item C expression \(\rightarrow\) compiler temporaries
+\(\rightarrow\) processor registers. Register pressure can spill
+values to memory, introducing extra loads and stores.
+\item C \texttt{if} or loop \(\rightarrow\) \texttt{slt} or a
+branch comparison \(\rightarrow\) encoded offset \(\rightarrow\)
+target-address adder and next-PC multiplexer.
+\item Branch offsets count \emph{words} and are shifted left two
+places; \texttt{lw/sw} offsets count \emph{bytes}. Both ultimately
+form byte addresses.
+\item In I format, \texttt{rt} is not always a destination.
+\texttt{sw} uses it as source data, and \texttt{beq} compares it.
+\item Carry-out is not the same as signed two's-complement overflow.
+\texttt{RegWrite} does not control PC updating. \texttt{isZero}
+comes from the ALU, whereas \texttt{Branch} comes from decoding.
+\item The simplified datapath and control table cover \texttt{lw},
+\texttt{sw}, \texttt{beq}, and R-type \texttt{add/sub/and/or/slt}.
+\texttt{bne}, jumps, shifts, immediate arithmetic, and other
+instructions require corresponding datapath or control extensions.
+\end{itemize}
+
+\end{multicols}
+\end{document}
