@@ -2,7 +2,7 @@
 
 % Print at actual size. Content flows across pages automatically.
 % No images, TikZ diagrams, or forced page breaks.
-\usepackage[margin=9mm]{geometry}
+\usepackage[margin=7.5mm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amsmath,amssymb,multicol,enumitem,xcolor}
@@ -19,7 +19,7 @@
 \setlength{\headheight}{12pt}
 \setlength{\headsep}{3mm}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{3pt}
+\setlength{\parskip}{2.5pt}
 \setlength{\columnsep}{7mm}
 \setlength{\columnseprule}{0.2pt}
 \setlength{\emergencystretch}{2em}
@@ -28,17 +28,17 @@
 
 \newcommand{\topic}[1]{%
   \par%
-  \addvspace{0.7\baselineskip}%
+  \addvspace{0.5\baselineskip}%
   \noindent{\sffamily\bfseries\color{navy}#1}\par\nobreak
   \vspace{0.12\baselineskip}%
   \noindent{\color{navy}\rule{\linewidth}{0.35pt}}\par\nobreak
-  \vspace{0.3\baselineskip}%
+  \vspace{0.2\baselineskip}%
 }
 \newcommand{\key}[1]{\textbf{#1}}
 \newcommand{\flow}{\ensuremath{\rightarrow}}
 
 \begin{document}
-\fontsize{9.5}{11}\selectfont
+\fontsize{8.7}{9.8}\selectfont
 \raggedright
 
 \begin{multicols}{2}
@@ -235,9 +235,9 @@ signs and the result sign differs from \(A\)'s sign.
 \(2^n-1-K\). There is no dedicated sign bit. Ordinary binary
 addition of two stored patterns does \emph{not} directly give the
 biased encoding of their sum: decode, operate, then re-encode
-(or correct the bias). IEEE 754 uses a biased exponent field.
+(or correct the bias). IEEE 754 uses a \textbf{bias-127} exponent field for 32 bits.
 
-\topic{Fixed point, floating point, rounding}
+\topic{Fixed-point range and spacing}
 
 With \(f\) fractional bits, a signed fixed-point value is its
 stored integer multiplied by \(2^{-f}\). Spacing is \(2^{-f}\).
@@ -247,29 +247,141 @@ For an \(n\)-bit two's-complement pattern:
  \left[-2^{n-1-f},\;(2^{n-1}-1)2^{-f}\right].
 \]
 Example: \(n=8,f=2\) gives range \([-32,31.75]\) in steps of
-\(0.25\). More fractional bits improve resolution but reduce range
-at fixed total width. \key{Note:} the spacing is \(2^{-f}\), not
-\(2^f\).
+\(0.25\). For an \emph{unsigned} fixed-point pattern the range is
+\([0,(2^n-1)2^{-f}]\). If a sign-magnitude or one's-complement
+integer is scaled by \(2^{-f}\), its range is
+\([-(2^{n-1}-1)2^{-f},(2^{n-1}-1)2^{-f}]\).
+All these fixed-point formats have spacing \(2^{-f}\) between
+successive nonzero values. More fractional bits improve resolution
+but reduce range at fixed total width. \key{Note:} the spacing is
+\(2^{-f}\), not \(2^f\).
 
-IEEE 754 normal binary values have the form
+\topic{IEEE 754 single precision (binary32)}
+
+A 32-bit floating-point pattern has three fields:
 \[
- (-1)^s(1.F)_2\,2^{E-\mathrm{bias}}.
+\underbrace{s}_{1\text{ sign bit}}\ \big|\ 
+\underbrace{E}_{8\text{ exponent bits}}\ \big|\ 
+\underbrace{F}_{23\text{ fraction bits}}.
 \]
-The leading 1 is implicit for normal values. Single precision:
-1 sign bit, 8 exponent bits (bias 127), 23 fraction bits.
-Double precision: 1 sign, 11 exponent (bias 1023), 52 fraction.
+\(s=0\) is positive and \(s=1\) is negative. Interpret \(E\)
+and \(F\) as unsigned integers. The exponent has bias 127; the
+fraction is \(f=F/2^{23}\). Classify the pattern by its \emph{stored}
+exponent before applying the normal-number formula.
 
-Exponent all zeros: zero if fraction is zero; otherwise subnormal.
-Exponent all ones: infinity if fraction is zero; otherwise NaN.
-The sign bit distinguishes positive and negative zero/infinity.
-A wider exponent increases range; more fraction bits improve
-precision.
+\key{Normal finite numbers (\(1\le E\le254\)):}
+\[
+  x=(-1)^s(1+F/2^{23})\,2^{E-127}
+   =(-1)^s(1.f)_2\,2^{E-127}.
+\]
+The leading 1 is implicit, so 23 stored fraction bits give
+24 significant binary digits. The actual exponent ranges from
+\(-126\) to \(+127\). To encode a nonzero normal number, write it
+as \(\pm1.b_1b_2\ldots{}_2\times2^e\), store \(E=e+127\),
+and store the bits after the leading 1 in \(F\), rounding if needed.
+Example: \(6.5_{10}=110.1_2=1.101_2\,2^2\);
+\(s=0\), \(E=129=10000001_2\), \(F=101\) followed by 20 zeros.
+Its 32-bit hex pattern is \texttt{0x40D00000}.
 
-\key{Guard bit} = first discarded bit; \key{round bit} = second;
-\key{sticky bit} = OR of all remaining bits. Rounding modes:
-nearest with ties to even (default), toward zero, toward
-\(+\infty\), and toward \(-\infty\). Every operation may round,
-so floating-point addition need not be associative.
+\topic{binary32 special patterns}
+
+\begin{itemize}
+\item \key{Signed zero:} \(E=0,\ F=0\). \(s=0\) gives \(+0\)
+(\texttt{0x00000000}); \(s=1\) gives \(-0\)
+(\texttt{0x80000000}). Both compare equal numerically, although
+their bit patterns and behavior in some operations differ.
+\item \key{Subnormal:} \(E=0,\ F\ne0\). There is \emph{no}
+implicit leading 1. The effective exponent is \(-126\):
+\[
+ x=(-1)^s(F/2^{23})\,2^{-126}
+   =(-1)^sF\,2^{-149}.
+\]
+Subnormals fill the gap between zero and the smallest normal
+number. Their spacing is constant at \(2^{-149}\).
+\item \key{Infinity:} \(E=255,\ F=0\). Sign chooses \(+\infty\)
+(\texttt{0x7F800000}) or \(-\infty\)
+(\texttt{0xFF800000}). Overflow can produce infinity, depending
+on the rounding mode.
+\item \key{NaN (not a number):} \(E=255,\ F\ne0\). It denotes
+an undefined numerical result, such as \(0/0\) or
+\(\infty-\infty\). Fraction bits can carry a payload; its sign
+does not determine an ordinary positive/negative number.
+\texttt{0x7FC00000} is a common quiet-NaN pattern.
+\end{itemize}
+
+\key{Boundary values (positive):} smallest subnormal
+\(2^{-149}\); largest subnormal
+\((2^{23}-1)2^{-149}\); smallest normal \(2^{-126}\);
+largest finite \((2-2^{-23})2^{127}\approx3.4028235\times10^{38}\).
+A nonzero result too small for normal representation can become
+subnormal or round to zero. The gap between adjacent normal values
+with actual exponent \(e\) is \(2^{e-23}\), so absolute precision
+changes with scale. Around 1, the upward gap is \(2^{-23}\);
+binary32 provides roughly 7 decimal significant digits.
+
+\topic{IEEE 754 rounding and quick decoding}
+
+\key{Rounding modes:} nearest with ties to even (default),
+toward zero, toward \(+\infty\), and toward \(-\infty\).
+For a value cut after the last stored fraction bit, the
+\key{guard bit} is the first discarded bit, the \key{round bit}
+is the next, and the \key{sticky bit} is the OR of all later
+discarded bits. They help decide whether the stored fraction
+must increase. Rounding after each operation means
+\((a+b)+c\) can differ from \(a+(b+c)\).
+
+\key{Exam procedure:} split the 32 bits into \(s|E|F\);
+check \(E=0\) and \(E=255\) first. For \(1\le E\le254\),
+restore the hidden leading 1 and use exponent \(E-127\).
+For \(E=0,F\ne0\), use leading 0 and exponent \(-126\).
+For \(E=255\), distinguish infinity from NaN using \(F=0\)
+versus \(F\ne0\). A 64-bit double instead uses 1 sign,
+11 exponent bits (bias 1023), and 52 fraction bits.
+
+\topic{Range quick reference: all representations}
+
+For an \(n\)-bit \emph{integer}, the first value below is the most
+negative representable value and the second is the largest positive.
+Both \(+1\) and \(-1\) are the nonzero values closest to zero whenever
+the format includes both signs.
+
+{\small
+\begin{tabular}{@{}p{35mm}p{88mm}@{}}
+\textbf{Integer format} & \textbf{Representable numeric range}\\
+\hline
+Unsigned & \(0\) to \(2^n-1\)\\
+Sign magnitude & \(-(2^{n-1}-1)\) to \(2^{n-1}-1\); two zeros\\
+One's complement & \(-(2^{n-1}-1)\) to \(2^{n-1}-1\); two zeros\\
+Two's complement & \(-2^{n-1}\) to \(2^{n-1}-1\); one zero\\
+Excess-\(K\) & \(-K\) to \(2^n-1-K\); e.g. 4-bit excess-8 is
+\(-8\) to \(7\)\\
+\end{tabular}
+}
+
+For \emph{fixed point} with \(f\) fractional bits, multiply each
+integer endpoint above by \(2^{-f}\). Thus unsigned spans
+\(0\) to \((2^n-1)2^{-f}\); sign magnitude and one's complement span
+\(\pm(2^{n-1}-1)2^{-f}\); two's complement spans
+\(-2^{n-1-f}\) to \((2^{n-1}-1)2^{-f}\). The smallest nonzero
+magnitude is \(2^{-f}\) when the format can represent it. For
+excess-\(K\) fixed point, scale \([-K,2^n-1-K]\) by \(2^{-f}\).
+
+For \emph{IEEE 754 binary32}, the finite extremes are
+\(\pm M_{32}\), where
+\(M_{32}=(2-2^{-23})2^{127}\approx3.4028235\times10^{38}\).
+The least positive \emph{normal} is \(2^{-126}\); the least positive
+nonzero \emph{subnormal} is \(2^{-149}\). The negative value closest
+to zero is \(-2^{-149}\), while the most negative finite value is
+\(-M_{32}\). Infinity and NaN are special patterns, not finite
+range endpoints.
+
+For \emph{IEEE 754 binary64}, the corresponding values are
+\(M_{64}=(2-2^{-52})2^{1023}\approx1.7976931348623157\times10^{308}\),
+minimum positive normal \(2^{-1022}\), and minimum positive
+subnormal \(2^{-1074}\). Its finite extremes are \(\pm M_{64}\);
+the negative value closest to zero is \(-2^{-1074}\).
+Floating-point values are discrete and unevenly spaced, so these
+limits do not mean every real number between them is representable.
 
 \topic{ISA and MIPS design}
 
