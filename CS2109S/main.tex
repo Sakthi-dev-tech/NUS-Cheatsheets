@@ -1,0 +1,214 @@
+\documentclass[fontsize=9pt,landscape,a4paper]{scrartcl}
+\usepackage[margin=1cm]{geometry}
+\usepackage[compact]{titlesec}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,trees}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{xcolor}
+
+% A quiet, print-friendly hierarchy: dark text, one accent, pale rules.
+\definecolor{sheetink}{HTML}{172B3A}
+\definecolor{sheetaccent}{HTML}{146B82}
+\definecolor{sheetrule}{HTML}{C9D8DE}
+\definecolor{sheetwash}{HTML}{F2F7F8}
+\color{sheetink}
+
+\titleformat{\section}
+  {\sffamily\bfseries\color{sheetaccent}\fontsize{10}{10.8}\selectfont}
+  {}{0pt}{}[\vspace{-1pt}\color{sheetrule}\titlerule]
+\titleformat{\subsection}
+  {\sffamily\bfseries\color{sheetink}\fontsize{9}{9.8}\selectfont}
+  {}{0pt}{}
+\titleformat{\subsubsection}
+  {\sffamily\bfseries\color{sheetaccent}\fontsize{8}{8.8}\selectfont}
+  {}{0pt}{}
+\titlespacing*{\section}{0pt}{4pt}{1.5pt}
+\titlespacing*{\subsection}{0pt}{3pt}{1pt}
+\titlespacing*{\subsubsection}{0pt}{2pt}{0pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5pt}
+\setlength{\columnsep}{0.4cm}
+\setlength{\columnseprule}{0.2pt}
+\def\columnseprulecolor{\color{sheetrule}}
+\setlist{nosep,leftmargin=*,topsep=1pt,parsep=0pt}
+\setlist[itemize]{label=\textcolor{sheetaccent}{\textbullet}}
+\pagestyle{empty}
+
+% Use consistent labels and only occasional highlighted formulas or warnings.
+\newcommand{\key}[1]{{\sffamily\bfseries\color{sheetink}#1}}
+\newcommand{\cue}[1]{{\sffamily\bfseries\color{sheetaccent}#1}}
+\newcommand{\sheettitle}[1]{%
+  \noindent{\sffamily\bfseries\fontsize{11.5}{12.5}\selectfont\color{sheetink}#1}\par
+  \vspace{1pt}{\color{sheetaccent}\rule{\columnwidth}{0.8pt}}\vspace{2pt}%
+}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{sheetwash},
+  aboveskip=2pt,belowskip=2pt,
+  breaklines=true,showstringspaces=false,
+  frame=single,framerule=0.2pt,rulecolor=\color{sheetrule},
+  xleftmargin=2pt,xrightmargin=2pt
+}
+
+\newcommand{\fact}[2]{\par\noindent\key{#1}\enspace #2}
+\newcommand{\tip}[1]{\par\noindent\cue{Watch:}\enspace #1}
+\newcommand{\eqn}[1]{%
+  \par\begingroup\setlength{\fboxsep}{2pt}%
+  \noindent\colorbox{sheetwash}{\parbox{\dimexpr\columnwidth-2\fboxsep\relax}{\centering$\displaystyle #1$}}%
+  \par\endgroup
+}
+\newcount\sheetpagecount
+\AddToHook{shipout/after}{%
+  \global\advance\sheetpagecount by 1
+  \ifnum\sheetpagecount>2\PackageError{CS2109S}{Two-page limit exceeded}{Shorten the sheet or reduce spacing}\fi
+}
+
+\begin{document}
+\begin{multicols*}{4}
+\raggedcolumns
+\sheettitle{CS2109S CHEATSHEET}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 1.md; 300 Main Notes/AI Systems.md; AI Task Environment.md; AI Agent Structures.md
+\section*{Agents and environments}
+\fact{PEAS}{Performance measure; Environment; Actuators; Sensors.}
+\fact{Observability}{Full: complete relevant state. Partial: hidden state.}
+\fact{Dynamics}{Static: unchanged while deciding. Dynamic: changes. Semi-dynamic: state fixed, score changes with time.}
+\fact{Other axes}{Single/multi-agent; deterministic/stochastic; episodic/sequential; discrete/continuous; known/unknown rules.}
+\fact{Agent types}{Reflex: condition--action rule. Goal-based: seek goal. Utility-based: rank outcomes. Learning: improve from experience.}
+\tip{Known rules do not imply fully observable state. In an unknown environment, balance exploration and exploitation.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 1.md; 300 Main Notes/Agent Search Problem.md; Agent Search Algorithms.md
+\section*{Search problem}
+\fact{Specify}{States $S$; start $s_0$; goal test $G(s)$; actions $A(s)$; transition $T(s,a)$; step cost $c(s,a,s')$.}
+\fact{Node}{State + parent/path + cumulative cost $g(n)$. Branching factor $b$: successors per expansion.}
+\fact{Complete}{Finds a solution whenever one exists.}
+\fact{Optimal}{Returns a minimum-cost solution. Equal step costs make minimum depth equivalent.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 2.md; 300 Main Notes/AI Search Algorithms.md; Iterative Deepening Search (IDS).md; Uniform Cost Algorithm (UCS).md; Greedy Best-first Search.md; A* Search.md
+\section*{Systematic search}
+\fact{BFS}{FIFO; smallest depth. Complete for finite $b$; optimal for equal costs. Exponential time/space.}
+\fact{IDS}{Depth-limited DFS at $0,1,2,\ldots$. $O(b^d)$ time, $O(bd)$ DFS space. Complete for finite $b$ and solution depth; optimal for equal positive costs.}
+\fact{UCS}{Priority by $g(n)$. Complete if $b<\infty$, every cost $\ge\epsilon>0$, and $C^*<\infty$; optimal with nonnegative costs.}
+\fact{Greedy}{Priority by $h(n)$; ignores cost already paid; generally not optimal.}
+\fact{A*}{Priority by $g(n)+h(n)$; UCS when $h=0$; usually exponential space.}
+\eqn{f_{\mathrm{BFS}}=d,\quad f_{\mathrm{UCS}}=g}
+\eqn{f_{\mathrm{greedy}}=h,\quad f_{\mathrm{A^*}}=g+h}
+\tip{For cost-based search, accept a goal when removed from the priority queue, not when first generated.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 2.md; 300 Main Notes/AI Systematic Search Algorithm Heuristics.md; A* Search.md
+\section*{A* heuristics}
+\eqn{0\le h(n)\le h^*(n)\quad\text{(admissible)}}
+\eqn{h(n)\le c(n,a,n')+h(n')\quad\text{(consistent)}}
+\fact{$h^*(n)$}{True cheapest remaining path cost. Require $h(\text{goal})=0$.}
+\fact{Guarantees}{Admissible $h$: optimal A* tree search. Consistent $h$: optimal graph search with a closed set; consistency implies admissibility.}
+\fact{Dominance}{Among admissible heuristics, $h_1(n)\ge h_2(n)$ is more informed.}
+\fact{Construction}{Solve a relaxed problem; precompute a pattern database; learn an estimate. The relaxed optimum is a lower bound.}
+\tip{With an inconsistent heuristic, graph search may need to reopen improved nodes.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 3.md; 300 Main Notes/Agent Search Algorithms.md; Hill Climbing Algorithm.md
+\section*{Local search}
+\fact{Idea}{Keep a current state, generate neighbours, and return a state rather than a path. Low memory; usually incomplete/suboptimal.}
+\eqn{s'=\arg\max_{u\in N(s)}\mathrm{eval}(u)}
+\fact{Hill climbing}{If $\mathrm{eval}(s')\le\mathrm{eval}(s)$, stop; otherwise set $s\leftarrow s'$.}
+\fact{Failure modes}{Local maximum: better than neighbours, not global. Plateau/shoulder: no immediate improvement.}
+\fact{Escapes}{Random restarts; simulated annealing may sometimes accept a worse move.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 3.md; 300 Main Notes/Adverserial Search Algorithm.md
+\section*{Minimax and alpha--beta}
+\fact{Setting}{Finite two-player zero-sum perfect-information game; utility from MAX's viewpoint.}
+\eqn{V(s)=
+\begin{cases}
+U(s),&s\text{ terminal}\\
+\max_{s'}V(s'),&s\text{ MAX}\\
+\min_{s'}V(s'),&s\text{ MIN}
+\end{cases}}
+\fact{Cost}{Minimax time $O(b^m)$, depth-first space $O(bm)$; optimal against optimal play.}
+\fact{Alpha--beta}{$\alpha$: MAX's best lower bound; $\beta$: MIN's best upper bound. Prune when $\alpha\ge\beta$. Same root move/value.}
+\fact{Ordering}{Good moves first increase pruning; ideal time $O(b^{m/2})$.}
+\fact{Cutoff}{Stop at depth limit; score nonterminal states with a cheap evaluation function.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 4.md; 300 Main Notes/Machine Learning.md
+\section*{Learning setup and metrics}
+\fact{Supervised}{Labelled $(x^{(i)},y^{(i)})$ pairs, assumed IID. Regression: real target. Classification: discrete class.}
+\fact{Unsupervised}{Find structure in unlabelled inputs.}
+\eqn{P=\frac{TP}{TP+FP},\quad R=\frac{TP}{TP+FN}}
+\eqn{F_1=\frac{2PR}{P+R}}
+\fact{Interpret}{Precision: fraction of predicted positives correct. Recall: fraction of actual positives found.}
+\fact{Data split}{Train fits parameters; validation selects settings; untouched test estimates generalisation.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 4.md; 300 Main Notes/Decision Trees.md; Entropy for AI Algorithms.md
+\section*{Entropy and decision trees}
+\eqn{H(Y)=-\sum_y p(y)\log_2p(y),\quad 0\log 0=0}
+\eqn{H(Y\mid X)=\sum_xp(x)H(Y\mid X=x)}
+\eqn{IG(Y;X)=H(Y)-H(Y\mid X)}
+\fact{Binary entropy}{For positive fraction $q$: $H=-q\log_2q-(1-q)\log_2(1-q)$. Pure: $0$; balanced: $1$ bit.}
+\fact{Tree}{Internal node tests an attribute; branch is an outcome; leaf predicts a label. Split on highest immediate $IG$.}
+\fact{DTL bases}{No rows $\to$ parent majority; one label $\to$ that label; no attributes $\to$ current majority. Else split and recurse.}
+\fact{Overfitting}{A tree can fit finite consistent categorical examples perfectly, including noise. Limit depth or require a minimum leaf size.}
+\fact{Real data}{Bin continuous values; choose a rule for missing values.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 5.md; 300 Main Notes/AI Linear Regression.md; AI Data Representation.md; AI Loss Functions.md
+\section*{Linear regression}
+\fact{Intercept}{Set $x_0=1$; $X\in\mathbb R^{n\times(d+1)}$, $w\in\mathbb R^{d+1}$, $Y\in\mathbb R^n$.}
+\eqn{h_w(x)=w^Tx=\sum_{j=0}^{d}w_jx_j}
+\eqn{J(w)=\frac1{2n}\|Xw-Y\|_2^2}
+\eqn{\nabla J(w)=\frac1nX^T(Xw-Y)}
+\eqn{X^TXw=X^TY}
+\eqn{w=(X^TX)^{-1}X^TY}
+\fact{Normal equation}{Inverse form needs full column rank; inversion costs roughly $O(d^3)$. If singular, remove redundant features or use $X^+Y$.}
+\fact{MAE}{$\frac1n\sum_i|\hat y^{(i)}-y^{(i)}|$.}
+\tip{The $1/2$ in $J$ only simplifies derivatives. Compute every gradient component from the same old $w$.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 5.md; 300 Main Notes/Convexity.md; AI Learning Algorithms.md; AI Gradient Descent Variants.md
+\section*{Gradient descent and convexity}
+\eqn{w\leftarrow w-\eta\nabla J(w)}
+\fact{Rate}{Large $\eta$: overshoot/diverge. Small $\eta$: slow.}
+\fact{Batch size}{Full batch: $n$ examples/update. Mini-batch: $b$. SGD: $1$. Updates/epoch: $\lceil n/b\rceil$.}
+\fact{Tradeoff}{Smaller batches give cheaper, noisier updates; noisy steps do not guarantee a global minimum.}
+\eqn{J(tu+(1-t)v)\le tJ(u)+(1-t)J(v)}
+\fact{Convexity}{For $0\le t\le1$. Every local minimum is global. Strict convexity gives at most one global minimum.}
+\fact{Linear MSE}{Convex in $w$; strictly convex when $X$ has independent columns. Suitable GD rate converges to a global minimum.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 5.md; 300 Main Notes/AI Feature Scaling.md; Feature Transformation.md
+\section*{Scaling and feature maps}
+\eqn{x'_{\min\max}=\frac{x-\min x}{\max x-\min x}}
+\eqn{x'_{\mathrm{std}}=\frac{x-\mu}{\sigma}}
+\fact{Why scale?}{Uneven scales cause zig-zag GD updates. Fit scaling on training data; reuse on validation/test. Handle constant features separately.}
+\fact{Feature map}{$\phi:\mathbb R^d\to\mathbb R^M$, e.g. $\phi(x)=(1,x,x^2)$.}
+\fact{Effect}{$w^T\phi(x)$ may be nonlinear in raw $x$ but remains linear in $w$; a fixed map preserves convexity of linear-MSE/logistic-BCE in $w$.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 6.md; 300 Main Notes/AI Logistic Models or Regression.md; AI Decision Boundary.md; Entropy for AI Algorithms.md
+\section*{Logistic classification}
+\eqn{\sigma(z)=\frac1{1+e^{-z}}}
+\eqn{\sigma'(z)=\sigma(z)(1-\sigma(z))}
+\fact{Model}{$p=h_w(x)=\sigma(w^Tx)$ estimates class-1 probability. At threshold $0.5$, boundary is $w^Tx=0$.}
+\eqn{\ell_{\mathrm{BCE}}(y,p)=-y\log p-(1-y)\log(1-p)}
+\eqn{J(w)=\frac1n\sum_i\ell_{\mathrm{BCE}}
+(y^{(i)},\sigma(w^Tx^{(i)}))}
+\fact{Gradient}{$\nabla J(w)=X^T(p-Y)/n$. Logistic + BCE is convex in $w$ for fixed features; sigmoid alone is not globally convex.}
+\fact{Threshold}{$p\ge\tau$ predicts class 1; boundary $w^Tx=\log(\tau/(1-\tau))$.}
+\tip{For $y=1$, BCE is $-\log p$; for $y=0$, it is $-\log(1-p)$. A confident wrong prediction is costly.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 6.md; 300 Main Notes/AI Multi-Class Classification.md; AI Multi-Label Classification.md
+\section*{Multiclass vs multilabel}
+\fact{Multiclass}{Exactly one of $K$ classes. One-vs-one: $\binom K2$ classifiers + votes. One-vs-rest: $K$ classifiers + highest score.}
+\fact{Multilabel}{Any subset; $y\in\{0,1\}^K$. Binary relevance: one independent classifier/label; ignores dependencies.}
+\fact{Powerset}{Treat each observed label set as one class; retains combinations but may create many sparse classes.}
+
+% Sources: 100 Source Notes/Lectures/CS2109S Lecture 6.md; 300 Main Notes/AI Model Complexity.md; AI Model Fitting.md; AI Model Variance.md; AI Model Hyperparameters.md
+\section*{Generalisation and tuning}
+\fact{Underfit}{Too little capacity $\to$ high bias.}
+\fact{Overfit}{Good training fit, poor unseen-data fit; often high variance across training samples.}
+\fact{Parameters}{Learned weights. \key{Hyperparameters:} rate, batch size, feature map, tree depth.}
+\fact{Tune}{Grid, random, or local search on validation data; use held-out test only for final assessment.}
+\fact{Improve}{Relevant low-noise data, suitable model capacity, pruning/regularisation.}
+
+\end{multicols*}
+\end{document}
