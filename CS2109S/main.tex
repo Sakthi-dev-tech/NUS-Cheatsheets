@@ -58,7 +58,7 @@
 }
 
 \newcommand{\fact}[2]{\par\noindent\key{#1}\enspace #2}
-\newcommand{\tip}[1]{\par\noindent\cue{Watch:}\enspace #1}
+\newcommand{\tip}[1]{\par\noindent\cue{Note:}\enspace #1}
 \newcommand{\eqn}[1]{%
   \par\begingroup\setlength{\fboxsep}{2pt}%
   \noindent\colorbox{sheetwash}{\parbox{\dimexpr\columnwidth-2\fboxsep\relax}{\centering$\displaystyle #1$}}%
@@ -95,7 +95,7 @@
 \section*{Systematic search}
 \fact{BFS}{FIFO; smallest depth. Complete for finite $b$; optimal for equal costs. Exponential time/space.}
 \fact{IDS}{Depth-limited DFS at $0,1,2,\ldots$. $O(b^d)$ time, $O(bd)$ DFS space. Complete for finite $b$ and solution depth; optimal for equal positive costs.}
-\fact{UCS}{Priority by $g(n)$. Complete if $b<\infty$, every cost $\ge\epsilon>0$, and $C^*<\infty$; optimal with nonnegative costs.}
+\fact{UCS}{Priority by $g(n)$. Complete if $b<\infty$, every cost $\ge\epsilon>0$, and $C^*<\infty$; optimal with nonnegative costs. Same as A*, but heuristic is set to 0}
 \fact{Greedy}{Priority by $h(n)$; ignores cost already paid; generally not optimal.}
 \fact{A*}{Priority by $g(n)+h(n)$; UCS when $h=0$; usually exponential space.}
 \eqn{f_{\mathrm{BFS}}=d,\quad f_{\mathrm{UCS}}=g}
@@ -108,7 +108,7 @@
 \eqn{h(n)\le c(n,a,n')+h(n')\quad\text{(consistent)}}
 \fact{$h^*(n)$}{True cheapest remaining path cost. Require $h(\text{goal})=0$.}
 \fact{Guarantees}{Admissible $h$: optimal A* tree search. Consistent $h$: optimal graph search with a closed set; consistency implies admissibility.}
-\fact{Dominance}{Among admissible heuristics, $h_1(n)\ge h_2(n)$ is more informed.}
+    \fact{Dominance}{Among admissible heuristics, if $h_1(n)\ge h_2(n)$, $h_1(n)$ is more informed.}
 \fact{Construction}{Solve a relaxed problem; precompute a pattern database; learn an estimate. The relaxed optimum is a lower bound.}
 \tip{With an inconsistent heuristic, graph search may need to reopen improved nodes.}
 
@@ -116,7 +116,7 @@
 \section*{Local search}
 \fact{Idea}{Keep a current state, generate neighbours, and return a state rather than a path. Low memory; usually incomplete/suboptimal.}
 \eqn{s'=\arg\max_{u\in N(s)}\mathrm{eval}(u)}
-\fact{Hill climbing}{If $\mathrm{eval}(s')\le\mathrm{eval}(s)$, stop; otherwise set $s\leftarrow s'$.}
+\fact{Hill climbing}{If $\mathrm{eval}(s')\le\mathrm{eval}(s)$, stop; otherwise set $s\rightarrow s'$.}
 \fact{Failure modes}{Local maximum: better than neighbours, not global. Plateau/shoulder: no immediate improvement.}
 \fact{Escapes}{Random restarts; simulated annealing may sometimes accept a worse move.}
 
@@ -132,7 +132,7 @@ U(s),&s\text{ terminal}\\
 \fact{Cost}{Minimax time $O(b^m)$, depth-first space $O(bm)$; optimal against optimal play.}
 \fact{Alpha--beta}{$\alpha$: MAX's best lower bound; $\beta$: MIN's best upper bound. Prune when $\alpha\ge\beta$. Same root move/value.}
 \fact{Ordering}{Good moves first increase pruning; ideal time $O(b^{m/2})$.}
-\fact{Cutoff}{Stop at depth limit; score nonterminal states with a cheap evaluation function.}
+\fact{Cutoff}{Stop at depth limit; score nonterminal states with a cheap evaluation function. \textbf{EVALUATION IS NOT EQUAL TO FINAL SCORE/TERMINAL NODE}}
 
 % Sources: 100 Source Notes/Lectures/CS2109S Lecture 4.md; 300 Main Notes/Machine Learning.md
 \section*{Learning setup and metrics}
@@ -146,6 +146,7 @@ U(s),&s\text{ terminal}\\
 % Sources: 100 Source Notes/Lectures/CS2109S Lecture 4.md; 300 Main Notes/Decision Trees.md; Entropy for AI Algorithms.md
 \section*{Entropy and decision trees}
 \eqn{H(Y)=-\sum_y p(y)\log_2p(y),\quad 0\log 0=0}
+\tip{The log base has to be 2}
 \eqn{H(Y\mid X)=\sum_xp(x)H(Y\mid X=x)}
 \eqn{IG(Y;X)=H(Y)-H(Y\mid X)}
 \fact{Binary entropy}{For positive fraction $q$: $H=-q\log_2q-(1-q)\log_2(1-q)$. Pure: $0$; balanced: $1$ bit.}
@@ -159,22 +160,22 @@ U(s),&s\text{ terminal}\\
 \fact{Intercept}{Set $x_0=1$; $X\in\mathbb R^{n\times(d+1)}$, $w\in\mathbb R^{d+1}$, $Y\in\mathbb R^n$.}
 \eqn{h_w(x)=w^Tx=\sum_{j=0}^{d}w_jx_j}
 \eqn{J(w)=\frac1{2n}\|Xw-Y\|_2^2}
-\eqn{\nabla J(w)=\frac1nX^T(Xw-Y)}
-\eqn{X^TXw=X^TY}
 \eqn{w=(X^TX)^{-1}X^TY}
-\fact{Normal equation}{Inverse form needs full column rank; inversion costs roughly $O(d^3)$. If singular, remove redundant features or use $X^+Y$.}
+\fact{Normal equation}{Inverse form needs full column rank; \textbf{inversion costs roughly} $O(d^3)$. If singular, remove redundant features}
 \fact{MAE}{$\frac1n\sum_i|\hat y^{(i)}-y^{(i)}|$.}
 \tip{The $1/2$ in $J$ only simplifies derivatives. Compute every gradient component from the same old $w$.}
 
 % Sources: 100 Source Notes/Lectures/CS2109S Lecture 5.md; 300 Main Notes/Convexity.md; AI Learning Algorithms.md; AI Gradient Descent Variants.md
 \section*{Gradient descent and convexity}
-\eqn{w\leftarrow w-\eta\nabla J(w)}
+\eqn{w_i\leftarrow w_i-\eta\frac{\nabla J(w_i)}{\nabla w_i}}
+\tip{$J$ here refers to the loss function $\rightarrow$ taking the partial derivative of it relative to $w_i$}
 \fact{Rate}{Large $\eta$: overshoot/diverge. Small $\eta$: slow.}
 \fact{Batch size}{Full batch: $n$ examples/update. Mini-batch: $b$. SGD: $1$. Updates/epoch: $\lceil n/b\rceil$.}
 \fact{Tradeoff}{Smaller batches give cheaper, noisier updates; noisy steps do not guarantee a global minimum.}
 \eqn{J(tu+(1-t)v)\le tJ(u)+(1-t)J(v)}
-\fact{Convexity}{For $0\le t\le1$. Every local minimum is global. Strict convexity gives at most one global minimum.}
-\fact{Linear MSE}{Convex in $w$; strictly convex when $X$ has independent columns. Suitable GD rate converges to a global minimum.}
+\fact{Convexity}{For $0\le t\le1$. If $J$ is twice differentiable on a convex domain, it is convex iff $\nabla^2J(w)\succeq0$ everywhere. Every local minimum is global.}
+\fact{Strict convexity}{The inequality is strict for $u\ne v$ and $0<t<1$; $\nabla^2J(w)\succ0$ everywhere is sufficient, but not necessary. A minimiser, if it exists, is unique.}
+\fact{Linear MSE}{Here $\nabla^2J=X^TX/n\succeq0$; strict convexity holds iff $X$ has full column rank. Penalising every weight with $\lambda\|w\|_2^2$ ($\lambda>0$) also makes it strict.}
 
 % Sources: 100 Source Notes/Lectures/CS2109S Lecture 5.md; 300 Main Notes/AI Feature Scaling.md; Feature Transformation.md
 \section*{Scaling and feature maps}
