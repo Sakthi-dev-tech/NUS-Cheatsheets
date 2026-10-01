@@ -1,0 +1,142 @@
+\documentclass[10pt,a4paper,landscape]{article}
+\usepackage[margin=6mm]{geometry}
+\usepackage{multicol}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\definecolor{sectionblue}{HTML}{174A74}
+\definecolor{cueorange}{HTML}{9A4D0B}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7pt}
+\setlength{\columnsep}{4mm}
+\setlength{\columnseprule}{0.15pt}
+\setlist[itemize]{leftmargin=*,nosep,topsep=1pt}
+\titlespacing*{\section}{0pt}{3pt}{1pt}
+\titlespacing*{\subsection}{0pt}{2pt}{0.5pt}
+\titleformat{\section}{\color{sectionblue}\bfseries\normalsize}{}{0pt}{}
+\titleformat{\subsection}{\color{sectionblue}\bfseries\small}{}{0pt}{}
+\newcommand{\CheatNote}[2]{\par\noindent\textcolor{cueorange}{\textbf{#1:}}\;#2\par}
+\newenvironment{QuickPointers}[1][Quick pointers]{\subsection*{#1}\begingroup\setlength{\parskip}{0pt}}{\endgroup}
+\newcommand{\Pointer}[2]{\par\noindent\textbf{#1:}\;#2\par}
+\newcommand{\Use}[1]{\textcolor{cueorange}{\textbf{Use:}} #1\par}
+\begin{document}
+\fontsize{8}{9}\selectfont
+\begin{center}{\large\color{sectionblue}\bfseries ST2334: Probability and Distributions}\end{center}
+\vspace{-3.5mm}
+\begin{multicols}{3}
+
+% Sources: pasted ST2334 Probability and Statistics Lean Lecture Notes, Section 1;
+% 100 Source Notes/Lectures/ST2334 Week 1 Video.md;
+% 300 Main Notes/Mutual Exclusivity.md; 300 Main Notes/Probability.md.
+\section*{1. Events and counting}
+\(S\): possible outcomes; an event \(A\subseteq S\); \(A^c\): complement; \(A\cap B\): both; \(A\cup B\): either.
+\[ (A\cup B)^c=A^c\cap B^c,\qquad (A\cap B)^c=A^c\cup B^c. \]
+\(P(S)=1,\ P(\varnothing)=0,\ P(A^c)=1-P(A)\). Relative frequency \(n_A/n\) approaches \(P(A)\) as trials grow.
+\CheatNote{Counting}{For \(r\) distinct items selected from \(n\): order matters \(\Rightarrow {}_nP_r=n!/(n-r)!\); order does not matter \(\Rightarrow {n\choose r}=n!/[r!(n-r)!]\).}
+\CheatNote{Counting reminder}{These formulas choose without repetition; \({}_nP_r=r!{n\choose r}\).}
+\(P(A\cup B)=P(A)+P(B)-P(A\cap B)\); if disjoint, \(P(A\cap B)=0\). Equally likely outcomes: \(P(A)=|A|/|S|\).
+\CheatNote{Birthday bound}{For \(k\) independent items in \(m\) equally likely slots, \(P(\mathrm{collision})=1-\prod_{i=0}^{k-1}(1-i/m)\); its 50\% point is near \(1.18\sqrt m\).}
+\CheatNote{Union bound}{\(P(\bigcup_i A_i)\le\sum_iP(A_i)\), without independence. For \(n\) independent assignments to \(m\) slots, collision probability \(\le {n\choose2}/m\).}
+
+% Additional source: user-provided image of ST2334 reminders.\n% Sources: 100 Source Notes/Lectures/ST2334 Week 2 Video.md;
+% 300 Main Notes/Independent Events.md; 300 Main Notes/Mutual Exclusivity.md.
+% Also: pasted ST2334 Probability and Statistics Lean Lecture Notes, Section 1.
+\section*{2. Conditional probability}
+\Use{Update a probability after learning \(A\); require \(P(A)>0\). For an ``at least one'' event, try \(1-P(\mathrm{none})\).}
+\(P(B\mid A)=P(A\cap B)/P(A)\), hence
+\[P(A\cap B)=P(A)P(B\mid A)=P(B)P(A\mid B).\]
+Chain: \(P(A\cap B\cap C)=P(A)P(B\mid A)P(C\mid A\cap B)\).
+\CheatNote{Independence}{\(A\perp B\iff P(A\cap B)=P(A)P(B)\). Then \(P(B\mid A)=P(B)\) when \(P(A)>0\). Positive-probability disjoint events are dependent. Complements of independent events remain independent.}
+\Use{Split a target event \(B\) into exhaustive, disjoint cases \(A_i\).}
+\[P(B)=\sum_i P(A_i)P(B\mid A_i).\]
+Two cases: \(P(B)=P(A)P(B\mid A)+P(A^c)P(B\mid A^c)\).
+\Use{Reverse evidence-to-cause probabilities with Bayes' rule.}
+\[P(A_k\mid B)=\frac{P(A_k)P(B\mid A_k)}{\sum_iP(A_i)P(B\mid A_i)}.\]
+\CheatNote{Two-case Bayes}{For cases \(A,A^c\), use \(P(A\mid B)=P(A)P(B\mid A)/P(B)\) with the two-case \(P(B)\) above.}
+\CheatNote{Conditional product}{Always start with \(P(A\cap B\cap C)=P(A)P(B\mid A)P(C\mid A\cap B)\). If \(B\perp C\mid A\), replace the last term by \(P(C\mid A)\); count \(P(A)\) only once.}
+\CheatNote{Simpson's paradox}{An aggregate comparison can reverse every subgroup comparison when subgroup weights differ; inspect conditional rates.}
+
+% Sources: 100 Source Notes/Lectures/ST2334 Week 3 Video.md;
+% 300 Main Notes/Probability Mass Function (PMF).md;
+% 300 Main Notes/Probability Density Function (PDF).md;
+% 300 Main Notes/Cumulative Distribution Function (CDF).md;
+% 300 Main Notes/Expected Values.md.
+% Also: pasted ST2334 Probability and Statistics Lean Lecture Notes, Section 2.
+% Additional source: user-provided image of ST2334 reminders.
+\section*{3. One random variable}
+\(X:S\to\mathbb R\) assigns a number to each outcome; \(R_X\) is its support/range. Discrete: countable values. Continuous: density over intervals.
+\CheatNote{PMF, discrete}{\(f_X(x)=P(X=x)\ge0\), \(\sum_{x\in R_X}f_X(x)=1\). Add masses to find \(P(X\in B)=\sum_{x\in B}f_X(x)\).}
+\CheatNote{PDF, continuous}{\(f_X(x)\ge0\), \(\int f_X(x)\,dx=1\). Integrate area: \(P(a\le X\le b)=\int_a^b f_X(x)\,dx\). Single points have probability zero; density height is not probability and may exceed 1.}
+\CheatNote{CDF, either type}{\(F_X(x)=P(X\le x)\). Discrete: jump at \(x\) is \(P(X=x)\), and \(P(a\le X\le b)=F_X(b)-F_X(a^-)\). Continuous: \(F_X(x)=\int_{-\infty}^x f_X(t)dt\), \(f_X=F_X'\), and interval probability is \(F_X(b)-F_X(a)\). Invert \(F_X\) for a quantile.}
+\CheatNote{CDF check}{\(F_X\) is right-continuous, never decreases, and tends to 0/1 at the extremes; inversion turns a percentile into a value.}
+\Use{Find an average or a transformed average without first finding the distribution of \(g(X)\).}
+\[E[g(X)]=\sum_x g(x)f_X(x)\quad\text{or}\quad\int g(x)f_X(x)dx.\]
+\(\mu_X=E(X)\), \(E(aX+bY+c)=aE(X)+bE(Y)+c\), even without independence.
+\[\operatorname{Var}(X)=E[(X-\mu_X)^2]=E(X^2)-\mu_X^2.\]
+\(\operatorname{Var}(aX+b)=a^2\operatorname{Var}(X)\). \(\sigma_X=\sqrt{V(X)}\) has the units of \(X\); variance has squared units.
+\CheatNote{Tail-sum expectation}{For nonnegative integer \(X\), \(E(X)=\sum_{k\ge1}P(X\ge k)=\sum_{k\ge0}P(X>k)\). For nonnegative continuous \(T\), \(E(T)=\int_0^\infty P(T>t)\,dt\). Use when the tail is easier than the PMF/PDF.}
+\CheatNote{Inspection paradox}{A random arrival is more likely to fall in a long gap, so the expected wait can exceed what a naive average-gap calculation suggests.}
+
+% Sources: 100 Source Notes/Lectures/ST2334 Week 4 Video.md and its
+% Conditional Distribution, Regression Function, Covariance and Correlation
+% Coefficient attachments; 300 Main Notes/Expected Values.md.
+% Also: pasted ST2334 Probability and Statistics Lean Lecture Notes, Section 3.
+% Additional source: user-provided image of ST2334 reminders.
+\section*{4. Joint distributions}
+\(f_{X,Y}(x,y)\): joint mass/density on the allowed pairs. For a region \(D\), sum masses or integrate \(f_{X,Y}\) over \(D\) to get \(P((X,Y)\in D)\). To ignore \(Y\), marginalize:
+\[f_X(x)=\sum_y f_{X,Y}(x,y)\quad\text{or}\quad\int f_{X,Y}(x,y)\,dy.\]
+Swap \(X,Y\) to get \(f_Y(y)\). For a joint function \(g\), \(E[g(X,Y)]=\sum_{x,y}g(x,y)f_{X,Y}(x,y)\) or a double integral.
+\Use{Fix \(X=x\) and renormalize its slice; require \(f_X(x)>0\).}
+\[f_{Y\mid X}(y\mid x)=\frac{f_{X,Y}(x,y)}{f_X(x)},\qquad f_{X,Y}=f_X f_{Y\mid X}.\]
+Conditional mean (regression function): \(E(Y\mid X=x)=\sum_y y f_{Y\mid X}(y\mid x)\), or integrate in \(y\). It predicts \(Y\) from \(X=x\) under squared error.
+\CheatNote{Independent variables}{\(X\perp Y\iff f_{X,Y}(x,y)=f_X(x)f_Y(y)\). Quick test: support is a product with no forbidden pairs, and \(f_{X,Y}=C\,g(x)h(y)\); \(g,h\) need not be PMFs/PDFs. Then \(E[g_1(X)h_1(Y)]=E[g_1(X)]E[h_1(Y)]\).}
+\Use{Measure joint linear movement or the variance of a sum.}
+\[\operatorname{Cov}(X,Y)=E[(X-\mu_X)(Y-\mu_Y)]=E(XY)-E(X)E(Y),\]
+\[\operatorname{Var}(aX+bY)=a^2V(X)+b^2V(Y)+2ab\operatorname{Cov}(X,Y).\]
+\(\operatorname{Cov}(aX+b,cY+d)=ac\operatorname{Cov}(X,Y)\). Independence gives covariance zero, but zero covariance need not mean independence.\CheatNote{Independent difference}{If \(X\perp Y\), \(V(X+Y)=V(X-Y)=V(X)+V(Y)\); the minus sign does not subtract variance.}
+For many variables: \(V(\sum_iX_i)=\sum_iV(X_i)+2\sum_{i<j}\operatorname{Cov}(X_i,X_j)\).
+\(\rho_{X,Y}=\operatorname{Cov}(X,Y)/(\sigma_X\sigma_Y)\), where \(\sigma_X=\sqrt{V(X)}\); \(-1\le\rho\le1\). Correlation is unit-free and measures linear association.
+
+% Sources: 100 Source Notes/Lectures/ST2334 Week 5 Video.md;
+% 300 Main Notes/Bernoulli Trial.md; Bernoulli Process.md;
+% Binomial Distribution.md; Geometric Distribution.md;
+% Negative Binomial Distribution.md; Poisson Distribution.md.
+% Also: pasted ST2334 Probability and Statistics Lean Lecture Notes, Section 4.
+% Additional source: user-provided image of ST2334 reminders.
+\section*{5. Discrete families}
+Let \(p=P(\text{success})\), \(q=1-p=P(\text{failure})\); \(n\) is fixed trials; \(k\) is a target count; \(x\) is the realized value. Bernoulli process: identical, independent trials.
+\begin{QuickPointers}[Which count?]
+\Pointer{Uniform}{\(k\) equiprobable values \(x_i\): \(P(X=x_i)=1/k\), \(E(X)=\sum x_i/k\), \(V(X)=\sum x_i^2/k-[E(X)]^2\).}
+\Pointer{Bernoulli}{One success/failure trial: \(X\sim\mathrm{Bern}(p)\), \(P(X=x)=p^xq^{1-x}\), \(x=0,1\); \(E=p,\ V=pq\).}
+\Pointer{Binomial}{Successes in \(n\) trials: \(X\sim\mathrm{Bin}(n,p)\), \(P(X=x)={n\choose x}p^xq^{n-x}\), \(x=0,\ldots,n\); \(E=np,\ V=npq\).}
+\Pointer{Geometric}{Trials through first success (\(k=1\) in NB): \(P(X=x)=q^{x-1}p\), \(x\ge1\); \(E=1/p,\ V=q/p^2\).}
+\Pointer{Negative binomial}{Trials until \(k\)th success: \(P(X=x)={x-1\choose k-1}p^kq^{x-k}\), \(x\ge k\); \(E=k/p,\ V=kq/p^2\).}
+\Pointer{Poisson}{Count in a fixed window: \(P(X=x)=e^{-\lambda}\lambda^x/x!\), \(x\ge0\); \(E=V=\lambda\). For rate \(r\) per unit and window \(t\), \(\lambda=rt\); disjoint-window counts are independent in a Poisson process.}
+\end{QuickPointers}
+\CheatNote{Rare binomial approximation}{For large \(n\), small \(p\), fixed \(\lambda=np\): \(\mathrm{Bin}(n,p)\approx\mathrm{Pois}(\lambda)\).}
+\CheatNote{Benford}{For the leading digit \(D\in\{1,\ldots,9\}\) of some scale-spanning data, \(P(D=d)=\log_{10}(1+1/d)\); it is not a universal law for every dataset.}
+
+% Sources: 100 Source Notes/Lectures/ST2334 Week 6 Video.md;
+% 300 Main Notes/ST2334 Week 6 Video.md (near-duplicate);
+% 300 Main Notes/Normal Distribution (Bell Curve).md;
+% Central Limit Theorem.md; Binomial Distribution.md.
+% Also: pasted ST2334 Probability and Statistics Lean Lecture Notes, Section 4.
+% Additional source: user-provided image of ST2334 reminders.
+\section*{6. Continuous families}
+\begin{QuickPointers}[Choose by the question]
+\Pointer{Uniform \(U(a,b)\)}{Equal density over \([a,b]\): \(f(x)=1/(b-a)\); \(F(x)=(x-a)/(b-a)\) for \(a\le x\le b\); \(E=(a+b)/2\), \(V=(b-a)^2/12\). For \(U\sim U(0,1)\), \(P(U\le u)=u\), \(0\le u\le1\).}
+\Pointer{Exponential \(\mathrm{Exp}(\lambda)\)}{Wait for the next event in a Poisson process with rate \(\lambda>0\): \(f(x)=\lambda e^{-\lambda x}\), \(F(x)=1-e^{-\lambda x}\), \(P(X>x)=e^{-\lambda x}\) for \(x\ge0\); \(E=1/\lambda\), \(V=1/\lambda^2\).}
+\Pointer{Normal \(N(\mu,\sigma^2)\)}{Symmetric bell shape, often for sums of many small independent effects: \(f(x)=e^{-(x-\mu)^2/(2\sigma^2)}/(\sigma\sqrt{2\pi})\); \(E=\mu,\ V=\sigma^2\).}
+\end{QuickPointers}
+Exponential memorylessness: \(P(X>s+t\mid X>s)=P(X>t)\), \(s,t\ge0\). \(\lambda\) is events per unit time; its reciprocal is the mean wait.
+\CheatNote{Pareto reset}{For \(T\sim\mathrm{Pareto}(x_m,\alpha)\), \(P(T>t)=(x_m/t)^\alpha\), \(t\ge x_m\). It is not memoryless. If \(\alpha>1\) and restarting costs nothing, a fresh run has smaller expected wait than continuing after \(t>\alpha x_m\); otherwise compare costs.}\CheatNote{Rate reminder}{For exponential waits use the rate, not a count over an arbitrary window; if mean wait is \(\mu\), set \(\lambda=1/\mu\).}
+\CheatNote{Uniform annulus}{For a point uniform in area with radius \(2\le R\le5\), \(F_R(r)=(r^2-4)/21\) for \(2\le r\le5\). To sample it, take \(U\sim U(0,1)\) and set \(R=\sqrt{4+21U}\); start with \(P(R\le r)\).}
+\Use{Convert a normal value to standard normal \(Z\) and read \(\Phi(z)=P(Z\le z)\).}
+\[Z=(X-\mu)/\sigma\sim N(0,1),\qquad P(X\le x)=\Phi((x-\mu)/\sigma).\]
+Normal symmetry: \(\Phi(z)=1-\Phi(-z)\). Upper-tail cutoff \(z_\alpha\): \(P(Z\ge z_\alpha)=\alpha\); \(z_{0.05}\approx1.645\), \(z_{0.025}\approx1.960\), \(z_{0.01}\approx2.326\).
+\CheatNote{Binomial to normal}{If \(np>5\) and \(nq>5\) (guideline), approximate \(X\sim\mathrm{Bin}(n,p)\) by \(Y\sim N(np,npq)\). Apply a \(0.5\) continuity correction: \(P(X\le k)\approx P(Y<k+0.5)\), \(P(X=k)\approx P(k-0.5<Y<k+0.5)\), and \(P(X>k)\approx P(Y>k+0.5)\).}
+
+\end{multicols}
+\end{document}
