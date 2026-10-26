@@ -1,4 +1,4 @@
-// Converted from main.tex. Compile: typst compile main.typ main-typst.pdf
+// Converted from main.tex. Compile: typst compile main.typ typ.pdf
 // A4 landscape, two flowing columns; all content is editable Typst.
 #let navy = rgb("183A59")
 
@@ -24,22 +24,22 @@
   background: place(top + center, dy: 12mm,
     line(angle: 90deg, length: 188mm, stroke: 0.2pt)),
 )
-#set text(font: "New Computer Modern", size: 8.7pt)
-#set par(justify: false, leading: 3.7pt, spacing: 2.5pt, first-line-indent: 0pt)
+#set text(font: "New Computer Modern", size: 8.7pt, top-edge: "ascender", bottom-edge: "descender")
+#set par(justify: false, leading: 0.6pt, spacing: 2.5pt, first-line-indent: 0pt)
 #set columns(gutter: 7mm)
 #set list(indent: 0pt, body-indent: 0.9em, spacing: 3pt)
 #set enum(indent: 0pt, body-indent: 1.2em, spacing: 3pt)
 #set heading(numbering: none)
 #show heading.where(level: 1): it => block(
-  above: 5pt, below: 3pt, sticky: true,
+  above: 5pt, below: 6pt, sticky: true,
 )[
-  #stack(spacing: 1.2pt,
+  #stack(spacing: 8pt,
     text(font: "Nimbus Sans", weight: "bold", fill: navy, size: 8.7pt, it.body),
     line(length: 100%, stroke: (paint: navy, thickness: 0.35pt)),
   )
 ]
 #show raw: set text(font: "Nimbus Mono PS", size: 8.2pt)
-#show math.equation: set block(above: 3pt, below: 3pt)
+#show math.equation.where(block: true): set block(above: 3pt, below: 3pt)
 #set table(stroke: none, inset: (x: 2pt, y: 1.5pt))
 #show table: set text(size: 8pt)
 #show figure.where(kind: table): set block(above: 3pt, below: 3pt)

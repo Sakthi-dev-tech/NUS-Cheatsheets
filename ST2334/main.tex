@@ -9,7 +9,7 @@
 \definecolor{cueorange}{HTML}{9A4D0B}
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.7pt}
+\setlength{\parskip}{0pt}
 \setlength{\columnsep}{4mm}
 \setlength{\columnseprule}{0.15pt}
 \setlist[itemize]{leftmargin=*,nosep,topsep=1pt}
@@ -22,7 +22,11 @@
 \newcommand{\Pointer}[2]{\par\noindent\textbf{#1:}\;#2\par}
 \newcommand{\Use}[1]{\textcolor{cueorange}{\textbf{Use:}} #1\par}
 \begin{document}
-\fontsize{8}{9}\selectfont
+\fontsize{8}{8.9}\selectfont
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+\setlength{\abovedisplayshortskip}{2pt}
+\setlength{\belowdisplayshortskip}{2pt}
 \begin{center}{\large\color{sectionblue}\bfseries ST2334: Probability and Distributions}\end{center}
 \vspace{-3.5mm}
 \begin{multicols}{3}
@@ -37,6 +41,10 @@
 \CheatNote{Counting}{For \(r\) distinct items selected from \(n\): order matters \(\Rightarrow {}_nP_r=n!/(n-r)!\); order does not matter \(\Rightarrow {n\choose r}=n!/[r!(n-r)!]\).}
 \CheatNote{Counting reminder}{These formulas choose without repetition; \({}_nP_r=r!{n\choose r}\).}
 \(P(A\cup B)=P(A)+P(B)-P(A\cap B)\); if disjoint, \(P(A\cap B)=0\). Equally likely outcomes: \(P(A)=|A|/|S|\).
+\CheatNote{Inclusion--exclusion}{For overlapping events: add singles, subtract pairs, add triples, and alternate. No independence assumption is needed.}
+\CheatNote{Three events}{\(P(A\cup B\cup C)=P(A)+P(B)+P(C)-P(A\cap B)-P(A\cap C)-P(B\cap C)+P(A\cap B\cap C)\).}
+In general, \(P(\bigcup_{i=1}^n A_i)=\sum_{k=1}^n(-1)^{k+1}\sum_{1\le i_1<\cdots<i_k\le n}P(A_{i_1}\cap\cdots\cap A_{i_k})\).
+
 \CheatNote{Birthday bound}{For \(k\) independent items in \(m\) equally likely slots, \(P(\mathrm{collision})=1-\prod_{i=0}^{k-1}(1-i/m)\); its 50\% point is near \(1.18\sqrt m\).}
 \CheatNote{Union bound}{\(P(\bigcup_i A_i)\le\sum_iP(A_i)\), without independence. For \(n\) independent assignments to \(m\) slots, collision probability \(\le {n\choose2}/m\).}
 
