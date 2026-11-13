@@ -1,4 +1,4 @@
-// Converted from main.tex. Compile: typst compile main.typ typ.pdf
+// Converted from main.tex. Compile: typst compile main.typ main.pdf
 // A4 landscape, two flowing columns; all content is editable Typst.
 #let navy = rgb("183A59")
 #let lightgray = rgb("D3D3D3")
@@ -7,37 +7,37 @@
 #set page(
   paper: "a4",
   flipped: true,
-  margin: (x: 7.5mm, top: 12mm, bottom: 10mm),
+  margin: (x: 7.5mm, top: 8mm, bottom: 7mm),
   header-ascent: 3mm,
   footer: context align(right, text(font: "Noto Music", size: 9pt, counter(page).display())),
   footer-descent: 3mm,
   // Draw the column separator inside the text area on every page.
-  background: place(top + center, dy: 12mm, line(angle: 90deg, length: 188mm, stroke: 0.2pt)),
+  background: place(top + center, dy: 8mm, line(angle: 90deg, length: 195mm, stroke: 0.2pt)),
 )
-#set par(justify: false, leading: 0.6pt, spacing: 2.5pt, first-line-indent: 0pt)
+#set par(justify: false, leading: 0.4pt, spacing: 1.5pt, first-line-indent: 0pt)
 #set columns(gutter: 7mm)
-#set list(indent: 0pt, body-indent: 0.9em, spacing: 3pt)
-#set enum(indent: 0pt, body-indent: 1.2em, spacing: 3pt)
+#set list(indent: 0pt, body-indent: 0.9em, spacing: 1pt)
+#set enum(indent: 0pt, body-indent: 1.2em, spacing: 1pt)
 
 // Heading setting
 #set heading(numbering: none)
 #show heading.where(level: 1): it => block(
-  above: 5pt,
-  below: 6pt,
+  above: 4pt,
+  below: 3pt,
   sticky: true,
 )[
-  #stack(spacing: 4pt, text(font: "Nimbus Sans", weight: "extrabold", fill: navy, size: 8.7pt, it.body), line(
+  #stack(spacing: 2pt, text(font: "Nimbus Sans", weight: "extrabold", fill: navy, size: 8.7pt, it.body), line(
     length: 100%,
     stroke: (paint: navy, thickness: 0.35pt),
   ))
 ]
 
 // Text settings
-#set text(font: "New Computer Modern", size: 8.7pt, top-edge: "ascender", bottom-edge: "descender")
+#set text(font: "New Computer Modern", size: 8.2pt, top-edge: "ascender", bottom-edge: "descender")
 #show raw: set text(font: "Nimbus Mono PS", size: 8.2pt)
 #show math.equation.where(block: true): set block(above: 3pt, below: 3pt)
 #set table(stroke: none, inset: (x: 2pt, y: 1.5pt))
-#show table: set text(size: 8pt)
+#show table: set text(size: 7.8pt)
 #show figure.where(kind: table): set block(above: 3pt, below: 3pt)
 
 // Misc variables
@@ -331,63 +331,29 @@
 
   - The simplified datapath and control table cover `lw`, `sw`, `beq`, and R-type `add/sub/and/or/slt`. `bne`, jumps, shifts, immediate arithmetic, and other instructions require corresponding datapath or control extensions.
 
-  = Identity Laws
+  = Boolean algebra laws and theorems
   #table(
-    columns: (auto, auto),
-    stroke: 0.5pt + black,
-    align: left,
-    inset: (x: 4pt, y: 3pt),
-    fill: (x, y) => if calc.odd(y) {
-      lightgray
-    } else {
-      white
-    },
-
-    law-title[Identity Laws], [$ A + 0 = 0 + A = A $],
-    [$ A dot 1 = 1 dot A = A $],
-
-    law-title[Inverse/Complement Laws], [$ A + A' = A' + A = 1 $],
-    [$ A dot A = A' dot A = 0 $],
-
-    law-title[Commutative Laws], [$ A + B = B + A $],
-    [$ A dot B = B dot A $],
-
-    law-title[Associative Laws], [$ A + (B + C) = (A + B) + C $],
-    [$ A dot (B dot C) = (A dot B) dot C $],
-
-    law-title[Distributive Laws], [$ A dot ( B + C ) = (A dot B) + (A dot C) $],
-    [$ A + (B dot C) = (A + B) dot (A + C) $],
-  )
-
-  = Boolean Algebra Theorems
-  #table(
-    columns: (auto, auto),
-    stroke: 0.5pt + black,
-    align: left,
-    inset: (x: 4pt, y: 3pt),
-    fill: (x, y) => if calc.odd(y) {
-      lightgray
-    } else {
-      white
-    },
-
-    law-title[Idempotency], [$ X + X = X $], [$ X dot X = X $],
-
-    law-title[One Elemet / Zero Element], [$ X + 1 = 1 + X = 1 $], [$ X dot 0 = 0 dot X = 0 $],
-
-    law-title[Involution], table.cell(colspan: 2)[$ (X')' = X $],
-
-    law-title[Absorption 1], [$ X + X dot Y = X $], [$ X dot (X + Y) = X $],
-
-    law-title[Absorption 2], [$ X + X' dot Y = X + Y $], [$ X dot (X' + Y) = X dot Y $],
-
-    law-title[DeMorgans'], [$ (X + Y)' = X' dot Y' $], [$ (X dot Y)' = X' + Y' $],
-
-    law-title[Consensus],
-    [$ X dot Y + X' dot Z + Y dot Z = X dot Y + X' dot Z $],
-    [$ (X + Y) dot (X' + Z) dot (Y + Z) = (X + Y) dot (X' + Z) $],
-
-    law-title[Misc], table.cell(colspan: 2)[$ X + Y = (X dot Y) + X dot Y$]
+    columns: (auto, 1fr, 1fr),
+    stroke: 0.4pt + black,
+    inset: (x: 3pt, y: 1.5pt),
+    fill: (x, y) => if calc.odd(y) { lightgray } else { white },
+    table.header([*Law*], [*Identity 1*], [*Identity 2*]),
+    [Identity], [$A + 0 = 0 + A = A$], [$A dot 1 = 1 dot A = A$],
+    [Complement], [$A + A' = A' + A = 1$], [$A dot A' = A' dot A = 0$],
+    [Commutative], [$A + B = B + A$], [$A dot B = B dot A$],
+    [Associative], [$A + (B + C) = (A + B) + C$], [$A dot (B dot C) = (A dot B) dot C$],
+    [Distributive], [$A dot (B + C) = A dot B + A dot C$], [$A + B dot C = (A + B) dot (A + C)$],
+    [Idempotency], [$X + X = X$], [$X dot X = X$],
+    [One / zero], [$X + 1 = 1 + X = 1$], [$X dot 0 = 0 dot X = 0$],
+    [Involution], table.cell(colspan: 2)[$(X')' = X$],
+    [Absorption 1], [$X + X dot Y = X$], [$X dot (X + Y) = X$],
+    [Absorption 2], [$X + X' dot Y = X + Y$], [$X dot (X' + Y) = X dot Y$],
+    [De Morgan], [$(X + Y)' = X' dot Y'$], [$(X dot Y)' = X' + Y'$],
+    [Consensus], table.cell(colspan: 2)[
+      $X dot Y + X' dot Z + Y dot Z = X dot Y + X' dot Z$\
+      $(X + Y) dot (X' + Z) dot (Y + Z) = (X + Y) dot (X' + Z)$
+    ],
+    [Misc], table.cell(colspan: 2)[$X + Y = (X xor Y) + X dot Y$],
   )
 
   = Minterms and Maxterms
@@ -425,6 +391,23 @@
     [$x' + y'$], [$M_3$],
   )
 
+  // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 13.md
+  = Canonical SOP / POS: truth table to expression
+  Fix the variable order first: for $A B C$, $A$ is the MSB and $C$ the LSB; row index $i=4A+2B+C$. A minterm $m_i$ is 1 only on row $i$; a maxterm $M_i$ is 0 only on row $i$. Each contains every variable exactly once; $m_i'=M_i$.
+
+  #block(breakable: false)[#table(
+    columns: (auto, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Form*], [*Select rows*], [*Literal rule for row bits*]),
+    [Canonical SOP], [$F= sum m("1-row indices")$], [0 → complemented; 1 → plain; AND literals],
+    [Canonical POS], [$F= product M("0-row indices")$], [0 → plain; 1 → complemented; OR literals],
+  )]
+  Here $sum m$ means OR of minterms; $product M$ means AND of maxterms. For a fully specified function, the two index lists partition all $2^n$ rows ($n$ input variables). Complementing $F$ swaps its 1-row and 0-row lists.
+
+  #strong[Example ($A B C$ order):] $F=sum m(0,1,3,6)=product M(2,4,5,7)$.
+  Row $3=011_2$: $m_3=A' B C$, $M_3=A+B'+C'$.
+  Thus $F'=sum m(2,4,5,7)=product M(0,1,3,6)$.
+  To expand a noncanonical term, insert missing $X$ using $X+X'=1$ in SOP or $X X'=0$ in POS, then distribute.
+
   // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 14.md
   = SOP and POS implementation in circuits
   #block(breakable: false)[
@@ -449,4 +432,452 @@
   ]
 
   #strong[Remember:] input inverters count as #emph[gates], but not as #emph[logic levels]. A lone literal ($E$) is inverted before the final NAND/NOR. NAND and NOR are universal; tie inputs together for NOT: $X' = (X dot X)' = (X + X)'$.
+
+  // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 14.md
+  = PLA versus ROM: implement multiple outputs
+  #table(
+    columns: (auto, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Feature*], [*PLA*], [*ROM*]),
+    [First stage], [Programmable AND plane: chosen product terms], [Fixed decoder: all input minterms],
+    [Output stage], [Programmable OR plane; terms may feed several outputs], [Stored/programmed output bits for each address],
+    [Limit], [Must have enough product terms and output connections], [Every mapping fits if address depth/output width suffice],
+  )
+  #strong[Reading a PLA:] connected input literals are ANDed to form each product; connected products are ORed at each output. A complemented input selects the inverted literal. An omitted variable is absent from that product.
+
+  #strong[Connection example:] inputs $A,B,C$; products $P=A' B$, $Q=B C$; outputs $F=P+Q$, $G=P$.
+  #table(
+    columns: (auto, 1fr, auto, auto), stroke: 0.3pt + lightgray,
+    table.header([*AND term*], [*Connected literals*], [*OR → F*], [*OR → G*]),
+    [$P$], [$A',B$ ($C$ omitted)], [●], [●],
+    [$Q$], [$B,C$ ($A$ omitted)], [●], [—],
+  )
+  ● = connected; — = no connection. ROM for the same 3-input, 2-output mapping: $2^3 times 2=16$ stored output bits (decoder hardware excluded).
+
+  // Sources: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lectures 15 and 17.md
+  = Adders: one bit to a word
+  All signals below are bits: $A,B$ = operands; $S$ = sum bit; $C_("in"),C_("out")$ = carry into/out of this position. In these Boolean equations, $+$ is OR, juxtaposition is AND, and $xor$ is XOR.
+  #table(
+    columns: (auto, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Block*], [*Sum*], [*Carry-out*]),
+    [Half-adder (HA)], [$S=A xor B$], [$C_("out")=A B$],
+    [Full-adder (FA)], [$S=A xor B xor C_("in")$], [$C_("out")=A B+A C_("in")+B C_("in")$],
+  )
+  #strong[Two HAs + OR:] $P=A xor B$; first carry $A B$; second carry $P C_("in")$. Hence FA carry $=A B+P C_("in")$. Example: $A=B=C_("in")=1$ gives $(C_("out"),S)=11_2$ (integer 3).
+
+  #strong[Carry chaining:] an $n$-bit ripple adder uses $n$ FAs. At bit $i=0,dots,n-1$ (LSB first), inputs are $A_i,B_i,C_i$; outputs are $S_i,C_(i+1)$. Feed each carry to the next stage; $C_0=0$ for ordinary addition. Unsigned result is $(C_n S_(n-1) dots S_0)_2$. Carries must propagate through the chain; final carry alone is not signed overflow.
+
+  // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 18.md
+  // Priority-encoder all-zero validity follows the embedded table (V=0), not the prose typo.
+  = MSI circuits: select, decode, encode
+  Here $n$ is a count of select/address bits; table assumes full $2^n$-line blocks and active-high data unless marked otherwise.
+  #table(
+    columns: (auto, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Block*], [*Inputs → outputs*], [*Behaviour when enabled*]),
+    [Decoder], [$n$ address bits → $2^n$ lines], [Assert the line named by the binary address],
+    [Demux], [1 data + $n$ select bits → $2^n$ lines], [Route data to selected output; others 0],
+    [Mux], [$2^n$ data + $n$ select bits → 1 line], [Output selected data input],
+    [Encoder], [$2^n$ lines → $n$ code bits], [Encode the single asserted input; assumes one-hot],
+    [Priority encoder], [Input lines → code + valid bit $V$], [Encode highest-priority asserted input; $V=0$ if none],
+  )
+  A bar/bubble marks active-low: enable is asserted at 0; an active-low decoder selects a 0 output (others 1). Check enable/output polarity independently. A decoder with its enable driven by data acts as a demux; account for polarity.
+
+  #strong[Decoder → function:] active-high output $D_i=m_i$. For $F=sum m(0,1,3,6)$, OR $D_0,D_1,D_3,D_6$. With active-low outputs $L_i=m_i'$, NAND those same lines: $F=(L_0 L_1 L_3 L_6)'$.
+
+  #strong[Mux → function:] 2:1 mux $Y=S'I_0+S I_1$, where $S$ selects data $I_0$ or $I_1$. For 4:1, $S_1S_0=00,01,10,11$ selects $I_0,I_1,I_2,I_3$ respectively. Select width is independent of each data input's bit width.
+
+  #strong[Use a smaller mux:] choose select variables; for each select combination, inspect the two truth-table outputs for remaining variable $x=0,1$:
+  #table(
+    columns: (auto, auto, auto, auto, auto), align: center, stroke: 0.3pt + lightgray,
+    [*Output pair*], [00], [01], [10], [11],
+    [*Connect data input to*], [0], [$x$], [$x'$], [1],
+  )
+  Example: $F(A,B,C)=sum m(0,1,3,6)$; choose $S_1=A$, $S_0=B$, leave $x=C$. Pairs for $A B=00,01,10,11$ are 11,01,00,10, so $(I_0,I_1,I_2,I_3)=(1,C,0,C')$.
+
+  #strong[Priority example:] $D_3>D_2>D_1>D_0$; inputs $(D_3,D_2,D_1,D_0)=0101$ give code $10$ and $V=1$ ($D_2$ wins). All zero gives $V=0$, code don't-care; $D_0$ alone gives code $00$, $V=1$.
+
+  // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 19.md
+  // JK and D-latch prose typos resolved using the lecture's characteristic table/circuit.
+  = Latches and flip-flops
+  Store 1 bit: $Q$ = present state, $Q^+$ = next state; set = 1, reset = 0, hold = $Q$, toggle = $Q'$. Outputs $Q$ and $Q'$ are complementary in valid states.
+
+  #grid(
+    columns: (1fr, 1fr), column-gutter: 4mm,
+    [#strong[Latch: level-sensitive]\
+     Gated latch responds throughout $"EN" = 1$; holds when $"EN" = 0$. A D latch is #emph[transparent] while enabled.],
+    [#strong[Flip-flop: edge-triggered]\
+     Updates only at the selected clock edge: $arrow.t$ rising ($0 arrow.r 1$), $arrow.b$ falling ($1 arrow.r 0$). Holds between edges.],
+  )
+
+  #strong[Shared S-R / J-K behaviour] (active-high inputs; evaluated only when enabled / triggered):
+  #table(
+    columns: (auto, 1fr, 1fr),
+    stroke: 0.3pt + lightgray,
+    table.header([*S R / J K*], [*$Q^+$*], [*Action*]),
+    [00], [$Q$], [Hold],
+    [01], [0], [Reset],
+    [10], [1], [Set],
+    [11], [S-R: invalid; J-K: $Q'$], [Avoid for S-R; toggle for J-K],
+  )
+
+  #grid(
+    columns: (1fr, 1fr), column-gutter: 4mm,
+    [#strong[Latch variants]
+     - *S-R (NOR):* active-high; always responds to S/R. At 11, both outputs are 0.
+     - *S-R (NAND):* active-low $overline(S), overline(R)$; 11 holds, 01 sets, 10 resets; 00 invalid (both outputs 1).
+     - *Gated S-R:* adds EN; external S/R are active-high. EN=0 holds; EN=1 uses the table.
+     - *Gated D:* $S=D$, $R=D'$; EN=1 gives $Q^+=D$, otherwise holds. No invalid input pair.
+    ],
+    [#strong[Flip-flop variants]
+     - *S-R:* same S/R table, applied at the clock edge.
+     - *J-K:* replaces S-R's invalid 11 with toggle.
+       $Q^+ = J dot Q' + K' dot Q$
+     - *D:* samples D at the edge; $Q^+=D$.
+     - *T:* tie $J=K=T$; 0 holds, 1 toggles.
+       $Q^+ = T xor Q$
+    ],
+  )
+
+  // Lecture 19: matching compact state table and complete state diagram.
+  #block(breakable: false)[
+    #grid(
+      columns: (1fr, 1fr), column-gutter: 4mm,
+      [#strong[Excitation table]
+       #align(center, image("images/flip-flop-excitation-table.png", width: 100%))
+       $Q arrow.r Q^+$ determines inputs; $X$ = don't care.
+      ],
+      [#strong[State table and diagram example]
+       #align(center, image("images/state-table-example.png", width: 90%))
+       #align(center, image("images/state-diagram-example.png", height: 28mm))
+       State = $A B$; arrow label = input/output ($x/y$).
+      ],
+    )
+  ]
+
+  #strong[Asynchronous PRE / CLR:] override clocked operation immediately: preset sets $Q=1$; clear resets $Q=0$. A bar or input bubble means active-low (assert at 0); otherwise active-high (assert at 1). Both inactive = normal operation; avoid asserting both together.
+
+  // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 19.md,
+  // Sequential Circuit Design.png and the augmented-table / K-map design slides.
+  = Sequential-circuit design: state → inputs → gates
+  + Derive a state table from the specification/diagram; reduce equivalent states if needed. Assign binary codes. For $N$ required states, use at least $m=ceil(log_2 N)$ flip-flops ($N,m$ are counts).
+  + Choose flip-flop type. For every present-state/input row, write next state and output. With $m$ flip-flops and $n$ binary inputs, the full table has $2^(m+n)$ rows.
+  + For #emph[each state bit], use its $Q arrow.r Q^+$ transition and the excitation table to fill required flip-flop inputs: this is the #emph[augmented state table].
+  + Simplify each flip-flop input function and output function separately (K-map/algebra). Draw their gates feeding the flip-flops; connect the common clock and any specified reset/preset.
+
+  #strong[Worked design: 2-bit enabled counter.] Present state $A B$, next state $A^+ B^+$, input $x$; all are bits. At each rising edge: $x=0$ holds; $x=1$ cycles $00 arrow.r 01 arrow.r 10 arrow.r 11 arrow.r 00$. Use two JK flip-flops.
+  For $A B=01$, $x=1$: $A:0 arrow.r 1$ requires $J_A=1,K_A=X$; $B:1 arrow.r 0$ requires $J_B=X,K_B=1$ ($X$ = don't-care).
+  Over the full table, $B$ toggles iff $x=1$; $A$ toggles iff $B x=1$. Simplified inputs: #box(stroke: navy, inset: 2pt)[$J_B=K_B=x; quad J_A=K_A=B x$]. Wire these functions to the two JK blocks and the same rising-edge clock.
+
+  #strong[Unused states:] use don't-cares only when their behaviour is unspecified. If recovery from an unused state is required, specify its transition and verify the resulting circuit instead.
+
+  // Source: Lecture 19 memory notes and Bigger Memory Array Diagram.png.
+  = Memory: capacity and organisation
+  1 byte = 8 bits; a word is the transfer unit (MIPS: 32 bits = 4 bytes). Binary sizes used in the lecture: K = $2^10$, M = $2^20$, G = $2^30$; KiB/MiB/GiB denote these byte multiples explicitly.
+
+  #table(
+    columns: (auto, 1fr), stroke: 0.3pt + lightgray,
+    [*Organisation*], [$N times W$ = $N$ words, $W$ bits per word],
+    [*Capacity*], [$N W$ bits = $"NW" / 8$ bytes],
+    [*Address lines*], [$a = log_2 N$ for $N=2^a$ addressable words],
+    [*Data lines*], [$W$ (word width)],
+    [*From $n times w$ chips*], [Chips per bank $=W/w$; banks $=N/n$],
+    [*Total chips*], [$(N/n) dot (W/w)$ (assuming exact multiples)],
+  )
+
+  #strong[Width vs. depth:] chips in parallel share address/control lines and supply different data bits, increasing #emph[word width]. Banks increase #emph[number of words]: lower address bits select a word inside every chip; upper bits feed a decoder to enable one bank. $B=2^b$ banks need $b$ bank-select bits and a $b$-to-$B$ decoder.
+
+  #block(breakable: false)[
+    #grid(
+      columns: (1fr, 1fr), column-gutter: 4mm,
+      [#strong[Lecture example: $2 "M" times 32$ from $512 "K" times 8$]
+       - $32/8 = 4$ chips per bank.
+       - $2^21/2^19 = 4$ banks.
+       - $4 times 4 = 16$ chips total.
+       - $A_0$--$A_18$: 19-bit chip address.
+       - $A_19, A_20$: 2-to-4 bank decoder.
+       - 21 address lines, 32 data lines; capacity = 8 MiB.
+      ],
+      [#align(center, image("images/memory-chip-array-crop.png", width: 100%))],
+    )
+  ]
+
+  #strong[Addressing pitfall:] address bits count #emph[addressable units], not total data bits. The example is #emph[word-addressed]: $2^21$ words need 21 address bits. The same 8 MiB as byte-addressed memory needs 23 bits; the lowest 2 bits select a byte within a 32-bit word.
+
+  #grid(
+    columns: (1fr, 1fr), column-gutter: 4mm,
+    [#strong[SRAM]\
+     Bistable storage; retains data while powered without refresh. Faster, less dense; typically cache.],
+    [#strong[DRAM]\
+     Capacitor charge; requires periodic refresh. Denser, cheaper per bit; typically main memory.],
+  )
+  Both are #strong[volatile] (lose data without power). ROM is non-volatile and intended mainly for reading.
+
+  #strong[Transfers:] MAR holds the address; MDR holds data being read/written. Read: supply address, assert read, receive data. Write: supply address + data, assert write. Lecture control convention: memory enable = 0 means no operation; with enable = 1, Read/Write = 1 reads and 0 writes.
+
+  = Pipelining: stages and registers
+  Overlap instructions using different stages; one cycle per stage. After filling, ideally complete #strong[one instruction per cycle]. Throughput improves; an individual instruction still takes 5 cycles. Slowest stage limits the clock; dependencies can require stalls.
+
+  #table(
+    columns: (auto, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Stage*], [*Work*], [*Saved at cycle end*]),
+    [*IF*], [Fetch instruction; compute PC+4], [*IF/ID:* instruction, PC+4],
+    [*ID*], [Decode; read regs; sign-extend], [*ID/EX:* operands, imm., PC+4, reg. numbers, controls],
+    [*EX*], [ALU operation; branch target and Zero; select destination], [*EX/MEM:* ALU result, store data, target, Zero, destination, M/WB controls],
+    [*MEM*], [Read/write data; resolve branch], [*MEM/WB:* memory/ALU data, destination, WB controls],
+    [*WB*], [Write selected result if enabled], [Register file updated; no next pipeline register],
+  )
+
+  #strong[Keep each instruction together:] carry its data, destination register number, and control bits through the pipeline. WB must use the destination in #strong[MEM/WB], not the register number of the newer instruction currently in ID.
+
+  #strong[Control:] generated in ID; carry later-stage controls forward until used:
+  - *EX:* RegDst, ALUSrc, ALUop.
+  - *MEM:* Branch, MemRead, MemWrite.
+  - *WB:* MemToReg, RegWrite.
+
+  #align(center, image("images/pipeline-control-flow.png", width: 50%))
+
+  = Pipeline timing and speedup
+  #table(
+    columns: (auto, 1fr), stroke: 0.3pt + lightgray,
+    [*Pipeline clock*], [$C_p = max(T_k) + T_d$],
+    [*Cycles / total time*], [$I + N - 1$ cycles; $T_p = (I + N - 1) C_p$],
+    [*With $S$ stall cycles*], [$T_p = (I + N - 1 + S) C_p$],
+    [*Single-cycle baseline*], [$C_s$ = longest instruction path; $T_s = I C_s$],
+    [*Speedup*], [$T_s/T_p$; use the same workload for both],
+  )
+
+  #strong[Symbols:] counts are unitless; all delays, clock periods, and execution times use the same time unit (e.g. ns).
+  Assume no stalls unless stated. Speedup $T_s/T_p$ is a unitless ratio.
+
+  #table(
+    columns: (auto, 1fr, auto, 1fr), stroke: 0.3pt + lightgray,
+    [$I$], [Number of instructions executed], [$N$], [Number of pipeline stages (MIPS: 5)],
+    [$k$], [Stage index, 1 to $N$], [$T_k$], [Logic delay of stage $k$],
+    [$T_d$], [Extra delay per cycle from pipeline registers], [$max(T_k)$], [Slowest stage's logic delay],
+    [$C_p$], [Pipeline clock period (time per cycle)], [$C_s$], [Single-cycle processor's clock period],
+    [$T_p$], [Total pipelined execution time], [$T_s$], [Total single-cycle execution time],
+    [$S$], [Total added stall cycles over the workload], [$T$], [Common stage delay in the ideal case],
+  )
+
+  #strong[Lecture example:] stage delays = 2, 1, 2, 2, 1 ns; $T_d=0.5$ ns; $I=100$. Single-cycle clock = 8 ns (longest path, `lw`): $T_s=800$ ns. Pipeline clock = 2.5 ns; $T_p=(100+4) times 2.5=260$ ns. Speedup $=800/260 approx 3.08$.
+
+  #strong[Ideal limit:] if all stages take $T$, overhead/stalls are zero, and the sequential baseline takes $N T$ per instruction:
+  $ "Speedup" = (I N T)/((I + N - 1) T) = (I N)/(I + N - 1) arrow.r N quad (I "much larger than" N). $
+  #strong[Pitfalls:] include the $N-1$ fill/drain cycles; do not use average stage delay for the pipeline clock. Unequal stage delays, register overhead, and stalls reduce speedup.
+
+
+  = Pipeline hazards
+  A hazard prevents the next instruction from advancing on schedule. #strong[Stall:] wait/insert a bubble while older instructions proceed. #strong[Flush:] discard wrong-path instructions before they change architectural state.
+
+  #table(
+    columns: (auto, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Hazard*], [*Problem / concrete example*], [*Solution*]),
+    [*Structural*], [#highlight(fill: rgb("DCEEFF"))[IF] and `lw/sw` in #highlight(fill: rgb("DCEEFF"))[MEM] need the #highlight(fill: rgb("DCEEFF"))[same single-port memory] in one cycle.], [Shared memory: *1 IF stall per conflicting cycle*. Separate I/D memories or an extra port: *0 structural stalls*.],
+    [*Data (RAW)*], [`add `#highlight(fill: yellow)[`$t0`]`, $t1,$t2`\
+      `sub $t3,`#highlight(fill: yellow)[`$t0`]`,$t4`\
+      `sub` reads the old #highlight(fill: yellow)[`$t0`] in ID before `add` writes it in WB.], [Forward EX/MEM → EX: 0 stalls. Without forwarding: wait for WB (2 stalls here), or schedule independent work.],
+    [*Control*], [#highlight(fill: yellow)[`beq $s0,$s1,L`]\
+      #highlight(fill: rgb("FFE0E3"))[`add $t0,$t1,$t2`]\
+      Taken branch: `add` is #highlight(fill: rgb("FFE0E3"))[wrong-path] (no delay slot); it must not write `$t0`.], [Stall; resolve in ID; predict + flush if wrong; or fill a delay slot with work safe on both paths. Details below.],
+  )
+  #strong[Register-file timing:] write in the first half-cycle, read in the second: ID can read a register written in WB #emph[in the same cycle]. This does not remove dependencies on results still in EX/MEM.
+
+  = Data hazards: availability vs. need
+  #strong[Forwarding:] bypass stale register data via EX/MEM or MEM/WB. ALU results are ready after EX; loads after MEM. A result cannot be forwarded before it exists.
+
+  #table(
+    columns: (1fr, auto, auto, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Adjacent producer → consumer*], [*No fwd*], [*Fwd*], [*Solution / remaining wait*]),
+    [ALU → operand in EX], [2], [0], [Forward EX/MEM → EX],
+    [`lw` → operand in EX], [2], [1], [`lw `#highlight(fill: yellow)[`$t0`]`,0($s0)` then `add $t1,`#highlight(fill: yellow)[`$t0`]`,$t2`: 1 bubble, then MEM/WB → EX],
+    [ALU → branch in ID], [2], [1], [Wait 1 cycle, then forward to ID],
+    [`lw` → branch in ID], [2], [2], [Wait 2 cycles for load data, then forward to ID],
+  )
+  #strong[Data stalls only:] adjacent instructions; 5 stages; WB writes before ID reads. No fwd = wait for WB; fwd = listed bypass paths exist. Independent instructions can fill the listed gaps. For `sw`, base is needed in EX, stored data in MEM; check bypass paths.
+
+  = Control hazards: branch handling
+  #strong[Early resolution:] move target calculation and comparison to #strong[ID] with a separate comparator. Basic branch wait: #strong[3 → 1 cycles]. This calculates the outcome earlier; it does not predict it.
+
+  #table(
+    columns: (1fr, auto, auto), stroke: 0.3pt + lightgray,
+    table.header([*Branch policy: lost cycles per branch*], [*Resolve MEM*], [*Resolve ID*]),
+    [Wait until branch resolves (no prediction)], [3], [1],
+    [Predict not taken: correct (not taken)], [0], [0],
+    [Predict not taken: wrong (taken), flush], [3], [1],
+    [Delayed branch: all slots filled with useful work], [0 wasted], [0 wasted],
+    [Delayed branch: all slots are `nop`], [3 wasted], [1 wasted],
+  )
+  Table assumes ready operands. #strong[ID branch + forwarding + wait:] 1 control + data stalls = *1* (ready), *2* (adjacent ALU), *3* (adjacent load). Correct prediction removes control loss, not data stalls. Count overlapping penalties once.
+
+  #grid(
+    columns: (3fr, 2fr), column-gutter: 4mm,
+    [#strong[Delayed branch:] slots execute #emph[regardless of taken/not taken], before the jump. Lecture model: 1 slot (ID) or 3 (MEM). Fill with independent work safe on both paths; otherwise use `nop` (1 wasted cycle each). Useful slots are executed instructions, not extra stall cycles.],
+    [#align(center, image("images/delayed-branch-code.png", width: 100%))],
+  )
+
+  #strong[Exam method:] draw IF–ID–EX–MEM–WB; mark availability/need and bypass paths. Cycles = $I + 4$ + extra lost cycles. Include useful delay-slot work in $I$. Count each `nop` either in $I$ or as wasted time, never both.
+
+  // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 22.md
+  // and its cache index/tag, circuitry, and write-policy attachments.
+  = Cache: locality and access time (Lecture 22)
+  #strong[Temporal locality:] recently used data is likely reused soon. #strong[Spatial locality:] nearby addresses are likely used soon; fetch a whole #emph[block/line], not just one word. Larger blocks exploit spatial locality but take longer to refill and leave fewer lines for a fixed cache capacity.
+
+  #table(
+    columns: (auto, 1fr, auto, 1fr), stroke: 0.3pt + lightgray,
+    [$h$], [Hit rate = hits / accesses], [$m$], [Miss rate = $1-h$],
+    [$H$], [Hit time (cache lookup + access)], [$P$], [Extra delay on a miss],
+    [$M$], [Total miss time: $H+P$], [*AMAT*], [$h H + m M = H + m P$],
+  )
+  #strong[Convention:] the lecture's “miss penalty” includes hit time, so use $h H + (1-h) M$. If a question gives #emph[additional] miss time, use $H+(1-h)P$. Keep units consistent.
+  #strong[Example:] $h=0.95$, $H=1$ ns, $P=40$ ns ⇒ $M=41$ ns and AMAT $=1+0.05 times 40=3$ ns.
+
+  = Direct-mapped cache: essential formulas
+  #strong[Symbols:] $a$ = byte address; $A$ = address width in bits; $C$ = cache #emph[data capacity in bytes] (excludes metadata); $B$ = bytes/block; $L$ = cache lines; $q$ = memory block number. Assume $B,L$ are powers of 2.
+  #table(
+    columns: (auto, 1fr, auto, 1fr), stroke: 0.3pt + lightgray,
+    [*Lines*], [$L=C/B$], [*Block number*], [$q=floor(a/B)$],
+    [*Index*], [$i=q mod L$], [*Tag value*], [$floor(q/L)=floor(a/C)$],
+    [*Byte offset*], [$o=a mod B$], [*Block start*], [$a_0=B floor(a/B)=a-o$],
+    [*Offset bits*], [$b=log_2 B$], [*Index bits*], [$s=log_2 L$],
+    [*Tag bits*], [$t=A-s-b$], [*Reconstruct*], [$a=("tag" dot L+i)B+o$],
+  )
+
+  #table(
+    columns: (1fr, 1fr, 1fr), align: center, stroke: 0.4pt + navy,
+    fill: (x, y) => (rgb("FFE0E3"), rgb("DCEEFF"), rgb("FFF2B2")).at(x),
+    [*Tag: $t$ high bits*], [*Index: $s$ bits*], [*Offset: $b$ low bits*],
+  )
+  #strong[Word/byte split:] for $W$ bytes/word, byte-in-word bits = $log_2 W$; word-in-block bits = $log_2(B/W)$. For word-addressed inputs, convert to byte address ($a=W times "word address"$) or use block size in words consistently.
+
+  #strong[Lecture example:] 32-bit byte addresses, 16 KiB data cache, 16-byte blocks (4 words): $L=2^14/2^4=1024$, $b=4$, $s=10$, $t=18$.
+  #align(center, strong[Tag 31:14 | Index 13:4 | Word 3:2 | Byte 1:0])
+  `0x1234` and `0x5234` both have index 291 and offset 4, but tags 0 and 1: alternating accesses replace each other (conflict misses).
+
+  #strong[Physical storage:] data bits = $8C$; metadata = $L(t+1+d)$ bits; total = $L(8B+t+1+d)$ bits. One valid bit/line; $d=1$ for a dirty bit (write-back), otherwise 0. Index/offset are not stored as tag metadata.
+
+  = Cache reads, misses, and writes
+  #strong[Read hit:] select index; hit iff #box(stroke: navy, inset: 2pt)[$"valid"[i] and ("stored tag"[i] = "address tag")$]; return selected offset. Initially all valid bits are 0. #strong[Read miss:] write back a dirty victim if needed, fetch the aligned block, update tag + valid, then return requested data.
+
+  #table(
+    columns: (auto, 1fr), stroke: 0.3pt + lightgray,
+    [*Compulsory (cold)*], [First reference to a memory block],
+    [*Conflict*], [Different blocks compete for the same line/set although cache has enough total capacity],
+    [*Capacity*], [Working set exceeds total cache capacity; blocks must be evicted even without mapping restrictions],
+  )
+  #strong[Tracing accesses:] compute block/index/tag → test valid + tag → record hit/miss → update that line on allocation. A miss fetches #emph[all $B$ bytes]; later accesses to other words in that block may hit. Same index does not imply same block; an invalid line is always a miss.
+
+  #block(breakable: false)[
+  #grid(
+    columns: (3fr, 2fr), column-gutter: 4mm,
+    [#strong[Write policies]
+     - *Write-through:* cache + memory; buffer hides latency until full.
+     - *Write-back:* cache only, dirty=1; evict dirty blocks to memory, discard clean ones.
+     - *Write allocate:* fetch missed block, then update requested bytes + tag/valid.
+     - *Write-around:* memory only; no cache fill.
+     Hit policy: *when* memory changes. Miss policy: *whether* cache fills. Dirty eviction = block write + refill.
+    ],
+    [#strong[16 KiB / 16-byte lines]
+     #align(center, image("images/direct-mapped-cache-circuit-crop.png", width: 90%))
+    ],
+  )
+  ]
+
+  = Cache associativity
+  #strong[Set] = group of cache lines; #strong[way] = one possible line within the selected set.
+  #table(
+    columns: (auto, auto, auto, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Mapping*], [*Ways/set*], [*Sets*], [*Where can a block go?*]),
+    [Direct-mapped], [1], [$L$], [One fixed line; compare 1 tag],
+    [$k$-way set associative], [$k$], [$L/k$], [Any way in one fixed set; compare $k$ tags],
+    [Fully associative (FA)], [$L$], [1], [Any line; compare all $L$ tags],
+  )
+  #block(breakable: false)[
+    #align(center, image("images/set-associative-structure-crop.png", width: 65%))
+    #strong[2-way example:] a horizontal set contains 2 lines. Both valid/tag pairs are checked in parallel; the matching way supplies data.
+  ]
+
+  #v(1mm)
+
+  #strong[Symbol key] (byte-addressed memory; power-of-2 block/set counts; $k$ divides $L$):
+  #table(
+    columns: (auto, 1fr, auto, 1fr), stroke: 0.3pt + lightgray,
+    [$a$], [Byte address], [$A$], [Address width (bits)],
+    [$C$], [Cache data capacity (bytes)], [$B$], [Block size (bytes)],
+    [$L$], [Total cache lines], [$k$], [Ways per set],
+    [$U$], [Number of sets], [$q$], [Memory block number],
+    [$i$], [Set index value], [$o$], [Byte offset within block],
+    [$b$], [Offset width (bits)], [$s$], [Set-index width (bits)],
+    [$t$], [Tag width (bits)], [tag], [Tag value from the address],
+  )
+  #table(
+    columns: (auto, 1fr, auto, 1fr), stroke: 0.3pt + lightgray,
+    [*Lines / sets*], [$L=C/B$; $U=L/k$], [*Block / offset*], [$q=floor(a/B)$; $o=a mod B$],
+    [*Set index*], [$i=q mod U$], [*Tag value*], [$"tag"=floor(q/U)$],
+    [*Offset bits*], [$b=log_2 B$], [*Set-index bits*], [$s=log_2 U$],
+    [*Tag bits*], [$t=A-s-b$], [*Reconstruct*], [$a=("tag" dot U+i)B+o$],
+  )
+  #table(
+    columns: (auto, 1fr), stroke: 0.3pt + lightgray,
+    [*Index/tag calculation*], [Use number of *sets*, not total lines],
+    [*Fully associative*], [$U=1$, $s=0$, tag=$q$, $t=A-b$],
+    [*Way number*], [Chosen inside the set; *not an address field*],
+  )
+
+  #strong[Same capacity, different associativity:] $A=32$, $C=16$ KiB, $B=16$ bytes, $L=1024$.
+  #table(
+    columns: (auto, 1fr, 1fr, 1fr, 1fr), align: center, stroke: 0.3pt + lightgray,
+    table.header([*Cache*], [*Sets $U$*], [*Index $s$*], [*Tag $t$*], [*Offset $b$*]),
+    [Direct], [1024], [10], [18], [4],
+    [2-way], [512], [9], [19], [4],
+    [4-way], [256], [8], [20], [4],
+    [FA], [1], [0], [28], [4],
+  )
+  #table(
+    columns: (auto, 1fr), stroke: 0.3pt + lightgray,
+    [*More ways, fixed $C,B$*], [Fewer sets/index bits; more tag bits/comparisons; fewer placement conflicts but higher hardware/selection cost],
+    [*FA misses*], [No conflict misses; compulsory/capacity misses remain. Usually used for small caches.],
+    [*Lecture rule of thumb*], [Direct capacity $C$ ≈ 2-way capacity $C/2$ in miss rate; empirical, not guaranteed for every trace],
+  )
+
+  #strong[Total storage (bits):] $L(8B+t+1+d)+R$.
+  #table(
+    columns: (auto, 1fr, auto, 1fr), stroke: 0.3pt + lightgray,
+    [$8B$], [Data bits per line], [$t+1$], [Tag + one valid bit per line],
+    [$d$], [Dirty bits/line: 1 for WB, else 0], [$R$], [Total replacement metadata bits],
+    [*2-way LRU*], [$R=U$: 1 LRU bit per set], [*Other policies*], [$R$ depends on implementation],
+  )
+  #block(breakable: false)[
+    #strong[FA lookup circuit:] 4 KiB / 16-byte blocks = 256 lines; 32-bit address = 28-bit tag + 4-bit offset. Compare all 256 valid/tag pairs in parallel.
+    #align(center, image("images/fully-associative-circuit-crop.png", width: 80%))
+  ]
+
+  = Replacement: which line is evicted?
+  #table(
+    columns: (auto, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Situation*], [*Action*]),
+    [Hit: valid + matching tag], [Use matching way; update policy state],
+    [Miss; invalid way available], [Fill invalid way first; no valid victim needed],
+    [Miss; selected set full], [Choose victim *inside that set* (FA: any line)],
+    [Valid dirty WB victim], [Write block to memory before replacing it],
+    [Direct-mapped miss], [One possible line; no replacement-policy choice],
+  )
+  #table(
+    columns: (auto, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Policy*], [*Victim*], [*What changes on a hit?*]),
+    [*LRU*], [Least recently used], [Move hit line to most-recent position],
+    [*FIFO*], [Earliest inserted], [Nothing: insertion order stays the same],
+    [*Random (RR)*], [Random eligible line], [No access-history ranking],
+    [*LFU*], [Least frequently accessed], [Increment count; follow given tie/aging rule],
+  )
+  LRU exploits temporal locality but tracking becomes expensive with many ways. Fills also update policy state.
+
+  #strong[Worked trace:] empty 2-way set; A, B, C map to the #emph[same set]. Orders below run #emph[victim first → newest last] (recency for LRU; insertion for FIFO).
+  #table(
+    columns: (auto, auto, 1fr, 1fr, 1fr), stroke: 0.3pt + lightgray,
+    table.header([*Access*], [*H/M*], [*LRU order*], [*FIFO order*], [*Eviction*]),
+    [A], [Miss], [A], [A], [None],
+    [B], [Miss], [A → B], [A → B], [None],
+    [#highlight(fill: yellow)[A]], [Hit], [B → A], [A → B], [None],
+    [C], [Miss], [A → C], [B → C], [LRU: *B*; FIFO: *A*],
+  )
+  #strong[Result:] both have 1 hit + 3 misses (hit rate $1/4$), but different victims. Recency ≠ insertion age ≠ frequency. AMAT and write policies from Lecture 22 still apply.
 ]
