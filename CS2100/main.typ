@@ -133,6 +133,12 @@
 
   #strong[Normal finite numbers ($1 lt.eq E lt.eq 254$):] $ x = \( - 1 \)^s \( 1 + F \/ 2^23 \) thin 2^(E - 127) = \( - 1 \)^s \( 1 . f \)_2 thin 2^(E - 127) . $ The leading 1 is implicit, so 23 stored fraction bits give 24 significant binary digits. The actual exponent ranges from $- 126$ to $+ 127$. To encode a nonzero normal number, write it as $plus.minus 1 . b_1 b_2 dots.h zws_2 times 2^e$, store $E = e + 127$, and store the bits after the leading 1 in $F$, rounding if needed. Example: $6.5_10 = 110.1_2 = 1.101_2 thin 2^2$; $s = 0$, $E = 129 = 10000001_2$, $F = 101$ followed by 20 zeros. Its 32-bit hex pattern is `0x40D00000`.
 
+  // Vault: 300 Main Notes/IEEE 754 Floating-Point.md -> IEEE 754 Floating-Point IEEE 754 1.png.
+  #block(breakable: false)[
+    #align(center, image("images/ieee754-fields.png", width: 80%))
+    #text(size: 7.6pt)[Field layout example: stored exponent `10000110` = 134, so the normal-value exponent is 134 − 127 = 7. The fraction excludes the implicit leading 1.]
+  ]
+
   = binary32 special patterns
   - #strong[Signed zero:] $E = 0 , med F = 0$. $s = 0$ gives $+ 0$ (`0x00000000`); $s = 1$ gives $- 0$ (`0x80000000`). Both compare equal numerically, although their bit patterns and behavior in some operations differ.
 
@@ -212,10 +218,24 @@
 
   These are conceptual stages, not necessarily five clock cycles.
 
+  // Vault: 300 Main Notes/Control Path.md -> Attachments/Control Path Diagram.png.
+  // One integrated figure preserves both the complete datapath and its control wiring.
+  #block(breakable: false)[
+    = Complete single-cycle datapath and control path
+    #align(center, image("images/single-cycle-datapath-control.png", width: 100%))
+    #text(size: 7.6pt)[Black routes carry data; red/brown routes carry controls. Opcode feeds main control; `funct` and `ALUop` feed ALU control. `RegWrite` enables register-file writeback. `PCSrc = Branch AND isZero` selects the next PC.]
+  ]
+
   = ALU and two-level control
   The ALU performs arithmetic and logical work; each bit's carry-out feeds the next bit's carry-in. Its control bits are `Ainvert`, `Binvert`, and a 2-bit `Operation` selector. For subtraction, invert B and set the least-significant carry-in to 1: $A - B = A + overline(B) + 1$. The 4-bit `ALUcontrol` value selects the ALU's operation. The ALU also produces `isZero`, which is 1 if its result is zero; this is a #emph[status output], not an instruction-decoder output.
 
   #strong[Two-level decoding:] instruction opcode $arrow.r$ main control signals and 2-bit `ALUop`; then $mono("ALUop") + mono("funct")$ (for R type) $arrow.r$ 4-bit `ALUcontrol` $arrow.r$ actual ALU action. `ALUop` classifies how to determine the operation; `ALUcontrol` directly drives the ALU. The `funct` field is ignored for `lw`, `sw`, and `beq`.
+
+  // Vault: CS2100 Lecture 12.md -> CS2100 Lecture 12 ALUcontrol Basic Overview.png.
+  #block(breakable: false)[
+    #align(center, image("images/alu-two-level-control.png", width: 85%))
+    #text(size: 7.6pt)[Two-level decoding: opcode → `ALUop`; `ALUop` + R-type `funct` → `ALUcontrol`.]
+  ]
 
   = What each control signal means
   #strong[Mux selectors (choose a data path):]
@@ -238,7 +258,7 @@
 
   - #strong[Branch:] main control sets this to 1 for `beq` in the lecture's branch circuit. It identifies a conditional branch; it does not by itself say whether the branch is taken.
 
-  - #strong[ALUop (2 bits):] 00 means add for `lw/sw` address calculation; 01 means subtract for `beq` comparison; 10 means use R-type `funct`; 11 is unused here.
+  - #strong[ALUop (2 bits):] 00 means #highlight[add] for `lw/sw` address calculation; 01 means #highlight[subtract] for `beq` comparison; 10 means use R-type `funct`; 11 is #highlight[unused] here.
 
   - #strong[ALUcontrol (4 bits):] final ALU selector generated from `ALUop` and, when needed, the 6-bit `funct`. The course table uses 0010 = add, 0110 = subtract, 0000 = AND, 0001 = OR, 0111 = set-on-less-than.
 
@@ -409,6 +429,21 @@
   To expand a noncanonical term, insert missing $X$ using $X+X'=1$ in SOP or $X X'=0$ in POS, then distribute.
 
   // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 14.md
+  // Vault: 300 Main Notes/Karnaugh Maps(K-Maps).md -> Example 4-var K-Map Filling.png.
+  #block(breakable: false)[
+    = K-maps: adjacency and wrap-around
+    #grid(
+      columns: (2fr, 3fr), column-gutter: 3mm,
+      [#align(center, image("images/kmap-adjacency.png", width: 100%))],
+      [Rows/columns follow *Gray order* 00, 01, 11, 10. Adjacent cells differ in exactly one variable; opposite edges touch, including all four corners. Diagonals are not adjacent.
+
+       For SOP, cover every 1 with rectangular groups of 1, 2, 4, 8, … cells; overlap is allowed. Keep only variables constant across a group. Use don't-cares only when helpful.
+
+       *Example:* corner minterms $m(0,2,8,10)$ form a group of four: $F=x' z'$ in the pictured $w x y z$ order.],
+    )
+    A *prime implicant* cannot be enlarged; an *essential* one covers a 1 no other prime covers. Include essentials, then cover remaining 1s with few additional groups.
+  ]
+
   = SOP and POS implementation in circuits
   #block(breakable: false)[
   #grid(
@@ -466,6 +501,12 @@
 
   #strong[Carry chaining:] an $n$-bit ripple adder uses $n$ FAs. At bit $i=0,dots,n-1$ (LSB first), inputs are $A_i,B_i,C_i$; outputs are $S_i,C_(i+1)$. Feed each carry to the next stage; $C_0=0$ for ordinary addition. Unsigned result is $(C_n S_(n-1) dots S_0)_2$. Carries must propagate through the chain; final carry alone is not signed overflow.
 
+  // Vault: CS2100 Lecture 17.md -> 4-bit Parallel Adder Implementation.png.
+  #block(breakable: false)[
+    #align(center, image("images/ripple-carry-adder.png", width: 85%))
+    #text(size: 7.6pt)[Four full adders: carries ripple from the rightmost LSB to the leftmost MSB. Source labels bits 1–4 and carries 1–5; the equations above use bits 0–3 and carries 0–4.]
+  ]
+
   // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 18.md
   // Priority-encoder all-zero validity follows the embedded table (V=0), not the prose typo.
   = MSI circuits: select, decode, encode
@@ -484,6 +525,12 @@
   #strong[Decoder → function:] active-high output $D_i=m_i$. For $F=sum m(0,1,3,6)$, OR $D_0,D_1,D_3,D_6$. With active-low outputs $L_i=m_i'$, NAND those same lines: $F=(L_0 L_1 L_3 L_6)'$.
 
   #strong[Mux → function:] 2:1 mux $Y=S'I_0+S I_1$, where $S$ selects data $I_0$ or $I_1$. For 4:1, $S_1S_0=00,01,10,11$ selects $I_0,I_1,I_2,I_3$ respectively. Select width is independent of each data input's bit width.
+
+  // Vault: CS2100 Lecture 18.md -> 41 Multiplexer Circuit.png.
+  #block(breakable: false)[
+    #align(center, image("images/mux-decoder-gates.png", width: 85%))
+    #text(size: 7.6pt)[4:1 mux: decode $S_1 S_0$ into four enables, AND each with its data input, then OR the results. Right: equivalent gate expansion.]
+  ]
 
   #strong[Use a smaller mux:] choose select variables; for each select combination, inspect the two truth-table outputs for remaining variable $x=0,1$:
   #table(
@@ -507,6 +554,17 @@
     [#strong[Flip-flop: edge-triggered]\
      Updates only at the selected clock edge: $arrow.t$ rising ($0 arrow.r 1$), $arrow.b$ falling ($1 arrow.r 0$). Holds between edges.],
   )
+
+  // Vault: Memory Element Latches.md and Memory Element.md; circuit and pulse/edge attachments.
+  #block(breakable: false)[
+    #grid(
+      columns: (1fr, 1fr), column-gutter: 3mm,
+      [#align(center, image("images/d-latch-circuit.png", width: 100%))
+       #text(size: 7.6pt)[Gated D latch: EN=1 lets Q follow D; EN=0 holds Q.]],
+      [#align(center, image("images/clock-pulses-edges.png", width: 100%))
+       #text(size: 7.6pt)[Level sensitivity spans the pulse; edge triggering samples at a transition.]],
+    )
+  ]
 
   #strong[Shared S-R / J-K behaviour] (active-high inputs; evaluated only when enabled / triggered):
   #table(
@@ -635,6 +693,13 @@
 
   #align(center, image("images/pipeline-control-flow.png", width: 50%))
 
+  // Vault: 300 Main Notes/MIPS Pipeline Control.md -> Pipeline Datapath and Contro.png.
+  #block(breakable: false)[
+    = Complete pipelined datapath and control
+    #align(center, image("images/pipeline-datapath-control.png", width: 100%))
+    #text(size: 7.6pt)[Vertical bars are pipeline registers. Carry each instruction's destination and later-stage control bits with its data; the WB feedback returns the selected result to the register file. Branch selection is shown in MEM.]
+  ]
+
   = Pipeline timing and speedup
   #table(
     columns: (auto, 1fr), stroke: 0.3pt + lightgray,
@@ -693,6 +758,13 @@
     [`lw` → branch in ID], [2], [2], [Wait 2 cycles for load data, then forward to ID],
   )
   #strong[Data stalls only:] adjacent instructions; 5 stages; WB writes before ID reads. No fwd = wait for WB; fwd = listed bypass paths exist. Independent instructions can fill the listed gaps. For `sw`, base is needed in EX, stored data in MEM; check bypass paths.
+
+  // Vault: 100 Source Notes/Lectures/CS2100 Lecture 21.md -> Forwarding for Data Hazards.png.
+  #block(breakable: false)[
+    = Forwarding paths across overlapping instructions
+    #align(center, image("images/pipeline-forwarding.png", width: 100%))
+    #text(size: 7.6pt)[`sub` produces `$2`; the following `and` and `or` receive it through bypass paths. An immediate load-use dependency still needs a stall before forwarding (see availability table).]
+  ]
 
   = Control hazards: branch handling
   #strong[Early resolution:] move target calculation and comparison to #strong[ID] with a separate comparator. Basic branch wait: #strong[3 → 1 cycles]. This calculates the outcome earlier; it does not predict it.
@@ -779,6 +851,12 @@
      #align(center, image("images/direct-mapped-cache-circuit-crop.png", width: 90%))
     ],
   )
+  ]
+
+  // Vault: Cache Write Policy.md -> Write-Through Cache.png (circuit only).
+  #block(breakable: false)[
+    #align(center, image("images/cache-write-buffer.png", width: 70%))
+    #text(size: 7.6pt)[Write-through with a write buffer: the processor updates cache and queues the memory write; the buffer drains to DRAM. A full buffer can stall later writes.]
   ]
 
   = Cache associativity
