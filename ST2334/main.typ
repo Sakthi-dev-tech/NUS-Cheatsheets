@@ -1,312 +1,358 @@
 // Compile: typst compile main.typ main.pdf
-// Authority: /home/sakthi/Downloads/lecturenotes-lean.md (chapters 1-7 + examples).
-// Secondary: /home/sakthi/Documents/Obsidian Vault/100 Source Notes/Lectures/ST2334 Week {1-6,8-12} Video.md.
-// Compared against /home/sakthi/Downloads/FormulaSheet_Tables.pdf: retain repeated
-// formulas only as anchors for method selection, assumptions, or worked examples.
-// Coverage audit: all 37 numbered subsections in lean chapters 1-7 mapped below.
-// Ch1 -> §§1-2; Ch2 -> §3; Ch3 -> §4; Ch4 -> §§5-6;
-// Ch5 -> §§7-8; Ch6 -> §§9-10; Ch7 -> §§9,11-12.
-// Elementary axioms/counting, full family PMF/PDF/moments, joint expectation,
-// covariance transforms and numerical tables are also on FormulaSheet_Tables.pdf.
-// Named example-bank laws are in §3; R conventions are in §12.
-// Extra proportion/variance CIs are secondary vault week 10 material.
-// Semantic scan cues: teal labels, red pitfalls, pale-yellow decisive conditions.
+// Source: /home/sakthi/Downloads/lecturenotes-lean.md, chapters 1-7 + examples.
+// Secondary: Obsidian Vault/100 Source Notes/Lectures/ST2334 Week {1-6,8-12} Video.md.
+// Distribution audit: Obsidian Vault/300 Main Notes/{Student t Distribution,
+// F Distribution, Chi-Squared Distribution, Normal Distribution (Bell Curve),
+// Discrete Uniform Distribution, Continuous Uniform Distribution, Bernoulli Trial,
+// Bernoulli Process, Binomial Distribution, Geometric Distribution,
+// Negative Binomial Distribution, Poisson Distribution, Exponential Distribution,
+// Normal Variable Distributions, Choosing Distributions and Statistical Inference - Master Note}.
+// Checked embedded week 5 Bernoulli summary and week 6 continuous summary.
+// Arbitrary discrete-uniform variance notation corrected against the slide table.
+// Deduplicated against /home/sakthi/Downloads/FormulaSheet_Tables.pdf (2026-11-16).
+// FS references below use PDF page numbers, not the statistical tables' printed pages.
+// Standard identities, distribution PMF/PDF/moments and mean CI/test formulas are
+// referenced rather than copied. Numerical applications and intermediate derivation
+// steps are retained. New CDF/quantile/power formulas follow directly by integration.
+// Chapters: 1 -> §§1-2; 2 -> §§3,6; 3 -> §4; 4 -> §5;
+// 5 -> §§7-8; 6 -> §§9-10; 7 -> §§9,11-12. No new syllabus topics added.
 #let cue-color = rgb("146267")
 #let trap-color = rgb("A32935")
 #let mark(body) = highlight(fill: rgb("FFF0B3"), body)
 #let trap(body) = text(fill: trap-color, body)
+#let fs(body) = text(size: 7.3pt, fill: rgb("555555"))[↗ FS #body]
 #show strong: set text(fill: cue-color)
 #set document(title: "ST2334 Cheatsheet")
-#set page(paper: "a4", flipped: true, margin: 6mm, numbering: "1", number-align: center)
+#set page(paper: "a4", flipped: true, margin: 6mm, numbering: none)
 #set text(font: "New Computer Modern", size: 8pt, top-edge: "ascender", bottom-edge: "descender")
-#set par(leading: 1.6pt, spacing: 1.2pt, first-line-indent: 0pt, justify: true)
+#set par(leading: 0.7pt, spacing: 0.8pt, first-line-indent: 0pt, justify: false)
 #set columns(gutter: 4mm)
-#set list(indent: 0pt, body-indent: 1em, spacing: 0pt, tight: true)
-#set enum(indent: 0pt, body-indent: 1.3em, spacing: 0pt, tight: true)
+#set list(indent: 0pt, body-indent: 1em, spacing: 1pt, tight: true)
+#set enum(indent: 0pt, body-indent: 1.3em, spacing: 1pt, tight: true)
 #set heading(numbering: none)
-#show heading: it => block(above: 3pt, below: 1pt, sticky: true)[#text(size: 9.6pt, weight: "bold", fill: rgb("174A74"), it.body)]
-#show heading.where(level: 2): it => block(above: 3pt, below: 1pt, sticky: true)[#text(size: 8pt, weight: "bold", it.body)]
-#show heading.where(level: 3): it => block(above: 0pt, below: 0pt, sticky: true)[#text(size: 7.2pt, style: "italic", it.body)]
-#show raw: set text(font: "Nimbus Mono PS", size: 6.4pt)
-#show raw.where(block: true): set block(above: 2pt, below: 2pt)
-#show math.equation.where(block: true): set block(above: 2pt, below: 2pt)
-#set table(inset: (x: 1.5pt, y: 1pt), stroke: 0.3pt, fill: (x, y) => if y == 0 { rgb("EAF3F4") })
-#show figure: set block(above: 2pt, below: 2pt)
-#set page(numbering: none)
-#set page(background: { for i in range(1, 3) { place(top + left, dy: 6mm, dx: 6mm + (285mm + 4mm) * i / 3 - 2.0mm, line(angle: 90deg, length: 198mm, stroke: 0.15pt + rgb("777777"))) } })
-#set par(leading: 1.5pt, spacing: 1.1pt)
-#show math.equation.where(block: true): set block(above: 2pt, below: 2pt)
+#show heading.where(level: 1): it => block(above: 3pt, below: 1.5pt, sticky: true)[#text(size: 10pt, weight: "bold", fill: rgb("174A74"), it.body)]
+#show heading.where(level: 2): it => block(above: 1.6pt, below: 1pt, sticky: true)[#text(size: 8.3pt, weight: "bold", fill: cue-color, it.body)]
+#show raw: set text(font: "Nimbus Mono PS", size: 7pt)
+#show math.equation.where(block: true): set block(above: 1.5pt, below: 1.5pt)
+#set table(inset: (x: 2pt, y: 1.5pt), align: left + horizon, stroke: 0.3pt, fill: (x, y) => if y == 0 { rgb("EAF3F4") })
+#set page(background: { for i in range(1, 3) { place(top + left, dy: 6mm, dx: 6mm + (285mm + 4mm) * i / 3 - 2mm, line(angle: 90deg, length: 198mm, stroke: 0.15pt + rgb("999999"))) } })
 
-#block(width: 100%, above: 0pt, below: 7pt)[#set par(justify: false)
-#align(center)[#text(size: 11pt, weight: "bold", fill: rgb("174A74"))[ST2334: Probability and Statistics]#h(2em)#text(size: 6.5pt)[#text(fill: cue-color)[Teal: cues] · #trap[Red: traps] · #mark[Yellow: conditions]]]]
+#align(center)[#text(size: 12pt, weight: "bold", fill: rgb("174A74"))[ST2334 · Methods, missing formulas & exam traps]]
+#v(2pt)
+#text(size: 7.5pt)[*Use with FormulaSheet_Tables.pdf.* FS = supplied sheet, *PDF page*. p1: probability/distributions; p2 §1: one mean, §2: two means/pooled variance; p3: normal/Poisson CDF; p6: $t$; pp7–12: $F$; p13: $chi^2$. Teal: cues · #trap[Red: traps] · #mark[Yellow: conditions].]
+#v(3pt)
 
 #columns(3)[
-// Lean §§1.1-1.3; examples 1.8-1.33. Basic counting formulas: supplied formula sheet.
-#heading(level: 1, numbering: none)[1. Events and counting strategies]
-$S$: sample space; $A,B,C$: events; $A^c$: complement; $A inter B$: both; $A union B$: either. $P(A)=abs(A)/abs(S)$ requires #mark[equally likely outcomes]; counts need not be equally likely even when sequences are.
+// Lean §§1.1-1.3; examples 1.8-1.33.
+= 1. Counting: choose the experiment
+#fs[p1 · Counting and events]
+== Model first
+Order matters → permutations; irrelevant → combinations. Consecutive objects → block, then arrange inside. Alternating types → fill fixed slots. Successive stages → multiply; disjoint cases → add. Restrictions → all minus forbidden.
 
-#strong[Choose a counting model:] #mark[Order matters] → permutations; #mark[order irrelevant] → combinations. Successive stages with fixed choice counts → multiply counts; disjoint cases → add counts. With replacement, $r$ ordered draws from $n$ choices give $n^r$. Consecutive objects → one block, then arrange within; alternating types → fix slots first. Identical objects → divide arrangements by factorials of repetition counts.
+#trap[Equally likely sequences need not give equally likely counts.]
 
-#strong[Restrictions:] Try all minus forbidden. “At least one” → $1-P("none")$. Example: #mark[15 picks without replacement] from 200 functions, 8 buggy:
-$P("at least one bug")=1-binom(192,15)/binom(200,15)$.
-For exactly $j$ buggy, use $binom(8,j)binom(192,15-j)/binom(200,15)$ ($j=0,...,8$). #trap[This is not a binomial experiment: draws are dependent.]
+== Without replacement: count subsets
+*Example:* 15 picks from 200 functions, 8 buggy. Let $J$ count bugs:
+$P(J>=1)=1-binom(192,15)/binom(200,15)$; exactly $j$ bugs: $binom(8,j)binom(192,15-j)/binom(200,15)$, $j=0,...,8$.
+#trap[Dependent draws: do not use a binomial model.]
 
-#strong[Overlaps:] $P(A union B)=P(A)+P(B)-P(A inter B)$. Three events: singles minus pairs plus triple. Disjoint positive-probability events cannot be independent. De Morgan: $(A union B)^c=A^c inter B^c$, $(A inter B)^c=A^c union B^c$.
+== Birthday paradox: any matching pair
+$k$ independent items; $m$ equally likely slots; $k<=m$:
+$ P("any collision")=1-product_(i=0)^(k-1)(1-i/m). $
+50% threshold $k approx 1.18sqrt(m)$; union-bound estimate $binom(k,2)/m$ (cap at 1).
 
-#strong[Birthday versus target:] $k$ independent items in $m$ equally likely slots ($k<=m$):
-$P("any collision")=1-product_(i=0)^(k-1)(1-i/m)$.
-50% near $k=1.18sqrt(m)$. Collision with *one fixed target* instead has probability $1-(1-1/m)^k$; needs order $m$ attempts. Union bound: $P(union.big_i A_i)<=sum_i P(A_i)$ without independence; any-collision bound $binom(k,2)/m$.
+For $k/m$ small: $P("any match") approx 1-e^(-k(k-1)/(2m))$. Independent uniform birthdays, no leap days: #mark[23 people → 50.7% chance of a match] (22 → 47.6%); $binom(23,2)=253$ pairs. If $k>m$, a match is certain.
+
+Collision with *one fixed target*: $1-(1-1/m)^k$; needs order $m$ attempts, versus $sqrt(m)$ for any pair.
 
 // Lean §§1.4-1.6; examples 1.34-1.45.
-#heading(level: 1, numbering: none)[2. Conditioning and independence]
-#strong[Reduced sample space:] $P(B divides A)=P(A inter B)/P(A)$, requiring $P(A)>0$.
+= 2. Conditioning: choose the denominator
+#fs[p1 · Conditional probability and independence]
+== Bayes workflow
+Partition into disjoint exhaustive causes → prior × likelihood → normalize over causes.
 
-#strong[Chain before independence:]
-$P(A inter B inter C)=P(A)P(B divides A)P(C divides A inter B)$.
-If $B perp C$ *given* $A$, the final factor becomes $P(C divides A)$; #trap[count $P(A)$ once]. #trap[Ordinary independence need not survive conditioning.] For $A perp B$, $P(A inter B)=P(A)P(B)$; all complement pairings remain independent.
+*Flag example:* bug prior 0.01; sensitivity 0.75; false-positive rate 0.0001:
+$ P("bug" divides "flag")=frac(0.01 times 0.75,0.01 times 0.75+0.99 times 0.0001) approx 0.987. $
+#trap[Sensitivity is not the posterior probability.]
 
-#strong[Total probability → Bayes:] Partition $S$ into disjoint exhaustive cases $A_i$; $k$ selects one case:
-$ P(B)=sum_i P(A_i)P(B divides A_i), quad P(A_k divides B)=frac(P(A_k)P(B divides A_k),P(B)). $
-Two cases: $P(B)=P(A)P(B divides A)+P(A^c)P(B divides A^c)$.
+== Independence pitfalls
+Chain rule first. Conditional independence given $A$ → count $P(A)$ once. Ordinary independence may disappear after conditioning. Simpson's paradox: subgroup weights can reverse aggregate comparisons.
 
-#strong[Base-rate example (1.44):] Bug prior $0.01$, flag sensitivity $0.75$, false-positive rate $0.0001$:
-$P("bug" divides "flag")=frac(0.01 times 0.75,0.01 times 0.75+0.99 times 0.0001) approx 0.987$.
-#trap[Sensitivity is not the posterior probability]. Simpson's paradox: subgroup comparisons may reverse in the aggregate because subgroup weights differ.
+// Lean §§2.1-2.3; examples 2.18,2.23-2.35.
+= 3. CDFs, transformations & moments
+#fs[p1 · One random variable]
+== Small f versus capital F
+*f*: mass (discrete) / density (continuous). *F*: accumulated probability. Continuous point probability is zero; density may exceed 1. Relations → FS p1.
 
-// Lean chapter 2; examples 2.4,2.18,2.23-2.35; independent minima: example 3.15.
-#heading(level: 1, numbering: none)[3. CDFs, expectations and transformations]
-$X$ is a random variable, $x$ its value, $f_X$ its PMF/PDF, $F_X (x)=P(X<=x)$ its CDF. CDF: nondecreasing, right-continuous, limits 0 and 1. A density may exceed 1; only its *integral* is probability. Discrete: countable values; continuous: $P(X=x)=0$, so endpoints do not matter.
+== Integer endpoints
+Integer $X$; integer bounds $a<=b$:
+$ P(a<=X<=b)=F_X (b)-F_X (a-1), $
+$P(X>a)=1-F_X (a)$. “At least” → previous integer before upper-tail lookup (FS p3). Noninteger support → previous support point / left limit.
 
-#strong[Integer endpoints:] For integer $a<=b$,
-$P(a<=X<=b)=F_X (b)-F_X (a-1)$;
-$P(X>=a)=1-F_X (a-1)$, $P(X>a)=1-F_X (a)$.
-For general discrete support replace $F_X (a-1)$ by the left limit $F_X (a^-)$. Jump $F_X (x)-F_X (x^-)=P(X=x)$.
+== Transform first, then differentiate
+$Y=g(X)$ → $F_Y (y)=P(g(X)<=y)$. Solve on the support; split cases for nonmonotone $g$, then differentiate (FS).
 
-#strong[Continuous / transform:] $f_X (x)=frac(d F_X (x),d x)$ where differentiable. To find the law of $Y=g(X)$, start with $F_Y (y)=P(g(X)<=y)$, solve the inequality within the support, then differentiate if appropriate. A quantile $x_p$ solves $F_X (x_p)=p$ when unique. Uniform in area does not mean uniform radius: radial distance $R$ in an annulus $2<=R<=5$ gives $F_R (r)=(r^2-4)/21$ on $[2,5]$ and $R=sqrt(4+21U)$ for $U tilde U(0,1)$.
+*Uniform area ≠ uniform radius:* annulus $2<=R<=5$:
+$F_R (r)=(r^2-4)/21$ on $[2,5]$; generate $R=sqrt(4+21U)$ with dimensionless $U tilde U(0,1)$; $R,r$: radius.
 
-#strong[Average a function $g$ directly:] $E(g(X))=sum_x g(x)f_X (x)$ or $integral g(x)f_X (x) dif x$. #mark[Linearity needs no independence]. $V(X)=E(X^2)-E(X)^2$, $V(a X+b)=a^2V(X)$ for constants $a,b$. For nonlinear $g$, $V(g(X))=E(g(X)^2)-E(g(X))^2$; #trap[not $g(V(X))$]. SD has $X$'s units; variance has squared units.
-For nonnegative integer $X$, $E(X)=sum_(j=1)^oo P(X>=j)$; for nonnegative continuous $T$, $E(T)=integral_0^oo P(T>t) dif t$.
+== Moments / tail shortcut
+Average $g(X)$ and $g(X)^2$ using FS expectation/variance. #mark[Linearity needs no independence.] Nonlinear $g$: #trap[variance is not $g(V(X))$]. SD has observation units; variance has squared units.
 
-#strong[Slowest / fastest:] Independent $X_i$ with CDFs $F_i$, $i=1,...,m$; $M=max_i X_i$, $L=min_i X_i$:
-$P(M<=t)=product_i F_i (t), quad P(L>t)=product_i [1-F_i (t)]$.
-Two replicas each miss with probability $0.01$: first reply misses with probability $10^(-4)$; twice the load. #trap[Common failures invalidate the product.]
+Nonnegative $T$ with finite mean:
+$E(T)=integral_0^oo P(T>t) dif t$.
 
-// Lean §2.4 and examples 2.7,2.9; distinct application concepts, absent from supplied sheet.
-#strong[Size bias / inspection paradox:] Sampling an item overrepresents large groups or long gaps compared with sampling a group/gap uniformly. #mark[Identify the sampling unit] before averaging.
-#strong[Entropy:] $H(X)=-sum_x f_X (x)log_2 f_X (x)$ bits (discrete); take $0 log_2 0=0$. Uniform probabilities maximize $H=log_2 m$ for $m$ possible values.
-#strong[Named PMFs:] Zipf rank $x=1,...,m$: $f(x)=c/x$, $c=1/sum_(j=1)^m (1/j)$; $m$ is item count. Benford leading digit $D$: $P(D=d)=log_10(1+1/d)$, $d=1,...,9$. #trap[Benford is not universal]; it applies to suitable scale-spanning data.
+// Lean §§3.1-3.4; examples 3.13,3.15.
+= 4. Joint laws: support before algebra
+#fs[p1 · Joint distributions]
+== Integration workflow
+Sketch support → normalize → intersect event → integrate. Marginal: remove variable. Conditional: renormalize slice; marginal positive.
 
-// Lean §§3.1-3.4; examples 3.6-3.13. Marginal/conditional formulas also supplied.
-#heading(level: 1, numbering: none)[4. Joint distributions and support]
-#strong[Workflow:] Sketch support → normalize ($sum sum f=1$ or $integral integral f=1$) → intersect support with event → sum/integrate using those limits. Marginalize by removing the other variable; condition by fixing a slice and renormalizing. Limits may depend on the fixed value.
-$ f_X (x)=integral f_(X,Y)(x,y) dif y, quad f_(Y divides X)(y divides x)=frac(f_(X,Y)(x,y),f_X (x)). $
-Use sums for discrete variables; conditional ratio needs $f_X (x)>0$. $E(Y divides X=x)$ is the *regression function*: the conditional mean and best mean-squared-error predictor of $Y$ given $X=x$ (finite second moment).
+*Slice example:* $f(x,y)=12x(x+y)/13$ on $(0,1) times (1,2)$. At $x=0.5$, conditional density $(0.5+y)/2$ on $(1,2)$ gives $P(Y<=1.5 divides X=0.5)=7/16$.
+Conditional mean = regression function / best mean-squared-error predictor (finite second moment).
 
-#strong[Worked slice (3.13):] $f(x,y)=12x(x+y)/13$ on $0<x<1$, $1<y<2$; 0 otherwise. Then $f_X (x)=12x(x+1.5)/13$ and $f_(Y divides X)(y divides x)=(x+y)/(x+1.5)$ on the slice. At $x=0.5$, $P(Y<=1.5 divides X=0.5)=integral_1^(1.5)(0.5+y)/2 dif y=7/16$.
+== Factorization also needs product support
+#mark[No forbidden pairs:] separate normalized factors identify independent marginals. #trap[A factorized expression on triangular support is insufficient.]
 
-#strong[Independence check:] Require $f_(X,Y)(x,y)=f_X (x)f_Y (y)$ for all pairs. Factorization $C g(x)h(y)$ suffices only on #mark[*product support*] (no forbidden pairs). #trap[A factorized expression on triangular support is insufficient.]
+*Example:* $x>0,y>0$, density zero elsewhere:
+$ 2e^(-4x-y/2)=(4e^(-4x))(1/2 e^(-y/2)). $
+Rates multiply to 2 → independent $X tilde "Exp"(4)$, $Y tilde "Exp"(1/2)$. FS moments: $E(X)=1/4$, $V(X)=1/16$; $E(Y)=2$, $V(Y)=4$.
 
-#strong[Covariance / correlation:] $"Cov"(X,Y)=E(X Y)-E(X)E(Y)$; independence implies zero covariance, #trap[not conversely].
-$V(a X+b Y)=a^2V(X)+b^2V(Y)+2 a b"Cov"(X,Y)$.
-Independent sums *and differences* add variances. For many variables,
-$V(sum_i X_i)=sum_i V(X_i)+2sum_(i<j)"Cov"(X_i,X_j)$.
-$rho="Cov"(X,Y)/(sigma_X sigma_Y)$, where $sigma_X,sigma_Y$ are positive SDs: unit-free linear association, $-1<=rho<=1$. $rho=plus.minus 1$ means a perfect linear relation; zero correlation does not mean independence or no nonlinear relationship.
+== More than two variables
+For variables $X_i$, $i=1,...,m$, with finite variances:
+$ V(sum_i X_i)=sum_i V(X_i)+2sum_(i<j)"Cov"(X_i,X_j). $
+Zero covariances → add variances. Correlation measures *linear* association; $rho=plus.minus 1$ means perfect linear relation (positive SDs).
 
-// Lean chapter 4; full PMF/PDF, mean and variance table is on the supplied sheet.
-#heading(level: 1, numbering: none)[5. Distribution choice and conventions]
-$p$: success probability; $q=1-p$; $n$: fixed number of trials; $k$: target successes. Bernoulli process requires #mark[independent trials with the same $p$].
-#table(columns: (1fr,1.5fr),
-  table.header([*Question*], [*Model / trap*]),
-  [Equiprobable values $x_1,...,x_m$], [Discrete uniform; PMF $1/m$],
-  [Constant density on $[a,b]$], [Uniform$(a,b)$; prob. $="length"/(b-a)$],
-  [One success/failure trial], [Bernoulli$(p)$],
-  [Successes in $n$ trials], [Binomial$(n,p)$; fixed $n$],
-  [Trials through first success], [Geometric$(p)$; $x>=1$],
-  [Trials through $k$th success], [NB$(k,p)$; $x>=k$],
-  [Events in a fixed window], [Poisson$(r t)$; rate $r$, duration $t$],
-  [Wait for next Poisson event], [Exponential$(r)$; mean $1/r$],
+== Fastest / slowest of independent variables
+$F_i$: CDF of $X_i$; $L=min_i X_i$, $M=max_i X_i$:
+$ P(M<=t)=product_i F_i (t), quad P(L>t)=product_i [1-F_i (t)]. $
+Independent exponentials, rates $lambda_i>0$ → $L tilde "Exp"(sum_i lambda_i)$.
+Two replicas each miss with probability 0.01 → first reply misses with probability $10^(-4)$. #trap[Shared failures invalidate the product.]
+
+// Lean chapter 4; CDF/quantile entries derived from the listed families.
+= 5. Distribution recognition & extra patterns
+#fs[p1 · Common distributions; Poisson process and approximations]
+== Choose what is counted
+0/1 trial → Bernoulli; successes → Binomial; trials to first / $k$th success → Geometric / NB; fixed-window events → Poisson; next-event wait → Exponential. Equal listed values / constant interval density → discrete / continuous uniform.
+
+Binomial/Geometric/NB need #mark[independent trials, same success probability]. NB: final trial succeeds.
+
+== Discrete uniform on arbitrary values
+FS p1 assumes $1,...,m$. For any $m$ equally likely values $x_i$ ($m$: count; $mu$: mean):
+$mu=sum_i x_i/m$, $V(X)=sum_i x_i^2/m-mu^2$. Binomial with one trial = Bernoulli; NB with one target = Geometric.
+
+== Conventions that change answers
+*Trials versus failures:* R counts failures; subtract target successes from lecture variable. Shift mean/support, keep variance.
+
+*Rate/scale:* $lambda>0$: inverse time; $beta=1/lambda$: mean/scale. Larger rate → shorter wait. Poisson parameter: expected *count*, rescale window. Memorylessness → FS p1.
+
+*Normal:* symmetric about $mu$; inflections $mu plus.minus sigma$. Second parameter: *variance*. Normal mean ≠ normal raw data.
+
+#block(breakable: false)[
+== CDF / inverse patterns absent from FS
+$F$: CDF; $x_p$: quantile, $0<p<1$; $Phi$: standard normal CDF. $a<b$: bounds; $mu$: mean; $sigma>0$: SD. All except $p,F,Phi$ have observation units; rate $lambda$: inverse units.
+#table(columns: (0.8fr, 1.2fr, 1fr),
+  table.header([*Law*], [*$F(x)$ on support*], [*$x_p$*]),
+  [Uniform], [$ (x-a)/(b-a) $], [$ a+p(b-a) $],
+  [Exp.], [$ 1-e^(-lambda x) $], [$ -ln(1-p)/lambda $],
+  [Normal], [$ Phi((x-mu)/sigma) $], [$ mu+sigma Phi^(-1)(p) $],
 )
-For arbitrary uniform values, $E(X)=sum_i x_i/m$, $V(X)=sum_i x_i^2/m-E(X)^2$. For NB, trial $x$ must succeed; first $x-1$ trials have $k-1$ successes → $binom(x-1,k-1)p^k q^(x-k)$. If a variable counts #mark[*failures*] before the $k$th success (R convention), subtract $k$ from the lecture trial-count variable; shift support/mean, keep variance. Geometric $P(X>j)=q^j$ for integer $j>=0$.
+]
+CDF is 0 below support, 1 above finite support. #trap[Match support as well as coefficients.]
 
-#strong[Rate versus count:] Poisson mean $lambda=r t$ is a count; exponential rate $r$ has inverse-time units. Rescale the window before using Poisson. Disjoint-window counts are independent in the process model. Exponential memorylessness: $P(T>s+t divides T>s)=P(T>t)$, $s,t>=0$; elapsed time does not change the remaining wait's distribution. Independent lifetimes exceeding $t$ with probability $p_t$ → survivor count Bin$(n,p_t)$; for exponential rate $r$, $p_t=e^(-r t)$.
+*Power pattern:* $c>0$ is an upper bound; $k>0$ is dimensionless shape. For $0<x<c$ (PDF zero elsewhere),
+$ f(x)=k x^(k-1)/c^k, quad F(x)=(x/c)^k, quad x_p=c p^(1/k). $
+Example: $f(x)=3x^2$ on $(0,1)$ → $F(x)=x^3$.
 
-#heading(level: 1, numbering: none)[6. Approximations and normal tails]
-#strong[Binomial → Poisson:] Large $n$, small $p$, $lambda=n p$. Small individual probabilities matter. Example: Bin$(1000,0.0001)$ → Pois$(0.1)$; $P(X>=2) approx 1-e^(-0.1)(1+0.1)=0.00468$.
+== Exponential moments: integration trick
+Final moments → FS p1. Define
+$ I_j=integral_0^oo x^j e^(-lambda x) dif x, quad I_0=1/lambda. $
+Parts: $u=x^j$, $v=-e^(-lambda x)/lambda$ gives
+$I_j=(j/lambda) I_(j-1)$, $j=1,2,...$.
+Boundary terms vanish; moments $lambda I_1$, $lambda I_2$ → FS variance. $j$: nonnegative integer; $I_j$ units: observation units to $j+1$.
 
-#strong[Binomial → normal:] If $n p>5$, $n q>5$ (guideline), use $Y tilde N(n p,n p q)$. #mark[Correct the *integer event* by 0.5] before standardizing:
-#table(columns: (1fr,1fr),
+== Approximation & continuity correction
+Approximating laws → FS p1. Poisson: *small individual probabilities*. Normal: $n p>5$, $n(1-p)>5$ (guideline), where $n$ is trials and $p$ success probability. Correct event *before* standardizing.
+
+$X$: integer count; $Y$: normal approximation; $k$: integer cutoff. Interval rule → FS p1.
+#table(columns: (1fr, 1fr),
   table.header([*Discrete event*], [*Normal event*]),
-  [$a<=X<=b$], [$a-0.5<Y<b+0.5$],
   [$X<=k$ / $X<k$], [$Y<k+0.5$ / $Y<k-0.5$],
   [$X>=k$ / $X>k$], [$Y>k-0.5$ / $Y>k+0.5$],
   [$X=k$], [$k-0.5<Y<k+0.5$],
 )
-Here $a,b,k$ are integers. Standardize using SD $sqrt(n p q)$, not variance $n p q$.
 
-#strong[Normal notation:] $X tilde N(mu,sigma^2)$ → $Z=(X-mu)/sigma tilde N(0,1)$. $Phi(z)=P(Z<=z)$; right tail $1-Phi(z)$; $Phi(-z)=1-Phi(z)$. Quantile $z_alpha$ has *upper* area $alpha$. For $P(X>x)=alpha$, solve $x=mu+sigma z_alpha$. The second parameter of $N$ is #trap[variance, not SD].
+// Lean §2.4, examples 2.7,2.9; earlier named example-bank coverage retained.
+= 6. Other lecture patterns
+== Entropy, ranks & leading digits
+Discrete entropy in bits; $m$: number of possible values:
+$H(X)=-sum_x f_X (x)log_2 f_X (x)$; $0 log_2 0=0$.
+Uniform probabilities maximize entropy at $log_2 m$.
 
-// Lean §§5.1-5.3; vault week 8 clarifies finite SRS dependence and SD vs SE.
-#heading(level: 1, numbering: none)[7. Sampling, sums and CLT]
-Population = all units/outcomes of interest; sample = selected observations. A *parameter* is a fixed population quantity; a *statistic* is a function of the sample, random before observing data. Upper case ($overline(X),S^2$) is random; lower case ($overline(x),s^2$) is observed. iid = independent, identically distributed observations. Repeated-sample law = *sampling distribution*.
+*Zipf:* rank $x=1,...,m$, normalization constant $c$:
+$f(x)=c/x$, $c=1/(sum_(j=1)^m 1/j)$.
+*Benford:* leading digit $D=d$, $d=1,...,9$:
+$P(D=d)=log_10(1+1/d)$.
+Applies to suitable scale-spanning data; not universal.
 
-#strong[Sampling design:] SRS without replacement from $N$ units gives each of the $binom(N,n)$ size-$n$ subsets equal probability; draws are dependent. With replacement from a fixed distribution gives iid draws. Large sample size cannot repair biased sampling or dependence.
+== Size bias / inspection paradox
+Items overrepresent large groups; random times overrepresent long gaps. #mark[Identify the sampling unit] before averaging.
 
-For iid $X_i$, $i=1,...,n$, with population mean $mu$, variance $sigma^2$ ($0<sigma^2<oo$), let $Q=sum_(i=1)^n X_i$ be the total:
-$ overline(X)=Q/n, quad S^2=frac(sum_(i=1)^n (X_i-overline(X))^2,n-1). $
-$ E(overline(X))=mu, quad V(overline(X))=sigma^2/n, quad "SE"(overline(X))=sigma/sqrt(n). $
-$E(Q)=n mu$, $V(Q)=n sigma^2$, $"SD"(Q)=sigma sqrt(n)$.
-$E(S^2)=sigma^2$ for iid finite variance, even if nonnormal ($n>=2$). Compute $s^2=(sum_i x_i^2-n overline(x)^2)/(n-1)$; the $n-1$ reflects one fitted mean. SD describes observations; SE is the SD of a statistic (estimated by $s/sqrt(n)$ if $sigma$ is unknown).
+// Lean §§5.1-5.3; secondary week 8 sampling-design explanation.
+= 7. Sampling, sums & CLT
+== Sampling design
+*Parameter:* fixed population quantity. *Statistic:* sample function; uppercase random, lowercase observed. iid = independent, identically distributed.
 
-#strong[Mean versus total:] Exact if population normal; approximately for large $n$ by CLT:
-$overline(X) approx N(mu,sigma^2/n)$; $Q approx N(n mu,n sigma^2)$.
-$P(overline(X)>a) approx 1-Phi((a-mu)sqrt(n)/sigma)$;
-$P(Q>b) approx 1-Phi((b-n mu)/(sigma sqrt(n)))$.
-$a,b$: mean/total thresholds; standardized statistics are unit-free.
+Without replacement: equally likely subsets, dependent draws. With replacement: iid draws. #trap[Large n cannot repair bias or dependence.]
 
-#strong[CLT versus LLN:] CLT gives an approximately normal *standardized mean*, not normal raw data. LLN gives $P(abs(overline(X)-mu)>epsilon) -> 0$ for each fixed tolerance $epsilon>0$. Neither guarantees that every successive average is closer to $mu$.
-
-#strong[How large?] Notes use $n>=30$ for large-sample inference; shape matters. Strong skew/outliers may need far more; independence and finite variance still matter. For two samples, assess *both* sizes; for pairs, count pairs.
-
-#mark[Halving SE needs $4n$], #trap[not $2n$].
-
-// Lean §§5.4-5.6; examples 5.13, 5.17, 5.20. Vault week 9: mean/variance independence.
-#block(breakable: false)[
-#heading(level: 1, numbering: none)[8. Sampling laws and tail tables]
-#strong[Notation:] $nu,m,k$ below are positive integer degrees of freedom (df); $alpha$ is a tail probability. All critical values here use *upper tails*: $P(W>w_alpha)=alpha$, so the CDF quantile is at $1-alpha$. For normal and $t$, lower cutoff is $-w_alpha$; this sign shortcut fails for $chi^2$ and $F$.
-]
-
-#strong[Chi-squared:] Independent $Z_j tilde N(0,1)$, $j=1,...,nu$:
-$ U=sum_(j=1)^nu Z_j^2 tilde chi^2(nu), quad E(U)=nu, quad V(U)=2nu. $
-Nonnegative, right-skewed. Independent chi-squared variables add df. For iid #mark[*normal*] observations,
-$U=(n-1)S^2/sigma^2 tilde chi^2(n-1)$.
-Also $overline(X) perp S^2$ under normal sampling. #trap[Unbiased $S^2$ alone does not imply a chi-squared law.]
-
-#strong[Variance-tail example (5.13):] $n=6$, $sigma^2=4$ $"ms"^2$. Find $c$ with $P(S^2>c)=0.05$:
-$5c/4=chi^2(5;0.05)=11.07 arrow.r c=8.856 " ms"^2$.
-For $P(S^2<c)=0.05$, use the upper-tail $0.95$ cutoff instead.
-
-#strong[Student's t:] If $Z tilde N(0,1)$ and $U tilde chi^2(nu)$ are independent,
-$T=Z/sqrt(U/nu) tilde t(nu)$.
-Symmetric, heavier tails than normal; approaches normal as $nu$ grows. Under iid normal sampling,
-$ T=frac(sqrt(n)(overline(X)-mu),S) tilde t(n-1). $
-Exact for normal samples, any $n>=2$; estimated $sigma$ makes the denominator random.
-
-#strong[F ratio:] Independent $U tilde chi^2(m)$, $V tilde chi^2(k)$:
-$F=(U/m)/(V/k) tilde F(m,k)$.
-For two independent normal samples,
-$(S_1^2/S_2^2)(sigma_2^2/sigma_1^2) tilde F(n_1-1,n_2-1)$.
-#mark[Numerator df comes first]. #trap[Reverse the ratio → swap df].
-$F(m,k;1-alpha)=1/F(k,m;alpha)$.
-
-
-// Lean §§6.1-6.5,7.3,7.6-7.7; vault weeks 10-12.
-// SE table is deliberately retained despite supplied formulas: shared CI/test selection.
-#heading(level: 1, numbering: none)[9. Choose one method for CI and test]
-Let $theta$ be the target population mean/difference; $hat(theta)$ its observed estimate; $theta_0$ its null value; $e$ the observed standard error; $c$ the critical value. One shared calculation:
-$ "CI": hat(theta) plus.minus c e, quad w=frac(hat(theta)-theta_0,e). $
-Here $z$ denotes the standard normal reference law. For a $100(1-alpha)%$ two-sided CI, use $c=z_(alpha/2)$ or $t_(nu;alpha/2)$ according to the row. Use the #mark[*same* SE and reference law] for the test. $w$ is the observed unit-free statistic.
-
-#strong[One mean:] $theta=mu$, $hat(theta)=overline(x)$.
-#block(breakable: false)[#table(columns: (1.8fr, 1fr, 0.9fr),
-  table.header([*Conditions*], [*$e$*], [*Law*]),
-  [Known $sigma$; normal or large $n$], [$sigma/sqrt(n)$], [$z$],
-  [Unknown $sigma$; normal], [$s/sqrt(n)$], [$t(n-1)$],
-  [Unknown $sigma$; large $n$], [$s/sqrt(n)$], [Approx. $z$],
-)]
-#trap[Known $sigma$ alone does not justify a small nonnormal sample]. Given variance → take its square root for SD.
-
-#block(breakable: false)[
-#strong[Two independent means:] $theta=mu_1-mu_2$, $hat(theta)=overline(x)_1-overline(x)_2$. For group $j=1,2$, $n_j$ is its size, $s_j^2$ its sample variance, $sigma_j^2$ its population variance.
-#table(columns: (1.6fr, 1.4fr, 0.9fr),
-  table.header([*Conditions*], [*$e$*], [*Law*]),
-  [Known variances; normal or both large], [$sqrt(sigma_1^2/n_1+sigma_2^2/n_2)$], [$z$],
-  [Unknown, unequal; both large], [$sqrt(s_1^2/n_1+s_2^2/n_2)$], [Approx. $z$],
-  [Unknown, equal; normal], [$s_p sqrt(1/n_1+1/n_2)$], [$t(n_1+n_2-2)$],
-  [Unknown, equal; both large], [$s_p sqrt(1/n_1+1/n_2)$], [Approx. $z$],
+== Mean versus total
+$X_i$, $i=1,...,n$: iid observations; population mean $mu$, variance $sigma^2>0$; $Q$: total; $S^2$: sample variance.
+$overline(X)=Q/n$, $Q=sum_(i=1)^n X_i$; $S^2=sum_i (X_i-overline(X))^2/(n-1)$.
+#table(columns: (0.8fr, 1fr, 1fr),
+  table.header([*Statistic*], [*Mean*], [*Variance*]),
+  [$overline(X)$], [$mu$], [$ sigma^2/n $],
+  [$Q$], [$n mu$], [$n sigma^2$],
 )
-]
-$ s_p^2=frac((n_1-1)s_1^2+(n_2-1)s_2^2,n_1+n_2-2), quad s_p=sqrt(s_p^2). $
-Pool #mark[*variances*, weighted by df], not SDs or an unweighted average. Equal population variance must be justified; the notes' $1/2<=s_1/s_2<=2$ is only a rough diagnostic. Normal pooled $t$ is exact even if a sample is large. Small, unequal-variance samples are outside the listed lecture procedures; #trap[do not silently pool].
+Normal population → exact; otherwise CLT approximation (large $n$, finite variance).
 
-#strong[Matched pairs:] Same subject/unit twice or meaningful matching → define $D_i=X_i-Y_i$ consistently; $n$ is the *number of pairs*. Analyze the one sample of differences:
-$ theta=mu_D=mu_1-mu_2, quad hat(theta)=overline(d)=sum_(i=1)^n d_i/n, $
-$ s_D^2=frac(sum_(i=1)^n(d_i-overline(d))^2,n-1), quad e=s_D/sqrt(n). $
-Use $t(n-1)$ for normal differences, or approximate $z$ for large $n$. Pairs must be independent across $i$; dependence within a pair is allowed. Normality applies to *differences*. #trap[Do not replace $s_D^2$ by $s_1^2+s_2^2$]: covariance matters.
+For mean threshold $a$ or total threshold $b$:
+$ P(overline(X)>a) approx 1-Phi((a-mu)sqrt(n)/sigma), $
+$ P(Q>b) approx 1-Phi((b-n mu)/(sigma sqrt(n))). $
+#trap[Standardize with SD, never variance.]
 
-#strong[Units:] Estimates, SE and CI endpoints use response units; variances use squared units; df and probabilities are unit-free.
+== SD, SE & sample variance
+SD: observation spread. SE: SD of a statistic.
+$ "SE"(overline(X))=sigma/sqrt(n), quad E(S^2)=sigma^2, $
+$ s^2=(sum_i x_i^2-n overline(x)^2)/(n-1). $
+$x_i,overline(x),s^2$: observed data, mean, variance; $s$ estimates $sigma$. Unbiased variance needs iid finite variance, not normality.
 
-// Lean §§6.1-6.4; examples 6.7,6.11,6.17.
-#heading(level: 1, numbering: none)[10. Estimation and precision]
-An estimator $hat(Theta)$ is *unbiased* for fixed $theta$ if $E(hat(Theta))=theta$. Among unbiased estimators, lower variance is preferable. Example: $X_i tilde U(0,theta)$ gives $E(overline(X))=theta/2$, so $2overline(X)$ estimates $theta$ without bias. $overline(X)$ estimates $mu$; $S^2$ estimates $sigma^2$.
+== CLT versus LLN
+CLT: standardized mean → normal. LLN: tolerance $epsilon>0$,
+$P(abs(overline(X)-mu)>epsilon)->0$ as $n->oo$.
+Neither guarantees improvement each step. Large $n>=30$ is a guideline; skew/tails may need more. Check both groups; count pairs. #mark[Half the SE → four times n.]
 
-#strong[CI interpretation:] In repeated random samples, a $100(1-alpha)%$ CI procedure covers the fixed parameter a proportion $1-alpha$ of the time. The realized endpoints are fixed; do not assign this probability to the parameter after seeing the interval. A CI for the *mean* is not a range containing that proportion of individual observations.
+// Lean §§5.4-5.6; normal-sample independence from secondary week 9.
+= 8. Sampling laws & table direction
+#fs[p6 · t; pp7–12 · F; p13 · chi-squared]
+== Upper tails and degrees of freedom
+$w_alpha$: upper-tail cutoff, area $alpha$ (CDF $1-alpha$). $nu,m,k$: positive integer df. Normal/$t$: negate for lower cutoff. #trap[Do not negate chi-squared/F cutoffs.]
 
-#strong[Margin / sample size:] For known $sigma$, normal or sufficiently large $n$, margin $E=z_(alpha/2)sigma/sqrt(n)$. To target margin $E_0>0$,
+== Chi-squared: sums of squares / variance
+Independent $Z_j tilde N(0,1)$, $j=1,...,nu$:
+$ U=sum_(j=1)^nu Z_j^2 tilde chi^2(nu), quad E(U)=nu, quad V(U)=2nu. $
+Nonnegative, right-skewed (not necessarily mostly above mean). $E(Z_j^2)=1$, $E(Z_j^4)=3$ → variance of each square 2. Large $nu$: $(U-nu)/sqrt(2nu) approx N(0,1)$.
+Independent chi-squared laws add df. iid #mark[normal] data:
+$ (n-1)S^2/sigma^2 tilde chi^2(n-1), quad overline(X) perp S^2. $
+Deviations sum to zero → $n-1$ df. Scaling removes units, not unknown variance.
+#trap[Unbiased sample variance alone does not imply this law.]
+
+*Example:* $n=3$, $s^2=6$, $sigma^2=4$ → statistic 3, df 2. Lower-tail 5% needs upper-tail 95%, #trap[not the 5% column]. FS p13 lists only upper tails 5%, 1%, 0.1%.
+
+== Student's t: normal / estimated scale
+Independent $Z tilde N(0,1)$ and $U tilde chi^2(nu)$:
+$T=Z/sqrt(U/nu) tilde t(nu)$.
+Real-valued, symmetric about zero. Small random SD → extreme ratios / heavier tails.
+$ E(T)=0 quad (nu>1), quad V(T)=nu/(nu-2) quad (nu>2). $
+Mean undefined for $nu<=1$; no finite variance for $nu<=2$. Large $nu$ → normal; prefer actual $t$ cutoffs.
+
+One-sample statistic → FS p2 §1; exact for normal data, $n>=2$, df $n-1$. Central $1-alpha$: $plus.minus t_(nu;alpha/2)$; upper tail $alpha$: $t_(nu;alpha)$.
+
+== F: ratio of scaled chi-squared variables
+Independent $U tilde chi^2(m)$, $V tilde chi^2(k)$:
+$(U/m)/(V/k) tilde F(m,k)$.
+Nonnegative, right-skewed; divide each component by *its own df*. Dimensionless $W tilde F(m,k)$:
+$E(W)=k/(k-2)$ for $k>2$;
+$ V(W)=frac(2k^2(m+k-2),m(k-2)^2(k-4)) quad (k>4). $
+#mark[Denominator df k] controls moments: no finite mean if $k<=2$; no finite variance if $k<=4$.
+Independent normal samples; sizes $n_1,n_2$, variances $sigma_1^2,sigma_2^2$:
+$ (S_1^2/S_2^2)(sigma_2^2/sigma_1^2) tilde F(n_1-1,n_2-1). $
+Raw variance ratio has this law only for equal population variances.
+#mark[Numerator df first.] Reciprocate ratio → swap df:
+$F(m,k;1-alpha)=1/F(k,m;alpha)$.
+Here $F(m,k;alpha)$ denotes an upper-tail critical value.
+
+// Lean chapters 6-7; all supplied mean SE/CI/test formulas replaced by references.
+= 9. Select the inference method
+#fs[p2 §1 · One mean; p2 §2 · Independent means]
+== Design → FS table
+One sample → §1; independent groups → §2; matched/repeated → differences, then §1. Check each group size; count *pairs*.
+
+== Known SD? Normal? Equal variances?
+Known SD → $z$ if normal or large. Unknown SD + normal → exact $t$; large nonnormal → approximate $z$ per notes. #trap[Known SD alone does not justify small nonnormal samples.]
+
+Pooling needs *equal population variances*. Weight variances by df; do not pool SDs. SD ratio between 1/2 and 2 is only a rough diagnostic. Normal pooled $t$ stays exact for large samples too.
+
+#trap[Small unequal-variance groups: do not silently pool.]
+
+== Pairs / nonzero null difference
+Fix subtraction direction; pairs independent across subjects; normality concerns *differences*. Within-pair covariance prevents adding group variances blindly.
+
+For null mean difference $delta_0$, replace the FS zero-null numerator by $(overline(x)_1-overline(x)_2)-delta_0$; keep its SE and reference law.
+
+// Lean §§6.1-6.5; proportion/variance CIs from secondary week 10.
+= 10. Estimation & precision
+== Unbiasedness / interpretation
+Unbiased estimator $hat(Theta)$ of fixed $theta$: $E(hat(Theta))=theta$. Compare variance *among unbiased estimators*.
+
+*Example:* $X_i tilde U(0,theta)$ → sample mean has mean $theta/2$; use $2overline(X)$ to estimate $theta$ without bias.
+
+95% CI: procedure covers fixed parameter in 95% of repeated samples. Realized interval is fixed. #trap[Not a range for 95% of observations.]
+
+== Required sample size: one mean
+Known $sigma$; normal or large sample. Margin $E_0>0$; confidence $100(1-alpha)%$:
 $ n_min=ceil((z_(alpha/2)sigma/E_0)^2). $
-$ceil(dot)$ means round up to the next integer. $E,E_0,sigma$ have response units. Unknown $sigma$ → prior/pilot planning SD. Higher confidence → wider CI; larger $n$ → narrower CI; halving margin needs $4n$.
+$z_(alpha/2)$: upper-tail normal cutoff; $ceil(dot)$: round up. $E_0,sigma$: response units. Unknown SD → pilot/prior estimate. Higher confidence → wider CI; half margin → four times $n$.
 
+== Proportion CI / planning (vault)
+$X$: successes in $n$ iid Bernoulli trials; $p$: success probability; $hat(p)=X/n$. With roughly $n hat(p),n(1-hat(p))>=5$:
+$ hat(p) plus.minus z_(alpha/2)sqrt(hat(p)(1-hat(p))/n). $
+Approximate $100(1-alpha)%$ CI; #trap[poor near 0/1 or small counts]. For dimensionless margin $E_0$:
+$ n_min=ceil(z_(alpha/2)^2 p_*(1-p_*)/E_0^2). $
+$p_*$: prior estimate (0.5 conservative); approximate planning, not exact coverage.
 
-
-#strong[One-mean CI (6.11):] Normal memory usage, $n=7$, $overline(x)=10$ GB, #mark[$s^2=0.08$] $"GB"^2$:
-$10 plus.minus t_(6;0.025) sqrt(0.08)/sqrt(7) = 10 plus.minus 0.262 = (9.738,10.262) " GB"$.
-Use $s=sqrt(0.08)$, not $0.08$.
-
-// Secondary vault week 10: approximate Wald interval for a Bernoulli proportion.
-#strong[Proportion CI (vault):] $X$ successes in $n$ iid Bernoulli trials, $hat(p)=X/n$; $p$ is the population success probability. With enough successes and failures (roughly $n hat(p),n(1-hat(p))>=5$), approximate $100(1-alpha)%$ CI:
-$hat(p) plus.minus z_(alpha/2)sqrt(hat(p)(1-hat(p))/n)$.
-#trap[Poor near 0/1 or with small counts]. Target dimensionless margin $E_0$: $n=ceil(z_(alpha/2)^2 p_*(1-p_*)/E_0^2)$, with prior estimate $p_*$, or conservative $p_*=0.5$ if unknown. #trap[Approximate planning, not exact coverage].
-
-
-// Secondary vault week 10 extension; derived from authoritative §5.4 pivot.
 #block(breakable: false)[
-#strong[Variance CI (normal iid only):] A quick inversion of the $chi^2$ pivot gives
-$ (frac((n-1)s^2,chi^2(n-1;alpha/2)), frac((n-1)s^2,chi^2(n-1;1-alpha/2))). $
-This is a $100(1-alpha)%$ CI for $sigma^2$; take square roots for a CI for $sigma$. #mark[Larger critical value] goes in the #mark[*lower* endpoint's denominator]. No symmetric $plus.minus$ form.
+== Variance CI: normal iid only
+$n$: sample size; $s^2$: observed variance. Let $q_gamma=chi^2(n-1;gamma)$ be the *upper-tail* cutoff. A $100(1-alpha)%$ CI for $sigma^2$ is
+$ ( (n-1)s^2/q_(alpha/2), (n-1)s^2/q_(1-alpha/2) ). $
+#mark[Larger cutoff in the lower endpoint's denominator.] Take square roots for a CI for SD. No symmetric ± form.
 ]
 
-// Lean §§7.1-7.8; examples 7.6-7.9,7.15; vault weeks 11-12 for interpretation.
-// Example 7.8 p-value recomputed from s^2=6.5 (0.0062445); source rounds to 0.0063.
-#heading(level: 1, numbering: none)[11. Hypothesis tests: direction and evidence]
-State the target and hypotheses about *parameters*, choose $alpha$ and direction before seeing the result, check model/design, compute $w$ using §9, then report the $p$-value and a conclusion in context. Under $H_0:theta=theta_0$, let $W$ have the selected standard normal or $t(nu)$ law. Let $G(w)=P(W<=w)$ and $w_gamma$ satisfy $P(W>w_gamma)=gamma$.
+// Lean §§7.1-7.8; examples 7.7-7.8 and 7.15.
+= 11. Hypothesis tests: direction & evidence
+== Procedure
+State parameter and hypotheses → choose direction/$alpha$ → check assumptions → FS statistic → tail area → conclusion in context.
 
-#table(columns: (0.7fr, 1fr, 1.3fr),
-  table.header([*$H_1$*], [*Reject if*], [*$p$-value*]),
+$theta$: parameter; $theta_0$: null value; $w$: observed statistic; $G$: CDF of its null law ($z$ or $t$); $w_gamma$: upper-tail cutoff of area $gamma$.
+#block(breakable: false)[
+#table(columns: (0.9fr, 1.1fr, 1.1fr),
+  table.header([*$H_1$*], [*Reject if*], [*p-value*]),
   [$theta>theta_0$], [$w>w_alpha$], [$1-G(w)$],
-  [$theta<theta_0$], [$w<-w_alpha$], [$G(w)$],
+  [$theta<theta_0$], [$w < -w_alpha$], [$G(w)$],
   [$theta!=theta_0$], [$abs(w)>w_(alpha/2)$], [$2(1-G(abs(w)))$],
 )
-The notes use strict rules: reject if $p<alpha$; otherwise #mark[*fail to reject*]. #mark[Keep the signed $w$] for a one-sided test. If evidence points opposite $H_1$, the one-sided $p$-value exceeds $0.5$; #trap[do not halve a two-sided $p$-value blindly].
+]
+Reject if p-value $<alpha$; else *fail to reject*. One-sided: keep sign; opposite-direction evidence → p-value above 0.5.
 
-#strong[Critical-value check:] At 5% two-sided, $z_(alpha/2)=1.960$; at 5% one-sided, $z_alpha=1.645$. At 1% two-sided use $z_0.005=2.576$, not $z_0.01=2.326$. For $t$, use the correct df and tail column.
+== CI ↔ two-sided test
+Same model, SE, df: level-$alpha$ two-sided test rejects iff $100(1-alpha)%$ CI excludes null; boundary included. #trap[95% two-sided CI does not match 5% one-sided test.]
 
-#strong[CI ↔ test:] A #mark[matching two-sided] level-$alpha$ test rejects iff the $100(1-alpha)%$ CI excludes $theta_0$ (same model, SE and df). Boundary is included under the notes' strict rejection rule. A 95% two-sided CI matches a 5% two-sided test, not a 5% one-sided test.
+== What a p-value does not mean
+Under null: chance of results at least as extreme in chosen direction(s). Not probability null is true or effect size. Failure to reject ≠ no effect; significance ≠ practical importance.
 
-#strong[What the p-value says:] Under $H_0$, probability of a statistic at least as extreme in the specified direction(s). It is not $P(H_0 " true" divides "data")$, not an effect size, and not the probability that the result was due to chance. Failure to reject is insufficient evidence against $H_0$; #trap[it does not prove no effect]. Statistical significance alone does not show practical importance.
+== Worked paired test
+After minus before: 8 independent normal differences, mean 24.25, SD 25.39 requests/s. Test zero versus positive: $t=24.25/(25.39/sqrt(8))=2.70$, df 7. p-value 0.0153 → reject at 5%; increased mean throughput.
 
-#strong[Same data, different uncertainty (7.7-7.8):] Scores $20,19,24,22,25$, assumed normal; $overline(x)=22$, $n=5$, test $mu_0=16$ two-sided at $alpha=0.01$.
-#table(columns: (1fr, 1.2fr, 1fr),
-  table.header([*Variance info*], [*Statistic / cutoff*], [*$p$ / decision*]),
-  [Known $sigma^2=5$], [$z=6$; $2.576$], [$1.97 times 10^(-9)$; reject],
-  [Unknown; $s^2=6.5$], [$t=5.26$; $t_(4;0.005)=4.604$], [$0.00624$; reject],
-)
-#trap[Do not use a normal tail for a small-sample $t$ statistic], even when the statistic looks large.
-
-#strong[Paired test (7.15):] Choose $D=$ after minus before throughput (requests/s). For 8 independent normal differences, $overline(d)=24.25$, $s_D=25.39$; $H_0:mu_D=0$, $H_1:mu_D>0$.
-$t=24.25/(25.39/sqrt(8))=2.70>t_(7;0.05)=1.895$, $p=0.0153<0.05$: reject; evidence of increased mean throughput. 
-
-#heading(level: 1, numbering: none)[12. Errors, power and final checks]
-#table(columns: (1fr, 1.1fr, 1.1fr),
+// Lean example 7.5; R conventions from lecture §9.
+= 12. Errors, power & final checks
+== Error probabilities
+#table(columns: (0.9fr, 1fr, 1fr),
   table.header([*Reality*], [*Fail to reject*], [*Reject*]),
-  [$H_0$ true], [Correct: $1-alpha$], [Type I: $alpha$],
-  [$H_0$ false at $theta_1$], [Type II: $beta$], [Power: $1-beta$],
+  [Null true], [Correct], [Type I: $alpha$],
+  [Alternative true], [Type II: $beta$], [Power: $1-beta$],
 )
-$alpha=P("reject" divides H_0 " true")$;
-$beta=P("fail to reject" divides theta=theta_1)$ for a *specified* alternative $theta_1$. At fixed sample size/effect, reducing $alpha$ generally increases $beta$; more data can raise power at fixed $alpha$.
+$alpha$: rejection probability under null; $beta$: nonrejection probability at specified alternative $theta_1$. Fixed size/effect: smaller $alpha$ generally raises $beta$; more data can raise power.
 
-// Lean example 7.5: exact error probabilities from a discrete rejection region.
-#strong[Exact error calculation (7.5):] $X tilde "Bin"(20,p)$; reject $H_0:p=0.25$ if $X>8$. Then $alpha=P_(p=0.25)(X>=9)=0.0409$. At alternative $p=0.5$, $beta=P_(p=0.5)(X<=8)=0.2517$, power $=0.7483$. #mark[Use the null for $alpha$, the specified alternative for $beta$]; use exact binomial tails here.
+== Exact discrete error calculation
+$X tilde "Bin"(20,p)$; reject $p=0.25$ if $X>=9$: $alpha=0.0409$. At $p=0.5$, $beta=P(X<=8)=0.2517$; power 0.7483. #mark[Null for alpha; alternative for beta.] Keep cutoffs exact.
 
-// Lean §9, examples 5.2,5.12,5.15,5.18: generic convention, not a full software table.
-#strong[R:] `d*`: PMF/PDF; `p*`: CDF; `q*`: quantile; `lower.tail=FALSE`: upper tail.
-
+*R:* `d*`: PMF/PDF; `p*`: CDF; `q*`: quantile; `lower.tail=FALSE`: upper tail.
 ]

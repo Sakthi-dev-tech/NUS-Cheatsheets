@@ -129,7 +129,7 @@
   With $f$ fractional bits, a signed fixed-point value is its stored integer multiplied by $2^(- f)$. Spacing is $2^(- f)$. For an $n$-bit two's-complement pattern: $ upright("range") = [- 2^(n - 1 - f) , med \( 2^(n - 1) - 1 \) 2^(- f)] . $ Example: $n = 8 , f = 2$ gives range $\[ - 32 , 31.75 \]$ in steps of $0.25$. For an #emph[unsigned] fixed-point pattern the range is $\[ 0 , \( 2^n - 1 \) 2^(- f) \]$. If a sign-magnitude or one's-complement integer is scaled by $2^(- f)$, its range is $\[ - \( 2^(n - 1) - 1 \) 2^(- f) , \( 2^(n - 1) - 1 \) 2^(- f) \]$. All these fixed-point formats have spacing $2^(- f)$ between successive nonzero values. More fractional bits improve resolution but reduce range at fixed total width. #strong[Note:] the spacing is $2^(- f)$, not $2^f$.
 
   = IEEE 754 single precision (binary32)
-  A 32-bit floating-point pattern has three fields: $ underbrace(s, 1 upright(" sign bit")) med #scale(x: 120%, y: 120%)[\|] med underbrace(E, 8 upright(" exponent bits")) med #scale(x: 120%, y: 120%)[\|] med underbrace(F, 23 upright(" fraction bits")) . $ $s = 0$ is positive and $s = 1$ is negative. Interpret $E$ and $F$ as unsigned integers. The exponent has bias 127; the fraction is $f = F \/ 2^23$. Classify the pattern by its #emph[stored] exponent before applying the normal-number formula.
+  A 32-bit floating-point pattern has three fields: $ underbrace(s, 1 upright(" sign bit")) med #scale(x: 120%, y: 120%)[\|] med underbrace(E, 8 upright(" exponent bits")) med #scale(x: 120%, y: 120%)[\|] med underbrace(F, 23 upright(" fraction bits")) . $ $s = 0$ is positive and $s = 1$ is negative. Interpret $E$ and $F$ as unsigned integers. With $k$ exponent bits, the #strong[excess (bias)] is $K = 2^(k - 1) - 1$; here $k = 8$, so $K = 127$ (#strong[excess-127]). The fraction is $f = F \/ 2^23$. Classify the pattern by its #emph[stored] exponent before applying the normal-number formula.
 
   #strong[Normal finite numbers ($1 lt.eq E lt.eq 254$):] $ x = \( - 1 \)^s \( 1 + F \/ 2^23 \) thin 2^(E - 127) = \( - 1 \)^s \( 1 . f \)_2 thin 2^(E - 127) . $ The leading 1 is implicit, so 23 stored fraction bits give 24 significant binary digits. The actual exponent ranges from $- 126$ to $+ 127$. To encode a nonzero normal number, write it as $plus.minus 1 . b_1 b_2 dots.h zws_2 times 2^e$, store $E = e + 127$, and store the bits after the leading 1 in $F$, rounding if needed. Example: $6.5_10 = 110.1_2 = 1.101_2 thin 2^2$; $s = 0$, $E = 129 = 10000001_2$, $F = 101$ followed by 20 zeros. Its 32-bit hex pattern is `0x40D00000`.
 
@@ -153,7 +153,7 @@
   = IEEE 754 rounding and quick decoding
   #strong[Rounding modes:] nearest with ties to even (default), toward zero, toward $+ oo$, and toward $- oo$. For a value cut after the last stored fraction bit, the #strong[guard bit] is the first discarded bit, the #strong[round bit] is the next, and the #strong[sticky bit] is the OR of all later discarded bits. They help decide whether the stored fraction must increase. Rounding after each operation means $\( a + b \) + c$ can differ from $a + \( b + c \)$.
 
-  #strong[Exam procedure:] split the 32 bits into $s \| E \| F$; check $E = 0$ and $E = 255$ first. For $1 lt.eq E lt.eq 254$, restore the hidden leading 1 and use exponent $E - 127$. For $E = 0 , F eq.not 0$, use leading 0 and exponent $- 126$. For $E = 255$, distinguish infinity from NaN using $F = 0$ versus $F eq.not 0$. A 64-bit double instead uses 1 sign, 11 exponent bits (bias 1023), and 52 fraction bits.
+  #strong[Exam procedure:] split the 32 bits into $s \| E \| F$; check $E = 0$ and $E = 255$ first. For $1 lt.eq E lt.eq 254$, restore the hidden leading 1 and use exponent $E - 127$. For $E = 0 , F eq.not 0$, use leading 0 and exponent $- 126$. For $E = 255$, distinguish infinity from NaN using $F = 0$ versus $F eq.not 0$. A 64-bit double instead uses 1 sign, 11 exponent bits (excess-1023, since $2^10 - 1 = 1023$), and 52 fraction bits.
 
   = Range quick reference: all representations
   For an $n$-bit #emph[integer], the first value below is the most negative representable value and the second is the largest positive. Both $+ 1$ and $- 1$ are the nonzero values closest to zero whenever the format includes both signs.
@@ -787,6 +787,29 @@
   )
 
   #strong[Exam method:] draw IF–ID–EX–MEM–WB; mark availability/need and bypass paths. Cycles = $I + 4$ + extra lost cycles. Include useful delay-slot work in $I$. Count each `nop` either in $I$ or as wasted time, never both.
+
+  // Source: user-supplied "Summary Table" slide, p. 17.
+  = Pipeline hazards: summary table
+  *RAW* = read-after-write; *fwd* = forwarding; *early* = branch resolved in ID (otherwise MEM). Source = earlier producer; destination = later consumer. $n$ counts instructions in between. For data stalls, clamp $k-n$ to $max(0,k-n)$: stalls cannot be negative.
+
+  #table(
+    columns: (auto, 2fr, auto, 1fr, auto, 1.6fr),
+    stroke: 0.3pt + lightgray,
+    table.header([*\#*], [*Condition*], [*Source*], [*Destination*], [*Variable*], [*Extra cycles*]),
+    [1], [RAW; no fwd], [Any], [Any], [$n$], [$max(0,2-n)$],
+    [2], [RAW; fwd], [Non-`lw`], [Any], [—], [0],
+    [3], [RAW; fwd], [`lw`], [Any non-`sw`], [$n$], [$max(0,1-n)$],
+    [4], [RAW; fwd], [`lw`], [`sw`], [$n$], [0 if `lw` updates `rt` of `sw`; $max(0,1-n)$ otherwise],
+    [5], [RAW; no fwd; early], [Any], [Branch], [$n$], [$max(0,2-n)$],
+    [6], [RAW; fwd; early], [Non-`lw`], [Branch], [$n$], [$max(0,1-n)$],
+    [7], [RAW; fwd; early], [`lw`], [Branch], [$n$], [$max(0,2-n)$],
+    [8], [No early; no prediction], [Branch], [Any], [—], [3],
+    [9], [Early; no prediction], [Branch], [Any], [—], [1],
+    [10], [Correct prediction], [Branch], [Any], [—], [0],
+    [11], [Wrong prediction; no early], [Branch], [Any], [—], [3],
+    [12], [Wrong prediction; early], [Branch], [Any], [—], [1],
+  )
+  *Model:* 5 stages; WB writes before ID reads; listed bypass paths exist. Row 4 assumes store-data forwarding into MEM; a base-register dependency still needs EX data. Rows 1–7 count data stalls; rows 8–12 count control loss with ready branch operands. Apply early-branch rows 5–7 instead of ordinary RAW rows for an ID branch; count overlapping penalties once.
 
   // Source: Obsidian Vault/100 Source Notes/Lectures/CS2100 Lecture 22.md
   // and its cache index/tag, circuitry, and write-policy attachments.
