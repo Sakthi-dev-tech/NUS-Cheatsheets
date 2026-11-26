@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="390" viewBox="0 0 960 390">
+  <title>MIPS pipeline registers and control propagation</title>
+  <desc>Yellow bars are pipeline registers. Control is generated in ID. EX controls are consumed in EX; M controls continue to MEM; WB controls continue to WB. Data and destination register numbers travel with the same instruction.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#a34c00"/></marker>
+    <marker id="data-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#334155"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; font-size: 18px; fill: #172033; text-anchor: middle; }
+      .stage { font-size: 21px; font-weight: bold; }
+      .label { font-size: 17px; font-weight: bold; }
+      .small { font-size: 16px; }
+      .reg { fill: #fff19b; stroke: #8a6900; stroke-width: 2; }
+      .control { fill: none; stroke: #a34c00; stroke-width: 2.5; marker-end: url(#arrow); }
+      .data { fill: none; stroke: #334155; stroke-width: 2.5; marker-end: url(#data-arrow); }
+    </style>
+  </defs>
+  <rect width="960" height="390" fill="white"/>
+  <text x="47" y="28" class="stage">IF</text>
+  <text x="237" y="28" class="stage">ID</text>
+  <text x="495" y="28" class="stage">EX</text>
+  <text x="720" y="28" class="stage">MEM</text>
+  <text x="912" y="28" class="stage">WB</text>
+
+  <!-- Each yellow bar stores one instruction's data and remaining controls. -->
+  <rect x="90" y="205" width="48" height="88" class="reg"/>
+  <rect x="350" y="65" width="56" height="228" class="reg"/>
+  <rect x="585" y="65" width="56" height="228" class="reg"/>
+  <rect x="810" y="65" width="56" height="228" class="reg"/>
+  <path d="M350 105H406 M350 145H406 M350 205H406 M585 105H641 M585 145H641 M585 205H641 M810 105H866 M810 205H866" fill="none" stroke="#8a6900" stroke-width="1.5"/>
+  <text x="378" y="92" class="label">WB</text>
+  <text x="378" y="132" class="label">M</text>
+  <text x="378" y="180" class="label">EX</text>
+  <text x="613" y="92" class="label">WB</text>
+  <text x="613" y="132" class="label">M</text>
+  <text x="838" y="92" class="label">WB</text>
+
+  <rect x="185" y="105" width="108" height="92" rx="15" fill="#fff8e8" stroke="#a34c00" stroke-width="2"/>
+  <text x="239" y="145" class="label">Control</text>
+  <text x="239" y="170" class="small">unit</text>
+  <path d="M138 226H160V151H185 M160 226H350" class="data"/>
+  <text x="238" y="248" class="small">Instruction / data</text>
+  <path d="M293 126H312V85H350 M293 151H328V125H350 M293 176H350" class="control"/>
+  <path d="M406 85H585 M406 125H585 M641 85H810" class="control"/>
+  <path d="M406 175H466V205 M641 125H706V205 M866 85H914V205" class="control"/>
+  <text x="487" y="193" class="small">Use EX</text>
+  <text x="732" y="193" class="small">Use M</text>
+  <text x="915" y="193" class="small">Use WB</text>
+
+  <path d="M16 264H90 M138 264H350 M406 264H585 M641 264H810 M866 264H946" class="data"/>
+  <text x="378" y="252" class="small">Data</text>
+  <text x="613" y="252" class="small">Data</text>
+  <text x="838" y="252" class="small">Data</text>
+  <text x="114" y="320" class="label">IF/ID</text>
+  <text x="378" y="320" class="label">ID/EX</text>
+  <text x="613" y="320" class="label">EX/MEM</text>
+  <text x="838" y="320" class="label">MEM/WB</text>
+  <text x="480" y="354" class="small">EX: RegDst, ALUSrc, ALUOp   •   M: Branch, MemRead, MemWrite</text>
+  <text x="480" y="380" class="small">WB: MemToReg, RegWrite   •   Carry data and destination register numbers with their controls.</text>
+</svg>

@@ -818,12 +818,17 @@
 
   #table(
     columns: (auto, 1fr, auto, 1fr), stroke: 0.3pt + lightgray,
-    [$h$], [Hit rate = hits / accesses], [$m$], [Miss rate = $1-h$],
-    [$H$], [Hit time (cache lookup + access)], [$P$], [Extra delay on a miss],
+    [$h$], [Hit rate = hits / accesses], [$m$], [Miss rate = misses / accesses $=1-h$],
+    [$H$], [Hit time: lookup + data access on a hit], [$P$], [Extra delay on a miss],
     [$M$], [Total miss time: $H+P$], [*AMAT*], [$h H + m M = H + m P$],
   )
   #strong[Convention:] the lecture's “miss penalty” includes hit time, so use $h H + (1-h) M$. If a question gives #emph[additional] miss time, use $H+(1-h)P$. Keep units consistent.
-  #strong[Example:] $h=0.95$, $H=1$ ns, $P=40$ ns ⇒ $M=41$ ns and AMAT $=1+0.05 times 40=3$ ns.
+  #strong[Rates vs. times:] $h,m$ are dimensionless probabilities (95% = 0.95), not clock cycles; $h+m=1$. For $n$ accesses, expected hits $=n h$, misses $=n m$. Hit time is latency, not hit rate; a hit need not take just one cycle.
+
+  #strong[Clock cycles:] clock period $T=1/f$; $"cycles"="time"/T="time" times f$. Express $H,P,M$ in the #emph[same units]: either ns or cycles. For an access completed only on clock edges, required whole cycles $=ceil("access time"/T)$; average access time can be fractional cycles.
+  #strong[Example:] $f=2$ GHz ⇒ $T=0.5$ ns. With $h=0.95$, $H=1$ ns $=2$ cycles and $P=40$ ns $=80$ extra cycles, $M=41$ ns $=82$ cycles. AMAT $=2+0.05 times 80=6$ cycles $=3$ ns/access. Do not round AMAT up to a whole cycle.
+
+  #strong[CPU stalls:] for a blocking cache with no overlapping misses and hit costs already in base CPI, stall cycles/instruction $=a m P_c$, where $a$ is memory accesses/instruction and $P_c$ is the #emph[extra] miss penalty in CPU cycles. Thus $"CPI"="CPI"_"base"+a m P_c$; execution time $=I times "CPI" times T$. With separate instruction/data caches, add $m_I P_I + a_D m_D P_D$ (one instruction fetch/instruction; $a_D$ = loads + stores per instruction). AMAT is per #emph[memory access], not per instruction; do not count hit time twice.
 
   = Direct-mapped cache: essential formulas
   #strong[Symbols:] $a$ = byte address; $A$ = address width in bits; $C$ = cache #emph[data capacity in bytes] (excludes metadata); $B$ = bytes/block; $L$ = cache lines; $q$ = memory block number. Assume $B,L$ are powers of 2.
