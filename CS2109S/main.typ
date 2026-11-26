@@ -16,7 +16,7 @@
 #let trap(body) = text(fill: rgb("A32935"), body)
 #set document(title: "CS2109S Cheatsheet - Lectures 1-11")
 #set page(paper: "a4", flipped: true, margin: 6mm, numbering: none)
-#set text(font: "New Computer Modern", size: 8pt, fill: rgb("172B3A"), top-edge: "ascender", bottom-edge: "descender")
+#set text(font: "New Computer Modern", size: 7.5pt, fill: rgb("172B3A"), top-edge: "ascender", bottom-edge: "descender")
 #set par(leading: 0.6pt, spacing: 1.3pt, justify: false)
 #set columns(gutter: 4mm)
 #set heading(numbering: none)
@@ -40,6 +40,26 @@
 #columns(4)[
 #text(font: "Nimbus Sans", size: 10pt, weight: "bold")[CS2109S · EQUATION SHEET]#linebreak()
 #text(size: 7.5pt)[Lectures 1-11 · #mark[Conditions] · #trap[Pitfalls]]
+
+// L1: task specification and environment properties.
+= PEAS framework
+*P — Performance measure:* criteria for success. *E — Environment:* external world the agent operates in. *A — Actuators:* means of acting. *S — Sensors:* means of perceiving.
+*Self-driving taxi:* P: safety, legality, speed, comfort; E: roads, traffic, pedestrians, weather; A: steering, accelerator, brakes, signals; S: cameras, lidar, GPS, speedometer.
+
+= Types of task environments
+*Fully vs partially observable:* sensors reveal all decision-relevant state vs incomplete/noisy information (chess vs driving).
+
+*Single-agent vs multi-agent:* one agent vs other agents whose decisions affect outcomes; competitive or cooperative.
+
+*Deterministic vs stochastic:* current state + action uniquely determines next state vs probabilistic outcomes. #trap[Partial observation can make deterministic dynamics appear random.]
+
+*Episodic vs sequential:* each percept–action episode is independent vs actions affect future states/decisions (image classification vs driving).
+
+*Static vs dynamic:* environment unchanged vs may change while agent deliberates. *Semi-dynamic:* world unchanged, but performance score changes with time (timed chess).
+
+*Discrete vs continuous:* distinct/countable vs continuously varying states, time, percepts or actions; classify each separately.
+
+*Known vs unknown:* transition/outcome rules given vs must be learned. #trap[Known ≠ fully observable: rules can be known while state is hidden.] Unknown rules motivate exploration; exploitation uses current knowledge for reward.
 
 // L1-L2: search formulation, algorithms, heuristic conditions.
 = Search and heuristics
